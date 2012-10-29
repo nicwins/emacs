@@ -37,6 +37,8 @@
 (set-default 'slime-js-swank-args '())
 (set-default 'slime-js-browser-command "start Chrome")
 (set-default 'slime-js-browser-jacked-in-p nil)
+(setq static-dir "cd c:/home/nic/projects")
+(setq static-cmd "static -H \"{\"\"Cache-Control\"\": \"\"no-cache, must-revalidate\"\"}\"")
 
 (add-hook 'js2-mode-hook (lambda () (slime-js-minor-mode 1)))
 (add-hook 'css-mode-hook
@@ -58,9 +60,24 @@
   (setq slime-protocol-version 'ignore)
   (slime-connect "localhost" 4005))
 
+(require 'comint)
+
+(defun static-start-local ()
+  "Start local static-node server"
+  (interactive)
+  (shell "local-server")
+  ;;(switch-to-buffer "local-server")
+  (comint-send-string "local-server" static-dir)
+  (comint-send-input)
+  (comint-send-string "local-server" static-cmd)
+  (comint-send-input)
+  (switch-to-buffer "*scratch*"))
+
 (defun slime-js-jack-in-browser ()
   "Start a swank-js server, connect to it, open a repl, open a browser, connect to that."
   (interactive)
+  (static-start-local)
+  (sleep-for 3)
   (slime-js-jack-in-node)
   (sleep-for 2)
   (slime-js-set-target-url slime-js-target-url)
