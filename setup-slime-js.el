@@ -37,7 +37,7 @@
 (set-default 'slime-js-swank-args '())
 (set-default 'slime-js-browser-command "start Chrome")
 (set-default 'slime-js-browser-jacked-in-p nil)
-(setq static-dir "cd c:/home/nic/projects")
+(setq static-dir "cd c:\\home\\nic\\projects")
 (setq static-cmd "static -H \"{\"\"Cache-Control\"\": \"\"no-cache, must-revalidate\"\"}\"")
 
 (add-hook 'js2-mode-hook (lambda () (slime-js-minor-mode 1)))
