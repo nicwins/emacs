@@ -1,5 +1,10 @@
 ;;(electric-layout-mode t)
 
+(add-to-list 'load-path "~/.emacs.d/auto-complete")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete//ac-dict")
+(ac-config-default)
+
 ;; Auto indent please
 (setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
 (require 'auto-indent-mode)

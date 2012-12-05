@@ -46,9 +46,7 @@
 (require 'ido)
 (eval-after-load 'dired '(require 'setup-dired))
 (require 'dired)
-(require 'js2-highlight-vars)
 (require 'setup-zencoding)
-                                        ;(require 'paredit)
 (require 'setup-ffip)
 (require 'setup-wrap-region)
 (require 'setup-perspective)
@@ -93,7 +91,18 @@
 ;; Diminish modeline clutter
 (require 'diminish)
 (diminish 'wrap-region-mode)
-                                        ;(diminish 'yas/minor-mode)
+;;(diminish 'yas/minor-mode)
+
+;; Cua Mode
+(setq cua-enable-cua-keys nil) ;; only for rectangles
+(cua-mode t)
+
+;; Store auto save in temp
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
 
 ;; Misc
 (require 'appearance)
@@ -102,7 +111,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auto-indent-next-pair-timer-interval (quote ((slime-repl-mode 1.5) (css-mode 0.0013374828338623048) (html-mode 1.5) (emacs-lisp-mode 0.006116674084133572) (js2-mode 1.5) (default 0.0005)))))
+ '(auto-indent-next-pair-timer-interval (quote ((nxml-mode 0.001052607070259426) (slime-repl-mode 1.5) (css-mode 1.5) (html-mode 1.5) (emacs-lisp-mode 0.006116674084133572) (js2-mode 1.5) (default 0.0005))))
+ '(speedbar-default-position (quote left)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
