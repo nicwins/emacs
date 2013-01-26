@@ -26,4 +26,7 @@
 ;; These are the droids I'm looking for
 (set-face-attribute 'default nil :font "Droid Sans Mono" :height 100)
 
+(require 'maxframe)
+(add-hook 'window-setup-hook 'maximize-frame t)
+
 (provide 'appearance)

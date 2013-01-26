@@ -33,3 +33,44 @@ cd C:\\Program Files\\nodejs
 cd C:/Program Files/nodejs
 cd ../../../../../
 swank-js
+cd ../../home/gitStuff/common
+git add .
+git commit -a
+git commit -a -m "merge of common"
+git config --global user.name "Nicolas Winslow"
+git config --global user.email Nicolas.Winslow@uav.com
+git push origin master
+cd c:/home/nic/projects/Dashboard/navbar
+git add .
+git commit
+git commit -a -m "functional navbar"
+git push origin master
+ssh
+ssh:
+putty
+cd ../
+git
+git pull
+cd ../
+ssh-add
+cd ../
+ls
+cd projectBrowser
+git add .
+git commit -a -m "changeout navbar"
+git bash
+exit
+cd ../../
+cd ../
+cd nic/projects/dashboard/dictionary
+git checkout -b development
+git push -u http://nic:abc@10.120.80.252/git/dictionary.git development
+git branch
+cd ../navbar
+git checkout -b development
+git push -u http://nic:abc@10.120.80.252/git/navbar.git development
+cd ../projectBrowser
+git checkout -b development
+git push -u http://nic:abc@10.120.80.252/git/projectBrowser.git development
+cd ../vars
+git pull

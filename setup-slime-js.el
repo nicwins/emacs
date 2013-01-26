@@ -37,8 +37,9 @@
 (set-default 'slime-js-swank-args '())
 (set-default 'slime-js-browser-command "start Chrome")
 (set-default 'slime-js-browser-jacked-in-p nil)
-(setq static-dir "cd c:\\home\\nic\\projects")
-(setq static-cmd "static -H \"{\"\"Cache-Control\"\": \"\"no-cache, must-revalidate\"\"}\"")
+(setq mysql-cmd "net start mysql")
+(setq rails-dir "cd c:\\home\\nic\\projects\\rails\\")
+(setq rails-cmd "rails server")
 
 (add-hook 'js2-mode-hook (lambda () (slime-js-minor-mode 1)))
 (add-hook 'css-mode-hook
@@ -62,21 +63,22 @@
 
 (require 'comint)
 
-(defun static-start-local ()
+(defun rails-start-local ()
   "Start local static-node server"
   (interactive)
   (shell "local-server")
-  ;;(switch-to-buffer "local-server")
-  (comint-send-string "local-server" static-dir)
+  (comint-send-string "local-server" mysql-cmd)
   (comint-send-input)
-  (comint-send-string "local-server" static-cmd)
+  (comint-send-string "local-server" rails-dir)
+  (comint-send-input)
+  (comint-send-string "local-server" rails-cmd)
   (comint-send-input)
   (switch-to-buffer "*scratch*"))
 
 (defun slime-js-jack-in-browser ()
   "Start a swank-js server, connect to it, open a repl, open a browser, connect to that."
   (interactive)
-  (static-start-local)
+  (rails-start-local)
   (sleep-for 3)
   (slime-js-jack-in-node)
   (sleep-for 2)
@@ -138,5 +140,16 @@
 ;; Remove slime-minor-mode from mode line if diminish.el is installed
 (when (boundp 'diminish)
   (diminish 'slime-js-minor-mode))
+
+(defun clean-winsight-xml ()
+  (interactive)
+  (revert-buffer t t)
+  (goto-char (point-min))
+  (while (search-forward "&nbsp;" nil t)
+    (replace-match "" nil t))
+  (goto-char (point-min))
+  (save-buffer)
+  )
+
 
 (provide 'setup-slime-js)
