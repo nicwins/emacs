@@ -52,3 +52,38 @@
       (save-buffer)
 
       )))
+
+(defun jsnow-do-script (filename)
+  "Quickly jump into development of a new js script.
+Prompts the user for the FILENAME. It's expected that the user will not usually run this directly.
+See the wrapper function: \\[jsnow-script]"
+  (interactive
+   (jsnow-prompt-user-for-file-to-create
+    "Name for the new js script? " jsnow-script-location))
+  (require 'template)
+  (jsnow-create-with-template filename jsnow-js-script-template)
+  (jsnow-change-mode-to-executable))
+
+(defun jsnow-prompt-user-for-file-to-create (ask-mess default-location)
+  "Ask for the name of the file to create.
+Check to see if one exists already, and if so, ask for another name.
+Asks the question ASK-MESS, and defaults to using the location DEFAULT-LOCATION.
+Returns a list of single string, full file name with path."
+  (let ( filename )
+    (setq default-location (file-name-as-directory default-location))
+    (while (progn
+             (setq filename
+                   (expand-file-name
+                    (read-file-name ask-mess default-location)))
+             (setq ask-mess
+                   "That name is already in use, please use another name: ")
+             (file-exists-p filename)))
+    (list filename)))
+
+(defun jsnow-widget-two-questions-stub (inc-spot package-name)
+  "Quickly jump into development of a new js widget.
+Asks the user two questions to get the INC-SPOT and the PACKAGE-NAME"
+  (interactive
+   (let ((default-directory jsnow-widget-location))
+     (call-interactively 'jsnow-prompt-for-widget-to-create)))
+  )
