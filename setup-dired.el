@@ -1,9 +1,7 @@
-(require 'dired)
-
 ;; Make dired less verbose
-(require 'dired-details)
-(setq-default dired-details-hidden-string "--- ")
-(dired-details-install)
+;;(require 'dired-details)
+;;(setq-default dired-details-hidden-string "--- ")
+;;(dired-details-install)
 
 ;; Reload dired after creating a directory
 (defadvice dired-create-directory (after revert-buffer-after-create activate)

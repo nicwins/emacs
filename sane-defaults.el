@@ -1,3 +1,16 @@
+;; Keep emacs Custom-settings in separate file
+(setq custom-file (expand-file-name "custom.el" dotfiles-dir))
+(load custom-file)
+
+;; Write backup files to own directory
+(setq backup-directory-alist `(("." . ,(expand-file-name
+                                        (concat dotfiles-dir "backups")))))
+
+;; Save point position between sessions
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file (expand-file-name ".places" (concat dotfiles-dir "backups")))
+
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
 
@@ -58,7 +71,6 @@
 (winner-mode 1)
 
 ;; Never insert tabs
-;(set-default 'indent-tabs-mode nil)
 (setq default-tab-width 2)
 
 ;; Show me empty lines after buffer end
@@ -67,22 +79,11 @@
 ;; Easily navigate sillycased words
 (global-subword-mode 1)
 
-;; Don't break lines for me, please
-;(setq-default truncate-lines t)
-
-;; Keep cursor away from edges when scrolling up/down
-(require 'smooth-scrolling)
-
 ;; org-mode: Don't ruin S-arrow to switch windows please (use M-+ and M-- instead to toggle)
 (setq org-replace-disputed-keys t)
 
 ;; Fontify org-mode code blocks
 (setq org-src-fontify-natively t)
-
-;; Represent undo-history as an actual tree (visualize with C-x u)
-(setq undo-tree-mode-lighter "")
-(require 'undo-tree)
-(global-undo-tree-mode)
 
 ;; Sentences do not need double spaces to end. Period.
 (set-default 'sentence-end-double-space nil)
@@ -154,5 +155,15 @@ Including indent-buffer, which should not be called automatically on save."
 ;; Newline after inserting closing tag in html-mode
 (defadvice sgml-close-tag (after close-tag-then-newline activate)
   (newline-and-indent))
+
+;; Highlight matching parentheses when the point is on them.
+(show-paren-mode 1)
+
+;; Zenburn please
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(load-theme 'zenburn t)
+
+;; These are the droids I'm looking for
+(set-face-attribute 'default nil :font "Droid Sans Mono" :height 100)
 
 (provide 'sane-defaults)

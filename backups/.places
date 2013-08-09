@@ -1,0 +1,13 @@
+;;; -*- coding: utf-8 -*-
+(("/home/winsln/.emacs.d/el-get/.loaddefs.el" . 25947)
+ ("/home/winsln/.emacs.d/el-get/package/elpa/archives/ELPA/archive-contents" . 12065)
+ ("/home/winsln/.emacs.d/el-get/package/elpa/archives/SC/archive-contents" . 2192)
+ ("/home/winsln/.emacs.d/el-get/package/elpa/archives/gnu/archive-contents" . 4723)
+ ("/home/winsln/.emacs.d/el-get/package/elpa/archives/marmalade/archive-contents" . 75176)
+ ("/home/winsln/.emacs.d/el-get/package/elpa/ido-ubiquitous-1.6/ido-ubiquitous-autoloads.el" . 4311)
+ ("/home/winsln/.emacs.d/init.el" . 1372)
+ ("/home/winsln/.emacs.d/sane-defaults.el" . 462)
+ ("/home/winsln/.emacs.d/setup-dired.el" . 108)
+ ("/home/winsln/.emacs.d/setup-package.el" . 24)
+ ("/home/winsln/.ido.last" . 44797)
+ ("/home/winsln/.recentf" . 6280))

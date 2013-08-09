@@ -74,3 +74,16 @@ git checkout -b development
 git push -u http://nic:abc@10.120.80.252/git/projectBrowser.git development
 cd ../vars
 git pull
+sudo whoami
+sudo
+su
+cd /var/www/html
+ls
+cd Dashboard
+git pull origin
+su
+git pull origin
+git branch
+su
+/etc/init.d/httpd restart
+/sbin/ifconig

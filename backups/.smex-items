@@ -1,0 +1,18 @@
+
+;; ----- smex-history -----
+(
+ slime-js-jack-in-browser
+ slime
+ package-list-packages
+ cd
+ 5x5
+ arp
+ dbx
+)
+
+;; ----- smex-data -----
+(
+ (package-list-packages . 1)
+ (slime . 1)
+ (slime-js-jack-in-browser . 1)
+)

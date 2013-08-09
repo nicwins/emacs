@@ -30,16 +30,18 @@
 (require 'slime)
 (require 'slime-js)
 
-(set-default 'slime-js-target-url "http://localhost:8080")
+;; target-url is the output from local server
+(set-default 'slime-js-target-url "http://localhost:8000")
+;; connect-url is where you direct your browser
 (set-default 'slime-js-connect-url "http://localhost:8009")
-(set-default 'slime-js-starting-url "/")
+;; show server where to find index
+(set-default 'slime-js-starting-url "/app/index.html")
 (set-default 'slime-js-swank-command "swank-js")
 (set-default 'slime-js-swank-args '())
-(set-default 'slime-js-browser-command "start Chrome")
+(set-default 'slime-js-browser-command "google-chrome")
 (set-default 'slime-js-browser-jacked-in-p nil)
-(setq mysql-cmd "net start mysql")
-(setq rails-dir "cd c:\\home\\nic\\projects\\rails\\")
-(setq rails-cmd "rails server")
+
+(setq start-local-cmd "cd /home/winsln/projects/dashboard; node ./scripts/web-server.js")
 
 (add-hook 'js2-mode-hook (lambda () (slime-js-minor-mode 1)))
 (add-hook 'css-mode-hook
@@ -63,22 +65,20 @@
 
 (require 'comint)
 
-(defun rails-start-local ()
+(defun start-local-server ()
   "Start local static-node server"
   (interactive)
+  ;;(shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
+  ;;                       " | sudo -S your_command_here"))
   (shell "local-server")
-  (comint-send-string "local-server" mysql-cmd)
-  (comint-send-input)
-  (comint-send-string "local-server" rails-dir)
-  (comint-send-input)
-  (comint-send-string "local-server" rails-cmd)
+  (comint-send-string "local-server" start-local-cmd)
   (comint-send-input)
   (switch-to-buffer "*scratch*"))
 
 (defun slime-js-jack-in-browser ()
   "Start a swank-js server, connect to it, open a repl, open a browser, connect to that."
   (interactive)
-  (rails-start-local)
+  (start-local-server)
   (sleep-for 3)
   (slime-js-jack-in-node)
   (sleep-for 2)
@@ -140,20 +140,5 @@
 ;; Remove slime-minor-mode from mode line if diminish.el is installed
 (when (boundp 'diminish)
   (diminish 'slime-js-minor-mode))
-
-(defun clean-winsight-xml ()
-  "Remove illegal characters from winsight xml"
-  (interactive)
-  (revert-buffer t t)
-  (goto-char (point-min))
-  (while (search-forward "&nbsp;" nil t)
-    (replace-match "" nil t))
-  (goto-char (point-min))
-  (while (search-forward "&" nil t)
-    (replace-match "&amp;"))
-  (goto-char (point-min))
-  (save-buffer)
-  )
-
 
 (provide 'setup-slime-js)
