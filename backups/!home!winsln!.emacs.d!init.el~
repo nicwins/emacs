@@ -27,6 +27,9 @@
 ;; Setup IDO
 (eval-after-load 'ido '(require 'setup-ido))
 (require 'ido)
+(require 'ido-ubiquitous)
+(require 'auto-complete)
+(require 'diminish)
 
 ;; Slime setup
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
@@ -53,9 +56,6 @@
 ;; Run at full power please
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
-
-;; Diminish modeline clutter
-(require 'diminish)
 
 ;; Cua Mode
 (setq cua-enable-cua-keys nil) ;; only for rectangles
@@ -147,6 +147,12 @@
           :features smooth-scrolling
           )
 
+   (:name slime-js ;; slime part for swank-js
+          :type git
+          :url "git://github.com/Gozala/slime-js.git"
+          :features slime-js
+          )
+
    (:name emmet-mode ;; new Zencoding mode
           :type git
           :url "git://github.com/smihica/emmet-mode.git"
@@ -162,6 +168,12 @@
                         (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)
                         (diminish 'emmet-mode))))
           )
+
+   (:name js2-mode ;; new JS IDE mode
+          :type git
+          :url "https://github.com/mooz/js2-mode.git"
+          :features js2-mode
+          )
    ))
 
 (setq
@@ -169,9 +181,7 @@
  '(el-get
    auto-complete
    ido-ubiquitous
-   diminish
-   dired-detail+
-   slime-js))
+   diminish))
 
 (setq my:el-get-packages
       (append

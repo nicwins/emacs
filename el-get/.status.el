@@ -1,6 +1,24 @@
 ((auto-complete status "installed" recipe
 								(:name auto-complete :website "http://auto-complete.org/" :description "The most intelligent auto-completion extension." :type github :pkgname "auto-complete/auto-complete" :depends
-											 (popup fuzzy)))
+											 (popup fuzzy)
+											 :features auto-complete :after
+											 (progn
+												 (global-auto-complete-mode t)
+												 (global-set-key
+													(kbd "M-s")
+													'auto-complete)
+												 (define-key ac-complete-mode-map "" 'ac-stop)
+												 (define-key ac-complete-mode-map "" 'ac-complete)
+												 (define-key ac-menu-map "" 'ac-next)
+												 (define-key ac-menu-map "" 'ac-previous)
+												 (setq ac-comphist-file
+															 (expand-file-name "~/.emacs.d/backups/.ac-comphist"))
+												 (set-face-background 'ac-candidate-face "white")
+												 (setq ac-override-local-map t)
+												 (setq ac-use-menu-map t)
+												 (setq ac-ignore-case t)
+												 (setq ac-menu-height 10)
+												 (setq ac-dwim nil))))
  (auto-indent status "installed" recipe
 							(:name auto-indent :type git :url "https://github.com/mlf176f2/auto-indent-mode.el.git" :features auto-indent-mode :after
 										 (progn
@@ -9,9 +27,6 @@
  (autopair status "installed" recipe
 					 (:name autopair :type git :url "git://github.com/capitaomorte/autopair.git" :features autopair :after
 									(progn
-										(add-hook 'sldb-mode-hook
-															#'(lambda nil
-																	(setq autopair-dont-activate t)))
 										(autopair-global-mode))))
  (buffer-move status "installed" recipe
 							(:name buffer-move :description "Swap buffers without typing C-x b on each window" :type emacswiki :features buffer-move :after
@@ -28,11 +43,12 @@
 											 (global-set-key
 												(kbd "<C-S-right>")
 												'buf-move-right))))
- (diminish status "installed" recipe
-					 (:name diminish :description "An Emacs package that diminishes the amount of space taken on the mode line by the names of minor modes." :type http :url "http://www.eskimo.com/~seldon/diminish.el" :features diminish))
  (dired-details status "installed" recipe
 								(:name dired-details :description "Make file details hide-able in dired" :type emacswiki :features dired-details))
- (dired-details+ status "removed" recipe nil)
+ (dired-details+ status "installed" recipe
+								 (:name dired-details+ :description "Extensions to `dired-details.el'." :type emacswiki :depends
+												(dired-details)
+												:features dired-details+))
  (el-get status "installed" recipe
 				 (:name el-get :website "https://github.com/dimitri/el-get#readme" :description "Manage the external elisp bits and pieces you depend upon." :type github :branch "4.stable" :pkgname "dimitri/el-get" :features el-get :info "." :load "el-get.el"))
  (emmet-mode status "installed" recipe
@@ -53,8 +69,7 @@
 														 nil)
 													 (define-key emmet-mode-keymap
 														 (kbd "C-c C-j")
-														 'emmet-expand-line)
-													 (diminish 'emmet-mode))))))
+														 'emmet-expand-line))))))
  (fuzzy status "installed" recipe
 				(:name fuzzy :website "https://github.com/auto-complete/fuzzy-el" :description "Fuzzy matching utilities for GNU Emacs" :type github :pkgname "auto-complete/fuzzy-el"))
  (goto-last-change status "installed" recipe
@@ -64,7 +79,9 @@
 														 (kbd "C-x C-/")
 														 'goto-last-change))))
  (ido-ubiquitous status "installed" recipe
-								 (:name ido-ubiquitous :description "Use ido (nearly) everywhere" :type elpa))
+								 (:name ido-ubiquitous :description "Use ido (nearly) everywhere" :type elpa :features : ido-ubiquitous nil))
+ (js2-mode status "installed" recipe
+					 (:name js2-mode :type http :url "https://js2-mode.googlecode.com/files/js2-mode.el" :features js2-mode))
  (magit status "installed" recipe
 				(:name magit :type git :url "git://github.com/magit/magit.git" :features magit :after
 							 (progn

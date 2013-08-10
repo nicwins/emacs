@@ -76,6 +76,8 @@
 
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 
+(setq el-get-user-package-directory "~/.emacs.d/el-get-inits/")
+
 ;; el-get recipies
 (setq
  el-get-sources
@@ -125,13 +127,12 @@
           :url "git://github.com/capitaomorte/autopair.git"
           :features autopair
           :after (progn
-                   (add-hook 'sldb-mode-hook #'(lambda () (setq autopair-dont-activate t)))
                    (autopair-global-mode))
           )
 
    (:name auto-indent  ;; Indent files and lines automatically
           :type git
-          :url "https://github.com/mlf176f2/auto-indent-mode.el.git"
+          :url "git://github.com/mlf176f2/auto-indent-mode.el.git"
           :features auto-indent-mode
           :after (progn
                    (setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
@@ -162,17 +163,49 @@
                      '(progn
                         (define-key emmet-mode-keymap (kbd "C-j") nil)
                         (define-key emmet-mode-keymap (kbd "<C-return>") nil)
-                        (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)
-                        (diminish 'emmet-mode))))
+                        (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line))))
           )
+
+   (:name js2-mode ;; new JS IDE mode
+          :type http
+          :url "https://js2-mode.googlecode.com/files/js2-mode.el"
+          :features js2-mode
+          )
+
+   (:name auto-complete ;; crappy intellisense
+          :features auto-complete
+          :after (progn
+                   (global-auto-complete-mode t)
+                   (global-set-key (kbd "M-s") 'auto-complete)
+                   (define-key ac-complete-mode-map "\C-g" 'ac-stop)
+                   (define-key ac-complete-mode-map "\r" 'ac-complete)
+                   (define-key ac-menu-map "\C-n" 'ac-next)
+                   (define-key ac-menu-map "\C-p" 'ac-previous)
+
+                   (setq ac-comphist-file (expand-file-name "~/.emacs.d/backups/.ac-comphist"))
+                   (set-face-background 'ac-candidate-face "white")
+                   (setq ac-override-local-map t)
+                   (setq ac-use-menu-map t)
+                   (setq ac-ignore-case t)
+                   (setq ac-menu-height 10)
+                   (setq ac-dwim nil))
+          )
+
+   (:name ido-ubiquitous ;; Fancy completion all over Emacs
+          :features : ido-ubiquitous
+          )
+
+   (:name dired-details+ ;; Reduce clutter in dired
+          :features dired-details+
+          )
+
    ))
+
+
 
 (setq
  my:el-get-packages
- '(el-get
-   auto-complete
-   ido-ubiquitous
-   diminish))
+ '(el-get))
 
 (setq my:el-get-packages
       (append

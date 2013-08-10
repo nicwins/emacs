@@ -9,16 +9,20 @@
           (lambda () (local-set-key (kbd "RET") 'reindent-then-newline-and-indent)))
 
 ;; JavaScript
+;;(add-hook 'js-mode-hook 'js2-minor-mode)
+
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
 ;;(autoload 'js2-mode "js2-mode" nil t)
-(defun my-js2-mode-hook ()
-  (if (featurep 'js2-highlight-vars)
-      (js2-highlight-vars-mode))
-  )
-(add-hook 'js2-mode-hook 'my-js2-mode-hook)
-(add-hook 'js2-mode-hook (lambda ()
-                           (require 'setup-js2-mode)
-                           ))
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
+;;(defun my-js2-mode-hook ()
+;;  (if (featurep 'js2-highlight-vars)
+;;      (js2-highlight-vars-mode))
+;;  )
+;;(add-hook 'js2-mode-hook 'my-js2-mode-hook)
+;;(add-hook 'js2-mode-hook (lambda ()
+;;                           (require 'setup-js2-mode)
+;;                           ))
+;;(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;;(add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
 
 (provide 'mode-mappings)

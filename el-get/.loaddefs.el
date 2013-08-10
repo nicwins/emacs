@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (auto-complete) "auto-complete/auto-complete" "auto-complete/auto-complete.el"
-;;;;;;  (20996 16871))
+;;;;;;  (20997 38837 466522 356000))
 ;;; Generated autoloads from auto-complete/auto-complete.el
 
 (autoload 'auto-complete "auto-complete/auto-complete" "\
@@ -17,7 +17,7 @@ Start auto-completion at current point.
 ;;;### (autoloads (auto-indent-global-mode auto-indent-minor-mode-on
 ;;;;;;  auto-indent-minor-mode auto-indent-eol-char-newline auto-indent-eol-newline)
 ;;;;;;  "auto-indent/auto-indent-mode" "auto-indent/auto-indent-mode.el"
-;;;;;;  (20996 17285))
+;;;;;;  (20997 29121 667465 85000))
 ;;; Generated autoloads from auto-indent/auto-indent-mode.el
 
 (autoload 'auto-indent-eol-newline "auto-indent/auto-indent-mode" "\
@@ -78,7 +78,7 @@ See `auto-indent-minor-mode' for more information on Auto-Indent minor mode.
 ;;;***
 
 ;;;### (autoloads (autopair-global-mode autopair-mode) "autopair/autopair"
-;;;;;;  "autopair/autopair.el" (20996 9525))
+;;;;;;  "autopair/autopair.el" (20997 29118 932464 418000))
 ;;; Generated autoloads from autopair/autopair.el
 
 (autoload 'autopair-mode "autopair/autopair" "\
@@ -110,8 +110,8 @@ See `autopair-mode' for more information on Autopair mode.
 ;;;***
 
 ;;;### (autoloads (buf-move-right buf-move-left buf-move-down buf-move-up)
-;;;;;;  "buffer-move/buffer-move" "buffer-move/buffer-move.el" (20996
-;;;;;;  16876))
+;;;;;;  "buffer-move/buffer-move" "buffer-move/buffer-move.el" (20997
+;;;;;;  29103 832460 651000))
 ;;; Generated autoloads from buffer-move/buffer-move.el
 
 (autoload 'buf-move-up "buffer-move/buffer-move" "\
@@ -144,55 +144,28 @@ one, an error is signaled.
 
 ;;;***
 
-;;;### (autoloads (diminished-modes diminish-undo diminish) "diminish/diminish"
-;;;;;;  "diminish/diminish.el" (20996 18607))
-;;; Generated autoloads from diminish/diminish.el
+;;;### (autoloads (dired-details-propagate-flag dired-details-hidden-string)
+;;;;;;  "dired-details+/dired-details+" "dired-details+/dired-details+.el"
+;;;;;;  (20997 41666 245 330000))
+;;; Generated autoloads from dired-details+/dired-details+.el
 
-(autoload 'diminish "diminish/diminish" "\
-Diminish mode-line display of minor mode MODE to TO-WHAT (default \"\").
+(defvar dired-details-hidden-string "" "\
+*This string will be shown in place of file details and symbolic links.")
 
-Interactively, enter (with completion) the name of any minor mode, followed
-on the next line by what you want it diminished to (default empty string).
-The response to neither prompt should be quoted.  However, in Lisp code,
-both args must be quoted, the first as a symbol, the second as a string,
-as in (diminish 'jiggle-mode \" Jgl\").
+(custom-autoload 'dired-details-hidden-string "dired-details+/dired-details+" t)
 
-The mode-line displays of minor modes usually begin with a space, so
-the modes' names appear as separate words on the mode line.  However, if
-you're having problems with a cramped mode line, you may choose to use single
-letters for some modes, without leading spaces.  Capitalizing them works
-best; if you then diminish some mode to \"X\" but have abbrev-mode enabled as
-well, you'll get a display like \"AbbrevX\".  This function prepends a space
-to TO-WHAT if it's > 1 char long & doesn't already begin with a space.
+(defvar dired-details-propagate-flag t "\
+*Non-nil means next Dired buffer should be displayed the same.
+The last `dired-details-state' value set is used by the next Dired
+buffer created.")
 
-\(fn MODE &optional TO-WHAT)" t nil)
-
-(autoload 'diminish-undo "diminish/diminish" "\
-Restore mode-line display of diminished mode MODE to its minor-mode value.
-Do nothing if the arg is a minor mode that hasn't been diminished.
-
-Interactively, enter (with completion) the name of any diminished mode (a
-mode that was formerly a minor mode on which you invoked M-x diminish).
-To restore all diminished modes to minor status, answer `diminished-modes'.
-The response to the prompt shouldn't be quoted.  However, in Lisp code,
-the arg must be quoted as a symbol, as in (diminish-undo 'diminished-modes).
-
-\(fn MODE)" t nil)
-
-(autoload 'diminished-modes "diminish/diminish" "\
-Echo all active diminished or minor modes as if they were minor.
-The display goes in the echo area; if it's too long even for that,
-you can see the whole thing in the *Messages* buffer.
-This doesn't change the status of any modes; it just lets you see
-what diminished modes would be on the mode-line if they were still minor.
-
-\(fn)" t nil)
+(custom-autoload 'dired-details-propagate-flag "dired-details+/dired-details+" t)
 
 ;;;***
 
 ;;;### (autoloads (el-get-checksum el-get-make-recipes el-get-cd
 ;;;;;;  el-get-self-update el-get-update-all el-get-version) "el-get/el-get"
-;;;;;;  "el-get/el-get.el" (20996 8371))
+;;;;;;  "el-get/el-get.el" (20997 29019 776439 305000))
 ;;; Generated autoloads from el-get/el-get.el
 
 (autoload 'el-get-version "el-get/el-get" "\
@@ -229,7 +202,7 @@ Compute the checksum of the given package, and put it in the kill-ring
 ;;;***
 
 ;;;### (autoloads (el-get-list-packages) "el-get/el-get-list-packages"
-;;;;;;  "el-get/el-get-list-packages.el" (20996 8371))
+;;;;;;  "el-get/el-get-list-packages.el" (20997 29019 774439 305000))
 ;;; Generated autoloads from el-get/el-get-list-packages.el
 
 (autoload 'el-get-list-packages "el-get/el-get-list-packages" "\
@@ -240,8 +213,8 @@ Display a list of packages.
 ;;;***
 
 ;;;### (autoloads (emmet-preview emmet-expand-yas emmet-mode emmet-expand-line)
-;;;;;;  "emmet-mode/emmet-mode" "emmet-mode/emmet-mode.el" (20996
-;;;;;;  17287))
+;;;;;;  "emmet-mode/emmet-mode" "emmet-mode/emmet-mode.el" (20997
+;;;;;;  29125 411465 999000))
 ;;; Generated autoloads from emmet-mode/emmet-mode.el
 
 (autoload 'emmet-expand-line "emmet-mode/emmet-mode" "\
@@ -293,7 +266,8 @@ accept it or skip it.
 ;;;***
 
 ;;;### (autoloads (goto-last-change) "goto-last-change/goto-last-change"
-;;;;;;  "goto-last-change/goto-last-change.el" (20996 17283))
+;;;;;;  "goto-last-change/goto-last-change.el" (20997 29111 635462
+;;;;;;  679000))
 ;;; Generated autoloads from goto-last-change/goto-last-change.el
 
 (autoload 'goto-last-change "goto-last-change/goto-last-change" "\
@@ -310,7 +284,7 @@ will return point to the current position.
 ;;;;;;  ido-ubiquitous-command-compatibility-exceptions ido-ubiquitous-function-exceptions
 ;;;;;;  ido-ubiquitous-command-exceptions ido-ubiquitous-mode ido-ubiquitous)
 ;;;;;;  "ido-ubiquitous/ido-ubiquitous" "ido-ubiquitous/ido-ubiquitous.el"
-;;;;;;  (20996 19054))
+;;;;;;  (20997 39465 124330 115000))
 ;;; Generated autoloads from ido-ubiquitous/ido-ubiquitous.el
 
 (let ((loads (get 'ido-ubiquitous 'custom-loads))) (if (member '"ido-ubiquitous/ido-ubiquitous" loads) nil (put 'ido-ubiquitous 'custom-loads (cons '"ido-ubiquitous/ido-ubiquitous" loads))))
@@ -407,8 +381,27 @@ https://github.com/DarwinAwardWinner/ido-ubiquitous/issues")
 
 ;;;***
 
-;;;### (autoloads (magit-status) "magit/magit" "magit/magit.el" (20996
-;;;;;;  16881))
+;;;### (autoloads (js2-mode js2-minor-mode) "js2-mode/js2-mode" "js2-mode/js2-mode.el"
+;;;;;;  (20997 41320 292442 9000))
+;;; Generated autoloads from js2-mode/js2-mode.el
+
+(autoload 'js2-minor-mode "js2-mode/js2-mode" "\
+Minor mode for running js2 as a background linter.
+This allows you to use a different major mode for JavaScript editing,
+such as `espresso-mode', while retaining the asynchronous error/warning
+highlighting features of `js2-mode'.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'js2-mode "js2-mode/js2-mode" "\
+Major mode for editing JavaScript code.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (magit-status) "magit/magit" "magit/magit.el" (20997
+;;;;;;  29108 904461 957000))
 ;;; Generated autoloads from magit/magit.el
 
 (autoload 'magit-status "magit/magit" "\
@@ -426,7 +419,7 @@ when asking for user input.
 ;;;***
 
 ;;;### (autoloads (magit-blame-mode) "magit/magit-blame" "magit/magit-blame.el"
-;;;;;;  (20996 16881))
+;;;;;;  (20997 29108 902461 955000))
 ;;; Generated autoloads from magit/magit-blame.el
 
 (autoload 'magit-blame-mode "magit/magit-blame" "\
@@ -437,7 +430,7 @@ Display blame information inline.
 ;;;***
 
 ;;;### (autoloads (turn-on-magit-flow magit-flow-mode) "magit/magit-flow"
-;;;;;;  "magit/magit-flow.el" (20996 16881))
+;;;;;;  "magit/magit-flow.el" (20997 29108 902461 955000))
 ;;; Generated autoloads from magit/magit-flow.el
 
 (autoload 'magit-flow-mode "magit/magit-flow" "\
@@ -453,7 +446,7 @@ Unconditionally turn on `magit-flow-mode'.
 ;;;***
 
 ;;;### (autoloads (turn-on-magit-stgit magit-stgit-mode) "magit/magit-stgit"
-;;;;;;  "magit/magit-stgit.el" (20996 16881))
+;;;;;;  "magit/magit-stgit.el" (20997 29108 902461 955000))
 ;;; Generated autoloads from magit/magit-stgit.el
 
 (autoload 'magit-stgit-mode "magit/magit-stgit" "\
@@ -469,7 +462,7 @@ Unconditionally turn on `magit-stgit-mode'.
 ;;;***
 
 ;;;### (autoloads (turn-on-magit-svn magit-svn-mode) "magit/magit-svn"
-;;;;;;  "magit/magit-svn.el" (20996 16881))
+;;;;;;  "magit/magit-svn.el" (20997 29108 902461 955000))
 ;;; Generated autoloads from magit/magit-svn.el
 
 (autoload 'magit-svn-mode "magit/magit-svn" "\
@@ -485,7 +478,7 @@ Unconditionally turn on `magit-svn-mode'.
 ;;;***
 
 ;;;### (autoloads (turn-on-magit-topgit magit-topgit-mode) "magit/magit-topgit"
-;;;;;;  "magit/magit-topgit.el" (20996 16881))
+;;;;;;  "magit/magit-topgit.el" (20997 29108 902461 955000))
 ;;; Generated autoloads from magit/magit-topgit.el
 
 (autoload 'magit-topgit-mode "magit/magit-topgit" "\
@@ -501,8 +494,8 @@ Unconditionally turn on `magit-topgit-mode'.
 ;;;***
 
 ;;;### (autoloads (global-magit-wip-save-mode magit-wip-save-mode
-;;;;;;  magit-wip-mode) "magit/magit-wip" "magit/magit-wip.el" (20996
-;;;;;;  16881))
+;;;;;;  magit-wip-mode) "magit/magit-wip" "magit/magit-wip.el" (20997
+;;;;;;  29108 902461 955000))
 ;;; Generated autoloads from magit/magit-wip.el
 
 (defvar magit-wip-mode nil "\
@@ -552,7 +545,7 @@ See `magit-wip-save-mode' for more information on Magit-Wip-Save mode.
 ;;;***
 
 ;;;### (autoloads (rebase-mode) "magit/rebase-mode" "magit/rebase-mode.el"
-;;;;;;  (20996 16881))
+;;;;;;  (20997 29108 904461 957000))
 ;;; Generated autoloads from magit/rebase-mode.el
 
 (autoload 'rebase-mode "magit/rebase-mode" "\
@@ -570,7 +563,7 @@ running 'man git-rebase' at the command line) for details.
 ;;;***
 
 ;;;### (autoloads (smex-initialize smex) "smex/smex" "smex/smex.el"
-;;;;;;  (20996 16875))
+;;;;;;  (20997 29103 93460 522000))
 ;;; Generated autoloads from smex/smex.el
 
 (autoload 'smex "smex/smex" "\
@@ -588,7 +581,8 @@ running 'man git-rebase' at the command line) for details.
 ;;;### (autoloads (smooth-scroll-up smooth-scroll-down smooth-scroll-lines-from-window-bottom
 ;;;;;;  smooth-scroll-lines-from-window-top smooth-scroll-strict-margins
 ;;;;;;  smooth-scroll-margin) "smooth-scrolling/smooth-scrolling"
-;;;;;;  "smooth-scrolling/smooth-scrolling.el" (20996 13645))
+;;;;;;  "smooth-scrolling/smooth-scrolling.el" (20997 29122 668465
+;;;;;;  329000))
 ;;; Generated autoloads from smooth-scrolling/smooth-scrolling.el
 
 (defvar smooth-scroll-margin 10 "\
@@ -674,7 +668,7 @@ lines of the bottom of the window.
 ;;;***
 
 ;;;### (autoloads (global-undo-tree-mode undo-tree-mode) "undo-tree/undo-tree"
-;;;;;;  "undo-tree/undo-tree.el" (20996 13140))
+;;;;;;  "undo-tree/undo-tree.el" (20997 29117 187463 989000))
 ;;; Generated autoloads from undo-tree/undo-tree.el
 
 (autoload 'undo-tree-mode "undo-tree/undo-tree" "\
@@ -730,7 +724,7 @@ See `undo-tree-mode' for more information on Undo-Tree mode.
 ;;;;;;  "ido-ubiquitous/ido-ubiquitous-autoloads.el" "ido-ubiquitous/ido-ubiquitous-pkg.el"
 ;;;;;;  "magit/magit-bisect.el" "magit/magit-cherry.el" "magit/magit-compat.el"
 ;;;;;;  "magit/magit-key-mode.el" "magit/magit-log-edit.el" "popup/popup.el"
-;;;;;;  "slime-js/slime-js.el") (20996 19055 755636))
+;;;;;;  "slime-js/slime-js.el") (20997 41666 218556 572000))
 
 ;;;***
 

@@ -22,4 +22,19 @@
 (add-to-list 'ido-ignore-directories "target")
 (add-to-list 'ido-ignore-directories "node_modules")
 
+;; Enable ido-ubiquitous
+
+(cond
+ ;; New version
+ ((fboundp 'ido-ubiquitous)
+  (ido-ubiquitous 1))
+ ;; Old version
+ ((boundp 'ido-ubiquitous-enabled)
+  ;; Probably not required, since it is enabled by default
+  (setq ido-ubiquitous-enabled t)))
+
+(defvar ido-cur-item nil)
+(defvar ido-default-item nil)
+(defvar ido-cur-list nil)
+
 (provide 'setup-ido)

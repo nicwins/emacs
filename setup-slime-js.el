@@ -27,9 +27,6 @@
 ;;                     (require 'setup-slime-js))))
 ;;
 
-(require 'slime)
-(require 'slime-js)
-
 ;; target-url is the output from local server
 (set-default 'slime-js-target-url "http://localhost:8000")
 ;; connect-url is where you direct your browser

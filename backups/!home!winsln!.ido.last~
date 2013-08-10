@@ -73,6 +73,7 @@
 (
  "/home/winsln/.emacs.d/"
  "/home/winsln/projects/dashboard/app/scripts/controllers/"
+ "/home/winsln/.emacs.d/.git/"
  "/home/winsln/projects/dashboard/app/"
  "/home/winsln/projects/dashboard/"
  "/home/winsln/projects/dashboard/scripts/controllers/"
@@ -120,36 +121,39 @@
  "/usr/share/davfs2/"
  "/var/www/html/dashboard/css/"
  "/etc/httpd/conf/"
- "/var/www/html/dashboard/js/common/SharePointSync/"
 )
 
 ;; ----- ido-work-file-list -----
 (
- "init.el"
- "sane-defaults.el"
  "setup-ido.el"
- "mode-mappings.el"
+ "init.el"
  "custom.el"
- "setup-dired.el"
- "setup-emmet.el"
+ "main.js"
+ "config"
+ ".gitignore"
+ ".gitattributes"
  "setup-package.el"
- "helpers.el"
- "setup-slime-js.el"
+ "sane-defaults.el"
+ "mode-mappings.el"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/home/winsln/.emacs.d/" (20996 18327) "../" "./" "server/" "setup-slime-js.el" "setup-ido.el" ".git/" ".gitignore" "backups/" "eshell/" "key-bindings.el" "helpers.el" "el-get/" "setup-dired.el" "setup-rails.el" "setup-js2-mode.el" "mode-mappings.el" "site-lisp/" "auto-save-list/" ".gitattributes" "setup-package.el" "ac-comphist.dat" "themes/" "elpa/" "url/" "custom.el" "sane-defaults.el" "init.el")
+ ("/home/winsln/.emacs.d/" (20997 27058 149711 737000) "../" "./" "server/" "setup-slime-js.el" "setup-ido.el" ".git/" ".gitignore" "backups/" "eshell/" "key-bindings.el" "helpers.el" "el-get/" "setup-dired.el" "setup-rails.el" "setup-js2-mode.el" "mode-mappings.el" "site-lisp/" "auto-save-list/" ".gitattributes" "setup-package.el" "ac-comphist.dat" "themes/" "elpa/" "url/" "custom.el" "setup-ido.el~" "sane-defaults.el" "init.el")
 
- ("/home/winsln/" (20996 17860) ".gnome2_private/" "../" ".bowerrc" "./" "quicklisp/" "Downloads/" "Videos/" ".pulse/" ".curlrc" ".spice-vdagent/" ".ICEauthority" "var/" ".pulse-cookie" ".icons/" ".zshrc" ".bower/" ".gnome2/" "Pictures/" ".gtk-bookmarks" ".guard_history" "Music/" "scripts/" ".emacs.d/" ".themes/" ".gitconfig" ".mysql_history" "emacs-24.3.tar.gz" ".npm/" ".subversion/" ".cache/" ".davfs2/" ".xsession-errors.old" ".gem/" ".recentf" "tmp/" ".xsession-errors" ".local/" ".fontconfig/" ".swankjsrc" "emacs-24.3/" ".esd_auth" ".bashrc" ".nautilus/" ".viminfo" ".slime-history.eld" ".config/" ".gconfd/" ".gvfs/" ".bash_logout" "Desktop/" ".bash_profile" "share/" "sharepoint/" ".gconf/" ".fonts/" "Public/" ".dmrc" ".bash_history" ".sbclrc" "libexec/" ".ido.last" "BROWSE" ".thumbnails/" ".zprofile" "Templates/" ".pki/" ".smex-items" "bin/" "projects/" ".mozilla/" ".dbus/" ".slime/" ".rvm/" ".recently-used.xbel" "Documents/")
+ ("/home/winsln/" (20997 27058 152711 767000) ".gnome2_private/" "../" ".bowerrc" "./" "quicklisp/" "Downloads/" "Videos/" ".pulse/" ".curlrc" ".spice-vdagent/" ".ICEauthority" "var/" ".pulse-cookie" ".icons/" ".zshrc" ".bower/" ".gnome2/" "Pictures/" ".gtk-bookmarks" ".guard_history" "Music/" "scripts/" ".emacs.d/" ".themes/" ".gitconfig" ".mysql_history" "emacs-24.3.tar.gz" ".npm/" ".subversion/" ".cache/" ".davfs2/" ".xsession-errors.old" ".gem/" ".recentf" "tmp/" ".xsession-errors" ".local/" ".fontconfig/" ".swankjsrc" "emacs-24.3/" ".esd_auth" ".bashrc" ".nautilus/" ".viminfo" ".slime-history.eld" ".config/" ".gconfd/" ".gvfs/" ".bash_logout" "Desktop/" ".bash_profile" "share/" "sharepoint/" ".gconf/" ".fonts/" "Public/" ".dmrc" ".bash_history" ".sbclrc" "libexec/" ".ido.last" "BROWSE" ".thumbnails/" ".zprofile" "Templates/" ".pki/" ".smex-items" "bin/" "projects/" ".mozilla/" ".dbus/" ".slime/" ".rvm/" ".recently-used.xbel" "Documents/")
 
- ("/home/winsln/.emacs.d/el-get/" (20996 9679) "../" "./" ".loaddefs.elc" "recipes/" "el-get/" "autopair/" ".loaddefs.el" ".status.el.old" ".status.el")
+ ("/home/winsln/.emacs.d/el-get/" (20997 23620 107456 981000) "smooth-scrolling/" "../" "auto-indent/" "./" "emmet-mode/" "buffer-move/" "slime-js/" "fuzzy/" "auto-complete/" "goto-last-change/" "dired-details/" ".loaddefs.elc" "recipes/" "el-get/" "diminish/" "ido-ubiquitous/" ".loaddefs.el~" "js2-mode/" "autopair/" "package/" "smex/" ".loaddefs.el" "undo-tree/" ".status.el.old" "popup/" ".status.el" "magit/")
+
+ ("/home/winsln/projects/dashboard/app/scripts/controllers/" (20997 23281 347739 364000) "../" "./" "main.js")
+
+ ("/home/" (20837 61931 77244 752000) "../" "lost+found/" "./" "winsln/" "ahunter/")
+
+ ("/home/winsln/.emacs.d/.git/" (20996 19517) "logs/" "../" "./" "config" "HEAD" "description" "branches/" "info/" "hooks/" "index" "refs/" "packed-refs" "COMMIT_EDITMSG" "objects/")
 
  ("/home/winsln/.emacs.d/el-get/el-get/" (20996 8372) "../" "el-get-build.el" "./" "el-get-build.elc" "el-get-byte-compile.elc" "el-get-recipes.el" "el-get-dependencies.elc" "el-get-install.el" "el-get-core.elc" ".git/" "dir" ".gitignore" "el-get-methods.el" "el-get-recipes.elc" "el-get-custom.elc" "el-get-autoloads.elc" "el-get-install.elc" "el-get-custom.el" "recipes/" "test/" "el-get-list-packages.el" "el-get-status.elc" "methods/" "el-get-status.el" "el-get-list-packages.elc" "el-get.el" ".dir-locals.el" "README.md" "el-get-methods.elc" "logo/" "el-get-dependencies.el" "el-get-notify.elc" "el-get-byte-compile.el" "el-get-notify.el" "el-get.texi" "el-get-autoloads.el" "el-get.info" "el-get-core.el")
 
  ("/home/winsln/.emacs.d/el-get/recipes/" (20996 8373) "../" "./" "emacswiki/")
-
- ("/home/winsln/projects/dashboard/app/scripts/controllers/" (20996 7198) "../" "./" "main.js" ".#main.js")
 
  ("/home/winsln/projects/dashboard/app/scripts/" (20993 61927) "../" "./" "controllers/")
 
@@ -334,10 +338,6 @@
  ("/var/www/html/dashboard/img/" (20838 6092) "../" "./")
 
  ("/var/www/html/dashboard/js/scaffold/sidebar/" (20829 63395) "../" "Sidebar.js" "./" "SidebarView.js")
-
- ("/var/www/rails/tmp/" (20783 61294) "sockets/" "pids/" "../" "cache/" "sessions/" "./" "restart.txt")
-
- ("/var/www/html/dashboard/components/handlebars.js/" (20837 62393) "lib/" "spec/" "component.json" "../" "package.json" "src/" "README.markdown" "LICENSE" "handlebars-source.gemspec" "./" "Rakefile" "Gemfile.lock" "Gemfile" "bin/" "bench/" "dist/")
 )
 
 ;; ----- ido-unc-hosts-cache -----
