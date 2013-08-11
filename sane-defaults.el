@@ -11,6 +11,20 @@
 (setq-default save-place t)
 (setq save-place-file (expand-file-name ".places" (concat dotfiles-dir "backups")))
 
+;; Run at full power please
+(put 'downcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+
+;; Cua Mode
+(setq cua-enable-cua-keys nil) ;; only for rectangles
+(cua-mode t)
+
+;; Store auto save in temp
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
 
@@ -66,6 +80,7 @@
 ;; Save a list of recent files visited. (open recent file with C-x f)
 (recentf-mode 1)
 (setq recentf-max-saved-items 100) ;; just 20 is too recent
+(setq recentf-save-file (expand-file-name "~/.emacs.d/backups/.recentf" user-emacs-directory))
 
 ;; Undo/redo window configuration with C-c <left>/<right>
 (winner-mode 1)
@@ -159,11 +174,11 @@ Including indent-buffer, which should not be called automatically on save."
 ;; Highlight matching parentheses when the point is on them.
 (show-paren-mode 1)
 
-;; Zenburn please
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'zenburn t)
-
-;; These are the droids I'm looking for
-(set-face-attribute 'default nil :font "Droid Sans Mono" :height 100)
+;; full screen
+(defun fullscreen ()
+  (interactive)
+  (set-frame-parameter nil 'fullscreen
+                       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
+(global-set-key [f11] 'fullscreen)
 
 (provide 'sane-defaults)

@@ -2,14 +2,11 @@
 ## Emacs
 #################
 
-ac-comphist.dat
 url/
 server/
 eshell/
 elpa/
 el-get/
-backups/
-auto-save-list/
 
 #################
 ## Eclipse

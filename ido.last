@@ -12,12 +12,13 @@
 
 ;; ----- ido-work-file-list -----
 (
+ "sane-defaults.el"
  "init.el"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/home/winsln/.emacs.d/" (20998 57141 361730 687000) "server/" ".gitignore" "setup-ido.el" ".git/" "eshell/" "key-bindings.el" "helpers.el" "setup-dired.el" "setup-package.el" "../" "sane-defaults.el" "init.el" "mode-mappings.el" "recentf" ".gitattributes" "elpa/" "./" "el-get/" "setup-slime-js.el" "url/" "themes/" "setup-rails.el" "auto-save-list/" "backups/" "ac-comphist.dat" "setup-js2-mode.el" "custom.el")
+ ("/home/winsln/.emacs.d/" (20998 59744 691939 688000) ".gitignore" "ido.last" "setup-ido.el" ".git/" "key-bindings.el" "helpers.el" "setup-dired.el" "setup-package.el" "../" "sane-defaults.el" "init.el" "mode-mappings.el" ".gitattributes" "elpa/" "./" "el-get/" "setup-slime-js.el" ".#init.el" "setup-rails.el" "auto-save-list/" "backups/" "setup-js2-mode.el" "custom.el")
 
  ("/home/winsln/" (20998 55134 390263 790000) "Music/" ".gtk-bookmarks" ".gksu.lock" ".dbus/" "Pictures/" ".bash_history" ".gvfs/" ".gnome2_private/" ".face" ".xsession-errors" ".cache/" ".emacs.d/" ".esd_auth" "../" ".local/" ".pulse-cookie" ".bashrc.dpkg-dist" ".slime/" ".ICEauthority" ".thumbnails/" "Documents/" "quicklisp/" ".config/" "Public/" "./" ".mozilla/" ".bash_logout" ".gnome2/" ".cinnamon/" ".pulse/" ".linuxmint/" ".macromedia/" ".profile" ".Xauthority" ".pki/" ".nv/" "Videos/" ".dmrc" "libpeerconnection.log" ".mate2/" "Desktop/" "Templates/" ".gconf/" ".sbclrc" ".adobe/" ".gstreamer-0.10/" ".gnupg/" "Downloads/")
 )

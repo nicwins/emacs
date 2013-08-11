@@ -29,6 +29,21 @@
 (require 'ido)
 
 ;; Slime setup
+;; TODO: automate this with el-get
+
+;; $ sudo apt-get install sbcl
+;; $ sudo apt-get install wget
+;; $ cd ~/Downloads
+;; $ wget http://beta.quicklisp.org/quicklisp.lisp
+;; $ sbcl --load ./quicklisp.lisp
+
+;; wait until you see Lisp shell prompt,
+
+;; * (quicklisp-quickstart:install)
+;; * (ql:add-to-init-file)
+;; * (ql:quickload "quicklisp-slime-helper")
+;; * (quit)
+
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
 (setq inferior-lisp-program "sbcl")
 
@@ -49,20 +64,6 @@
 (require 'server)
 (unless (server-running-p)
   (server-start))
-
-;; Run at full power please
-(put 'downcase-region 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-
-;; Cua Mode
-(setq cua-enable-cua-keys nil) ;; only for rectangles
-(cua-mode t)
-
-;; Store auto save in temp
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
 
 ;; Set up el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
@@ -199,6 +200,15 @@
           :features dired-details+
           )
 
+   (:name zenburn ;; Zenburn Theme
+          :type git
+          :url "git://github.com/bbatsov/zenburn-emacs.git"
+          :features zenburn-theme
+          :after (progn
+                   (load-theme 'zenburn t)
+                   (set-face-attribute 'default nil :font "Droid Sans Mono" :height 100)
+                   )
+          )
    ))
 
 
@@ -214,3 +224,6 @@
 
 ;; install new packages and init already installed packages
 (el-get 'sync my:el-get-packages)
+
+;; Go Fullscreen
+(fullscreen)
