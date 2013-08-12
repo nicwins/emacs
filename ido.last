@@ -2,25 +2,70 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/home/winsln/projects/egghead/bower_components/bootstrap/dist/" . "css/")
+ ("/home/winsln/projects/egghead/bower_components/bootstrap/" . "dist/")
+ ("/home/winsln/projects/egghead/bower_components/" . "bootstrap/")
+ ("/home/winsln/projects/egghead/" . "bower_components/")
+ ("/home/winsln/projects/angular-phonecat/app/" . "partials/")
+ ("/home/" . "winsln/")
+ ("/home/winsln/projects/" . "egghead/")
+ ("/home/winsln/projects/angular-phonecat/" . "app/")
  ("/home/winsln/" . ".emacs.d/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
+ "/home/winsln/projects/egghead/bower_components/bootstrap/dist/css/"
  "/home/winsln/.emacs.d/"
+ "/home/winsln/projects/egghead/"
+ "/home/winsln/projects/angular-phonecat/app/"
+ "/home/winsln/projects/angular-phonecat/app/partials/"
+ "/home/winsln/projects/angular-phonecat/app/js/"
 )
 
 ;; ----- ido-work-file-list -----
 (
- "sane-defaults.el"
+ "bootstrap.min.css"
+ "bootstrap.css"
+ "setup-slime-js.el"
+ "index.html"
+ "main.js"
+ "setup-js2-mode.el"
+ "custom.el"
  "init.el"
+ "mode-mappings.el"
+ "phone-list.html"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/home/winsln/.emacs.d/" (20998 59744 691939 688000) ".gitignore" "ido.last" "setup-ido.el" ".git/" "key-bindings.el" "helpers.el" "setup-dired.el" "setup-package.el" "../" "sane-defaults.el" "init.el" "mode-mappings.el" ".gitattributes" "elpa/" "./" "el-get/" "setup-slime-js.el" ".#init.el" "setup-rails.el" "auto-save-list/" "backups/" "setup-js2-mode.el" "custom.el")
+ ("/home/winsln/projects/egghead/bower_components/bootstrap/dist/css/" (21000 10784 874033 992000) "../" "bootstrap.min.css" "./" "bootstrap.css" ".#bootstrap.css")
 
- ("/home/winsln/" (20998 55134 390263 790000) "Music/" ".gtk-bookmarks" ".gksu.lock" ".dbus/" "Pictures/" ".bash_history" ".gvfs/" ".gnome2_private/" ".face" ".xsession-errors" ".cache/" ".emacs.d/" ".esd_auth" "../" ".local/" ".pulse-cookie" ".bashrc.dpkg-dist" ".slime/" ".ICEauthority" ".thumbnails/" "Documents/" "quicklisp/" ".config/" "Public/" "./" ".mozilla/" ".bash_logout" ".gnome2/" ".cinnamon/" ".pulse/" ".linuxmint/" ".macromedia/" ".profile" ".Xauthority" ".pki/" ".nv/" "Videos/" ".dmrc" "libpeerconnection.log" ".mate2/" "Desktop/" "Templates/" ".gconf/" ".sbclrc" ".adobe/" ".gstreamer-0.10/" ".gnupg/" "Downloads/")
+ ("/home/winsln/projects/egghead/bower_components/bootstrap/dist/" (21000 9701 0 0) "../" "js/" "css/" "./")
+
+ ("/home/winsln/projects/egghead/bower_components/bootstrap/" (21000 9704 616284 929000) "assets/" "dist/" "bower.json" "../" "css.html" "index.html" "components.html" "customize.html" "js/" "CNAME" ".bower.json" "javascript.html" "./" "_layouts/" "_includes/" "getting-started.html" "less/" "composer.json" "_config.yml" "LICENSE" "CONTRIBUTING.md" "README.md" "package.json" "Gruntfile.js")
+
+ ("/home/winsln/projects/egghead/bower_components/" (21000 9737 796231 663000) "jquery/" "bootstrap/" "../" "angular/" "./")
+
+ ("/home/winsln/projects/egghead/" (21000 10711 402170 324000) "main.js" "../" "index.html" "./" "bower_components/")
+
+ ("/home/winsln/.emacs.d/" (21000 9422 564747 209000) ".gitignore" "ido.last" "setup-ido.el" ".git/" "key-bindings.el" "helpers.el" "setup-dired.el" "setup-package.el" "../" "sane-defaults.el" "init.el" "mode-mappings.el" "recentf" ".gitattributes" "session.1014240f0324a87ba137618951655160900000032130061" "elpa/" "./" "el-get/" "setup-slime-js.el" "setup-rails.el" "backups/" "setup-js2-mode.el" "custom.el")
+
+ ("/home/winsln/" (21000 9422 532747 262000) "Music/" ".gtk-bookmarks" ".gksu.lock" ".dbus/" ".npm/" "Pictures/" "tmp/" ".bash_history" ".gitconfig" ".gvfs/" ".gnome2_private/" ".slime-history.eld" ".face" "projects/" ".xsession-errors" ".cache/" ".emacs.d/" ".esd_auth" "../" ".swankjsrc" ".local/" ".pulse-cookie" ".bashrc.dpkg-dist" ".slime/" ".ICEauthority" ".thumbnails/" "Documents/" "quicklisp/" ".config/" "Public/" "src/" "./" ".mozilla/" ".bash_logout" ".gnome2/" ".cinnamon/" ".pulse/" ".linuxmint/" ".macromedia/" ".profile" ".Xauthority" ".pki/" ".nv/" "Videos/" ".dmrc" ".mono/" "libpeerconnection.log" ".mate2/" "Desktop/" "Templates/" ".gconf/" ".recently-used" ".sbclrc" ".adobe/" ".gstreamer-0.10/" ".gnupg/" "Downloads/")
+
+ ("/home/winsln/projects/" (21000 8692 430057 371000) "angular-phonecat/" "../" "egghead/" "./" "scripts/")
+
+ ("/home/winsln/projects/angular-phonecat/app/js/" (21000 7452 432856 995000) "filters.js" "../" "directives.js" "./" "controllers.js" "app.js" "services.js")
+
+ ("/home/winsln/projects/angular-phonecat/app/partials/" (21000 7452 432856 995000) "phone-detail.html" "../" "./" "phone-list.html" ".gitkeep")
+
+ ("/home/winsln/projects/angular-phonecat/app/" (21000 7452 432856 995000) "../" "index.html" "lib/" "index-async.html" "js/" "css/" "img/" "./" "partials/" "phones/")
+
+ ("/home/winsln/projects/angular-phonecat/app/phones/" (20998 63884 80442 342000) "samsung-mesmerize-a-galaxy-s-phone.json" "lg-axis.json" "samsung-galaxy-tab.json" "motorola-xoom-with-wi-fi.json" "../" "motorola-bravo-with-motoblur.json" "dell-venue.json" "phones.json" "motorola-charm-with-motoblur.json" "sanyo-zio.json" "nexus-s.json" "./" "t-mobile-g2.json" "motorola-defy-with-motoblur.json" "motorola-atrix-4g.json" "samsung-transform.json" "droid-2-global-by-motorola.json" "dell-streak-7.json" "samsung-gem.json" "droid-pro-by-motorola.json" "samsung-showcase-a-galaxy-s-phone.json" "t-mobile-mytouch-4g.json" "motorola-xoom.json")
+
+ ("/home/" (20996 39263 8307 984000) "../" "./" "lost+found/" "winsln/")
+
+ ("/home/winsln/projects/angular-phonecat/" (20998 64129 139877 971000) "config/" ".gitignore" ".git/" "logs/" "../" "./" "scripts/" "test/" "app/" "README.md" ".travis.yml")
 )
 
 ;; ----- ido-unc-hosts-cache -----

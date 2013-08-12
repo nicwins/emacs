@@ -24,6 +24,9 @@
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
+(setq auto-save-list-file-prefix
+      temporary-file-directory)
+
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
@@ -80,7 +83,7 @@
 ;; Save a list of recent files visited. (open recent file with C-x f)
 (recentf-mode 1)
 (setq recentf-max-saved-items 100) ;; just 20 is too recent
-(setq recentf-save-file (expand-file-name "~/.emacs.d/backups/.recentf" user-emacs-directory))
+(setq recentf-ave-file (expand-file-name "~/.emacs.d/backups/.recentf" user-emacs-directory))
 
 ;; Undo/redo window configuration with C-c <left>/<right>
 (winner-mode 1)

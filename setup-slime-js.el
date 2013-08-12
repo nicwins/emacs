@@ -32,13 +32,13 @@
 ;; connect-url is where you direct your browser
 (set-default 'slime-js-connect-url "http://localhost:8009")
 ;; show server where to find index
-(set-default 'slime-js-starting-url "/app/index.html")
+(set-default 'slime-js-starting-url "/")
 (set-default 'slime-js-swank-command "swank-js")
 (set-default 'slime-js-swank-args '())
 (set-default 'slime-js-browser-command "google-chrome")
 (set-default 'slime-js-browser-jacked-in-p nil)
 
-(setq start-local-cmd "cd /home/winsln/projects/dashboard; node ./scripts/web-server.js")
+(setq start-local-cmd "cd /home/winsln/projects/; node ./scripts/web-server.js")
 
 (add-hook 'js2-mode-hook (lambda () (slime-js-minor-mode 1)))
 (add-hook 'css-mode-hook
@@ -90,6 +90,14 @@
 (defadvice save-buffer (after save-css-buffer activate)
   (when (and slime-js-browser-jacked-in-p (eq major-mode 'css-mode))
     (slime-js-refresh-css)))
+
+(add-hook 'html-mode-hook
+          (progn
+            (when slime-js-browser-jacked-in-p (add-hook 'after-save-hook 'slime-js-reload nil ))))
+
+(add-hook 'js2-mode-hook
+          (progn
+            (when slime-js-browser-jacked-in-p (add-hook 'after-save-hook 'slime-js-reload nil 'make-it-local))))
 
 (defun js2-eval-friendly-node-p (n)
   (or (and (js2-stmt-node-p n) (not (js2-block-node-p n)))
