@@ -131,12 +131,16 @@
                    (autopair-global-mode))
           )
 
+   ;; TODO: this needs to be fixed, uncaught 'untabify'
+   ;; Also needs to indent when going down with arrow
+   ;; Setup watch for js files changing
+
    (:name auto-indent  ;; Indent files and lines automatically
           :type git
           :url "git://github.com/mlf176f2/auto-indent-mode.el.git"
           :features auto-indent-mode
           :after (progn
-                   (setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
+                   ;;(setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
                    (auto-indent-global-mode))
           )
 

@@ -27,8 +27,10 @@
 ;;                     (require 'setup-slime-js))))
 ;;
 
+(require 'comint)
+
 ;; target-url is the output from local server
-(set-default 'slime-js-target-url "http://localhost:8000")
+(set-default 'slime-js-target-url "http://localhost:9000")
 ;; connect-url is where you direct your browser
 (set-default 'slime-js-connect-url "http://localhost:8009")
 ;; show server where to find index
@@ -38,7 +40,8 @@
 (set-default 'slime-js-browser-command "google-chrome")
 (set-default 'slime-js-browser-jacked-in-p nil)
 
-(setq start-local-cmd "cd /home/winsln/projects/; node ./scripts/web-server.js")
+;; (setq start-local-cmd "cd /home/winsln/projects/; node ./scripts/web-server.js")
+(setq start-local-cmd "cd /home/winsln/projects/dashboard; grunt server")
 
 (add-hook 'js2-mode-hook (lambda () (slime-js-minor-mode 1)))
 (add-hook 'css-mode-hook
@@ -60,7 +63,7 @@
   (setq slime-protocol-version 'ignore)
   (slime-connect "localhost" 4005))
 
-(require 'comint)
+
 
 (defun start-local-server ()
   "Start local static-node server"
@@ -76,12 +79,12 @@
   "Start a swank-js server, connect to it, open a repl, open a browser, connect to that."
   (interactive)
   (start-local-server)
-  (sleep-for 3)
+  (sleep-for 5)
   (slime-js-jack-in-node)
   (sleep-for 2)
   (slime-js-set-target-url slime-js-target-url)
   (shell-command (concat slime-js-browser-command " " slime-js-connect-url slime-js-starting-url))
-  (sleep-for 3)
+  (sleep-for 5)
   (setq slime-remote-history nil)
   (slime-js-sticky-select-remote (caadr (slime-eval '(js:list-remotes))))
   (setq slime-js-browser-jacked-in-p t)
@@ -91,13 +94,9 @@
   (when (and slime-js-browser-jacked-in-p (eq major-mode 'css-mode))
     (slime-js-refresh-css)))
 
-(add-hook 'html-mode-hook
-          (progn
-            (when slime-js-browser-jacked-in-p (add-hook 'after-save-hook 'slime-js-reload nil ))))
-
-(add-hook 'js2-mode-hook
-          (progn
-            (when slime-js-browser-jacked-in-p (add-hook 'after-save-hook 'slime-js-reload nil 'make-it-local))))
+(defadvice save-buffer (after save-js-buffer activate)
+  (when (and slime-js-browser-jacked-in-p (eq major-mode 'js2-mode))
+    (slime-js-reload)))
 
 (defun js2-eval-friendly-node-p (n)
   (or (and (js2-stmt-node-p n) (not (js2-block-node-p n)))
