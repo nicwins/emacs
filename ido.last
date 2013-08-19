@@ -2,21 +2,48 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/home/winsln/.emacs.d/el-get/" . "zenburn/")
+ ("/home/winsln/.emacs.d/" . "el-get/")
+ ("/home/winsln/projects/dashboard/app/bower_components/ng-grid/" . "build/")
+ ("/home/winsln/projects/dashboard/app/bower_components/" . "ng-grid/")
+ ("/home/winsln/projects/dashboard/test/spec/" . "controllers/")
+ ("/home/winsln/projects/dashboard/test/" . "spec/")
+ ("/su:root@localhost:/etc/mdm/" . "Init/")
+ ("/su:root@localhost:/etc/" . "mdm/")
+ ("/su:root@localhost:/" . "etc/")
+ ("/etc/mdm/" . "Init/")
+ ("/etc/" . "mdm/")
+ ("/" . "etc/")
+ ("/home/winsln/projects/dashboard/app/scripts/" . "controllers/")
+ ("/home/winsln/projects/dashboard/app/" . "scripts/")
+ ("/home/winsln/projects/dashboard/" . "app/")
  ("/home/winsln/projects/egghead/bower_components/bootstrap/dist/" . "css/")
  ("/home/winsln/projects/egghead/bower_components/bootstrap/" . "dist/")
  ("/home/winsln/projects/egghead/bower_components/" . "bootstrap/")
  ("/home/winsln/projects/egghead/" . "bower_components/")
  ("/home/winsln/projects/angular-phonecat/app/" . "partials/")
  ("/home/" . "winsln/")
- ("/home/winsln/projects/" . "egghead/")
+ ("/home/winsln/projects/" . "dashboard/")
  ("/home/winsln/projects/angular-phonecat/" . "app/")
- ("/home/winsln/" . ".emacs.d/")
+ ("/home/winsln/" . "projects/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
- "/home/winsln/projects/egghead/bower_components/bootstrap/dist/css/"
+ "/home/winsln/projects/dashboard/app/scripts/controllers/"
+ "/home/winsln/projects/dashboard/app/views/"
+ "/home/winsln/projects/dashboard/app/styles/"
+ "/home/winsln/projects/dashboard/app/scripts/"
+ "/home/winsln/projects/dashboard/app/scripts/directives/"
+ "/home/winsln/projects/dashboard/app/"
  "/home/winsln/.emacs.d/"
+ "/home/winsln/.emacs.d/el-get/zenburn/"
+ "/home/winsln/"
+ "/home/winsln/projects/dashboard/app/bower_components/ng-grid/build/"
+ "/home/winsln/projects/dashboard/"
+ "/su:root@localhost:/etc/mdm/Init/"
+ "/etc/mdm/Init/"
+ "/home/winsln/projects/egghead/bower_components/bootstrap/dist/css/"
  "/home/winsln/projects/egghead/"
  "/home/winsln/projects/angular-phonecat/app/"
  "/home/winsln/projects/angular-phonecat/app/partials/"
@@ -25,20 +52,62 @@
 
 ;; ----- ido-work-file-list -----
 (
- "bootstrap.min.css"
- "bootstrap.css"
- "setup-slime-js.el"
+ "ProjectBrowser.js"
+ "main.projects.html"
+ "main.css"
+ "projectDetail.html"
+ "Sidebar.js"
+ "ProjectDetail.js"
+ "app.js"
+ "autofocus.js"
  "index.html"
- "main.js"
- "setup-js2-mode.el"
- "custom.el"
- "init.el"
- "mode-mappings.el"
- "phone-list.html"
+ "main.html"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
+ ("/home/winsln/projects/dashboard/app/scripts/controllers/" (21009 59384 834148 168000) "ProjectDetail.js" "ProjectBrowser.js" "../" "./" "Sidebar.js")
+
+ ("/home/winsln/projects/dashboard/app/scripts/" (21009 58253 352690 481000) "../" "controllers/" "./" "app.js" "directives/")
+
+ ("/home/winsln/projects/dashboard/app/views/" (21009 59263 658412 895000) "../" "main.html" "main.projects.html" "./" "projectDetail.html")
+
+ ("/home/winsln/projects/dashboard/app/scripts/directives/" (21009 42552 300510 713000) "../" "./" "autofocus.js")
+
+ ("/home/winsln/projects/dashboard/app/bower_components/ng-grid/build/" (21006 52617 811582 915000) "ng-grid.debug.js" "ng-grid.min.js" "ng-grid.js" "../" "./")
+
+ ("/home/winsln/.emacs.d/el-get/zenburn/" (21006 56197 615317 652000) ".git/" "../" "./" "zenburn-theme.el" "README.md")
+
+ ("/home/winsln/.emacs.d/" (21006 56989 989464 264000) ".gitignore" "ido.last" "setup-ido.el" ".git/" "key-bindings.el" "helpers.el" "%backup%~" "tramp" "setup-dired.el" "setup-package.el" "../" "sane-defaults.el" "init.el" "mode-mappings.el" "recentf" ".gitattributes" "elpa/" "./" "el-get/" "setup-slime-js.el" "setup-rails.el" "backups/" "setup-js2-mode.el" "custom.el")
+
+ ("/home/winsln/projects/dashboard/app/styles/" (21009 38451 119056 514000) "../" "./" "main.css" "asi.png")
+
+ ("/home/winsln/projects/dashboard/app/" (21009 36101 450943 4000) ".buildignore" "favicon.ico" "../" "index.html" "404.html" "styles/" "robots.txt" "./" "scripts/" ".htaccess" "bower_components/" "views/")
+
+ ("/home/winsln/" (21009 32411 981083 879000) "Music/" ".gtk-bookmarks" ".gksu.lock" ".dbus/" ".npm/" "Pictures/" "tmp/" ".bash_history" ".gitconfig" ".gvfs/" ".gnome2_private/" ".slime-history.eld" ".face" "projects/" ".xsession-errors" ".cache/" ".emacs.d/" ".esd_auth" "../" ".swankjsrc" ".local/" ".pulse-cookie" ".bashrc.dpkg-dist" ".slime/" ".ICEauthority" ".bower/" ".thumbnails/" "Documents/" "quicklisp/" ".config/" "Public/" "src/" "./" ".mozilla/" ".bash_logout" ".gnome2/" ".cinnamon/" ".pulse/" ".linuxmint/" ".macromedia/" ".profile" ".Xauthority" ".pki/" ".nv/" "Videos/" ".dmrc" ".mono/" ".node-gyp/" "libpeerconnection.log" ".mate2/" "Desktop/" "Templates/" ".gconf/" ".recently-used" ".sbclrc" ".adobe/" ".gstreamer-0.10/" ".gnupg/" "Downloads/")
+
+ ("/home/winsln/.emacs.d/el-get/" (21006 55746 116392 922000) "dired-details/" "popup/" "zenburn/" "smooth-scrolling/" "auto-indent/" "recipes/" "undo-tree/" "../" "autopair/" "slime-js/" ".loaddefs.el" "emmet-mode/" "dired-details+/" ".loaddefs.elc" "auto-complete/" "goto-last-change/" "./" "el-get/" "smex/" "magit/" "fuzzy/" "ido-ubiquitous/" "js2-mode/" "package/" ".status.el.old" ".status.el" "buffer-move/")
+
+ ("/home/winsln/projects/dashboard/app/bower_components/ng-grid/" (21002 4346 0 0) "config/" "ng-grid.css" ".gitignore" "build/" "CHANGELOG.md" "bower.json" "../" "lib/" "GruntFile.js" "ng-grid-2.0.7.debug.js" ".bower.json" ".gitattributes" "src/" "./" "scripts/" "ng-grid.min.css" "ng-grid-2.0.7.min.js" "conf.js" "test/" "README.md" "workbench/" ".travis.yml" "package.json" "plugins/")
+
+ ("/home/winsln/projects/dashboard/app/bower_components/" (21006 50031 304844 823000) "angular-ui-utils/" "angular-mocks/" "angular-scenario/" "angular-ui-router/" "angular-sanitize/" "jquery/" "bootstrap/" "angular-bootstrap/" "../" "angular/" "json3/" "./" "angular-route/" "angular-resource/" "ng-grid/" "angular-cookies/" "bootstrap-glyphicons/" "es5-shim/" "lodash/")
+
+ ("/home/winsln/projects/dashboard/test/spec/controllers/" (21006 1702 410397 33000) "projectBrowser.js" "../" "./" "headerBar.js" "Sidebar.js")
+
+ ("/home/winsln/projects/dashboard/test/spec/" (21001 60919 0 0) "../" "controllers/" "./" "directives/")
+
+ ("/home/winsln/projects/dashboard/test/" (21000 18623 0 0) ".jshintrc" "../" "runner.html" "./" "spec/")
+
+ ("/home/winsln/projects/dashboard/" (21005 64042 312011 601000) ".gitignore" ".bowerrc" ".jshintrc" "bower.json" "../" "karma.conf.js" ".editorconfig" "karma-e2e.conf.js" ".gitattributes" "./" "node_modules/" "test/" "libpeerconnection.log" "app/" ".travis.yml" "package.json" "Gruntfile.js")
+
+ ("/home/winsln/projects/" (21005 61210 286013 506000) "../" "dashboard/" "./")
+
+ ("/etc/mdm/Init/" (20996 40644 584349 500000) "./" "Default" "../")
+
+ ("/etc/mdm/" (20996 40644 588349 500000) "modules/" "./" "PostSession/" "XKeepsCrashing" "mdm.conf" "Xsession" "locale.conf" "PostLogin/" "../" "PreSession/" "Init/")
+
+ ("/etc/" (20998 62549 537471 61000) "ts.conf" "protocols" "inittab" "openal/" "email-addresses" "odbcinst.ini" "calendar/" "ssh/" "crypttab" "kernel-img.conf" "locale.gen" "javascript-common/" "dkms/" "rmt" "gnome-vfs-2.0/" "pm/" "firefox-3.5/" "polkit-1/" "avahi/" "kernel/" "mateconf/" "hosts" "passwd" "libaudit.conf" "checkinstallrc" "at-spi2/" "modules" "group" "init.d/" "perl/" "ldap/" "bonobo-activation/" "networks" "magic" "timidity/" "asound.conf" "libnl-3/" "obex-data-server/" "apt/" "mailcap.order" "logrotate.d/" "ifplugd/" "logrotate.conf" "lsb-release" "selinux/" "pulse/" "rsyslog.d/" "sensors3.conf" "crontab" "w3m/" "firefox/" "hal/" "ld.so.conf" "ca-certificates.conf" "modprobe.d/" "nanorc" "fonts/" "pcmcia/" "rc3.d/" "gshadow-" "bash.bashrc.dpkg-dist" "python2.7/" "blkid.tab.old" "mtab" "papersize" "dictionaries-common/" "fuse.conf" "os-release" "gnome-vfs-mime-magic" "texmf/" "ghostscript/" "cron.daily/" "colord.conf" "host.conf" "gufw/" "esound/" "gconf/" "ssl/" "printcap" "group-" "pnm2ppa.conf" "cron.monthly/" "passwd-" "wpa_supplicant/" "python/" "vim/" "sudoers" "skel/" "uniconf.conf" "python2.6/" ".java/" "sgml/" "ImageMagick/" "rpc" "cron.hourly/" "rc2.d/" "ucf.conf" "issue" "issue.net" "shadow" "X11/" ".pwd.lock" "bash.bashrc" "gai.conf" "manpath.config" "ConsoleKit/" "services" "hp/" "gshadow" "wgetrc" "logcheck/" "mplayer/" "discover-modprobe.conf" "iproute2/" "at.deny" "gtk-3.0/" "ntp.conf" "inputrc" "hdparm.conf" "pam.conf" "timezone" "ppp/" "dhcp/" "terminfo/" "rc1.d/" "xml/" "mtools.conf" "bluetooth/" "usb_modeswitch.d/" "vlc/" "vga/" "initramfs-tools/" "fstab" "sound/" "motd" "rc6.d/" "sysctl.conf" "emacs/" "cups/" "opt/" "snmp/" "defoma/" "rc5.d/" "mailcap" "rc.local" "shells" "alternatives/" "firefox-3.0/" "dbus-1/" "ODBCDataSources/" "java-6-openjdk/" "gimp/" "gtk-2.0/" "libpaper.d/" "rc0.d/" "foomatic/" "debian_version" "icedtea-web/" "plymouth/" "odbc.ini" "usb_modeswitch.conf" "insserv.conf" "mono/" "wvdial.conf" "dm/" "sensors.d/" "blkid.tab" "mdm/" "deluser.conf" "shadow-" "xdg/" "profile.d/" "security/" "apm/" "sysctl.d/" "magic.mime" "hosts.allow" "rcS.d/" "pam.d/" "adduser.conf" "bash_completion.d/" "vdpau_wrapper.cfg" "ndiswrapper/" "hostname" "bash_completion" "live/" "chatscripts/" "PackageKit/" "locale.alias" "dhcp3/" "mke2fs.conf" "python3.2/" "debconf.conf" "updatedb.conf" "resolvconf/" "bogofilter.cf" "menu-methods/" "python3/" "hddtemp.db" "bindresvport.blacklist" "UPower/" "systemd/" "hosts.deny" "kbd/" "clutter-imcontext/" "gnome/" "nsswitch.conf" "cron.d/" "rsyslog.conf" "groff/" "ufw/" "wildmidi/" "pkcs11/" "network/" "apg.conf" "ld.so.cache" "linuxmint/" "default/" "libao.conf" "profile" "staff-group-for-usr-local" "discover.conf.d/" "securetty" "NetworkManager/" "ld.so.conf.d/" "login.defs" "udev/" "ggi/" "insserv/" "aliases" "cron.weekly/" "insserv.conf.d/" "menu/" "mime.types" "dpkg/" "libreoffice/" "pango/" "acpi/" "sane.d/" "sudoers.d/" "console-setup/" "mailname" "rc4.d/" "adjtime" "fstab.d/" "zsh_command_not_found" "resolv.conf" "init/" "grub.d/" "localtime" "exim4/" "ca-certificates/" "sbcl.rc" "samba/" "environment" "purple/" "apache2/" "../" "./")
+
  ("/home/winsln/projects/egghead/bower_components/bootstrap/dist/css/" (21000 10784 874033 992000) "../" "bootstrap.min.css" "./" "bootstrap.css" ".#bootstrap.css")
 
  ("/home/winsln/projects/egghead/bower_components/bootstrap/dist/" (21000 9701 0 0) "../" "js/" "css/" "./")
@@ -48,12 +117,6 @@
  ("/home/winsln/projects/egghead/bower_components/" (21000 9737 796231 663000) "jquery/" "bootstrap/" "../" "angular/" "./")
 
  ("/home/winsln/projects/egghead/" (21000 10711 402170 324000) "main.js" "../" "index.html" "./" "bower_components/")
-
- ("/home/winsln/.emacs.d/" (21000 9422 564747 209000) ".gitignore" "ido.last" "setup-ido.el" ".git/" "key-bindings.el" "helpers.el" "setup-dired.el" "setup-package.el" "../" "sane-defaults.el" "init.el" "mode-mappings.el" "recentf" ".gitattributes" "session.1014240f0324a87ba137618951655160900000032130061" "elpa/" "./" "el-get/" "setup-slime-js.el" "setup-rails.el" "backups/" "setup-js2-mode.el" "custom.el")
-
- ("/home/winsln/" (21000 9422 532747 262000) "Music/" ".gtk-bookmarks" ".gksu.lock" ".dbus/" ".npm/" "Pictures/" "tmp/" ".bash_history" ".gitconfig" ".gvfs/" ".gnome2_private/" ".slime-history.eld" ".face" "projects/" ".xsession-errors" ".cache/" ".emacs.d/" ".esd_auth" "../" ".swankjsrc" ".local/" ".pulse-cookie" ".bashrc.dpkg-dist" ".slime/" ".ICEauthority" ".thumbnails/" "Documents/" "quicklisp/" ".config/" "Public/" "src/" "./" ".mozilla/" ".bash_logout" ".gnome2/" ".cinnamon/" ".pulse/" ".linuxmint/" ".macromedia/" ".profile" ".Xauthority" ".pki/" ".nv/" "Videos/" ".dmrc" ".mono/" "libpeerconnection.log" ".mate2/" "Desktop/" "Templates/" ".gconf/" ".recently-used" ".sbclrc" ".adobe/" ".gstreamer-0.10/" ".gnupg/" "Downloads/")
-
- ("/home/winsln/projects/" (21000 8692 430057 371000) "angular-phonecat/" "../" "egghead/" "./" "scripts/")
 
  ("/home/winsln/projects/angular-phonecat/app/js/" (21000 7452 432856 995000) "filters.js" "../" "directives.js" "./" "controllers.js" "app.js" "services.js")
 

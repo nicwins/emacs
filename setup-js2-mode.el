@@ -1,4 +1,4 @@
-(setq-default js2-global-externs '("angular" "define" "describe" "expect" "it" "require" "$" "_" "Backbone" "JSON" "setTimeout" "jasmine" "beforeEach" "afterEach" "spyOn" "module" ))
+(setq-default js2-global-externs '("angular" "define" "describe" "expect" "it" "require" "$" "_" "Backbone" "JSON" "setTimeout" "jasmine" "beforeEach" "afterEach" "spyOn" "module"))
 
 (setq-default js2-idle-timer-delay 0.1)
 (setq-default js2-mirror-mode nil)
@@ -10,7 +10,8 @@
 (setq-default js2-concat-multiline-strings 'eol)
 (setq-default js2-basic-offset 2)
 
-(setq-default js2-warning '(:foreground "yellow" :weight bold))
+(setq js2-warning '(:foreground "orange" :underline nil :weight bold))
+(setq js2-strict-missing-semi-warning nil)
 
 ;; Use lambda for anonymous functions
 (font-lock-add-keywords

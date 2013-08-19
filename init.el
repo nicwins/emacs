@@ -131,10 +131,6 @@
                    (autopair-global-mode))
           )
 
-   ;; TODO: this needs to be fixed, uncaught 'untabify'
-   ;; Also needs to indent when going down with arrow
-   ;; Setup watch for js files changing
-
    (:name auto-indent  ;; Indent files and lines automatically
           :type git
           :url "git://github.com/mlf176f2/auto-indent-mode.el.git"
@@ -197,11 +193,14 @@
           )
 
    (:name ido-ubiquitous ;; Fancy completion all over Emacs
-          :features : ido-ubiquitous
+          :features ido-ubiquitous
           )
 
    (:name dired-details+ ;; Reduce clutter in dired
           :features dired-details+
+          :after (progn
+                   (setq-default dired-details-hidden-string "--- ")
+                   )
           )
 
    (:name zenburn ;; Zenburn Theme
