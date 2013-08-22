@@ -93,14 +93,6 @@
                    (smex-initialize))
           )
 
-   (:name buffer-move     ; have to add your own keys
-          :after (progn
-                   (global-set-key (kbd "<C-S-up>")     'buf-move-up)
-                   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
-                   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
-                   (global-set-key (kbd "<C-S-right>")  'buf-move-right))
-          )
-
    (:name magit       ; git meet emacs, and a binding
           :type git
           :url "git://github.com/magit/magit.git"
@@ -210,6 +202,27 @@
           :after (progn
                    (load-theme 'zenburn t)
                    (set-face-attribute 'default nil :font "Droid Sans Mono" :height 100)
+                   )
+          )
+
+   (:name perspective ;; Tag based window management
+          :features perspective
+          :after (progn
+                   (persp-mode t)
+
+                   (defmacro custom-persp (name &rest body)
+                     `(let ((initialize (not (gethash ,name perspectives-hash)))
+                            (current-perspective persp-curr))
+                        (persp-switch ,name)
+                        (when initialize ,@body)
+                        (setq persp-last current-perspective)))
+
+                   ;; Jump to last perspective
+                   (defun custom-persp-last ()
+                     (interactive)
+                     (persp-switch (persp-name persp-last)))
+
+                   (define-key persp-mode-map (kbd "C-x p -") 'custom-persp-last)
                    )
           )
    ))

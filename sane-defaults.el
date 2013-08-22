@@ -16,7 +16,7 @@
 (put 'narrow-to-region 'disabled nil)
 
 ;; Cua Mode
-(setq cua-enable-cua-keys nil) ;; only for rectangles
+;;(setq cua-enable-cua-keys nil) ;; only for rectangles
 (cua-mode t)
 
 ;; Store auto save in temp
@@ -27,6 +27,9 @@
 (setq auto-save-list-file-prefix
       temporary-file-directory)
 
+;; Shift left, up, down, right to swap buffers
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
