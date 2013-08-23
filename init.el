@@ -18,7 +18,10 @@
 (require 'sane-defaults)
 
 ;; Setup packages
-(require 'setup-package)
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
 
 ;; Setup Dired
 (eval-after-load 'dired '(require 'setup-dired))
@@ -205,27 +208,21 @@
                    )
           )
 
-   (:name perspective ;; Tag based window management
-          :features perspective
+   (:name workgroups ;; save window configurations
+          :type git
+          :url "git://github.com/tlh/workgroups.el"
+          :features workgroups
+          )
+
+   (:name persp-mode ;; set groups of windows
+          :type git
+          :url "git://github.com/Bad-ptr/persp-mode.el.git"
+          :features persp-mode
           :after (progn
                    (persp-mode t)
-
-                   (defmacro custom-persp (name &rest body)
-                     `(let ((initialize (not (gethash ,name perspectives-hash)))
-                            (current-perspective persp-curr))
-                        (persp-switch ,name)
-                        (when initialize ,@body)
-                        (setq persp-last current-perspective)))
-
-                   ;; Jump to last perspective
-                   (defun custom-persp-last ()
-                     (interactive)
-                     (persp-switch (persp-name persp-last)))
-
-                   (define-key persp-mode-map (kbd "C-x p -") 'custom-persp-last)
                    )
           )
-   ))
+))
 
 
 
