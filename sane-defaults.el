@@ -187,4 +187,7 @@ Including indent-buffer, which should not be called automatically on save."
                        (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 (global-set-key [f11] 'fullscreen)
 
+;; Set js-mode indent to 2 for json files
+(setq js-indent-level 2)
+
 (provide 'sane-defaults)

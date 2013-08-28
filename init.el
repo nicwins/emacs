@@ -214,10 +214,8 @@
           :features workgroups
           )
 
-   (:name persp-mode ;; set groups of windows
-          :type git
-          :url "git://github.com/Bad-ptr/persp-mode.el.git"
-          :features persp-mode
+   (:name perspective ;; set groups of windows
+          :features perspective
           :after (progn
                    (persp-mode t)
                    )
