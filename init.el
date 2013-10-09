@@ -31,31 +31,8 @@
 (eval-after-load 'ido '(require 'setup-ido))
 (require 'ido)
 
-;; Slime setup
-;; TODO: automate this with el-get
-
-;; $ sudo apt-get install sbcl
-;; $ sudo apt-get install wget
-;; $ cd ~/Downloads
-;; $ wget http://beta.quicklisp.org/quicklisp.lisp
-;; $ sbcl --load ./quicklisp.lisp
-
-;; wait until you see Lisp shell prompt,
-
-;; * (quicklisp-quickstart:install)
-;; * (ql:add-to-init-file)
-;; * (ql:quickload "quicklisp-slime-helper")
-;; * (quit)
-
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "sbcl")
-
-(require 'slime)
-(slime-setup)
-(add-hook 'after-init-hook
-          #'(lambda ()
-              (when (locate-library "slime-js")
-                (require 'setup-slime-js))))
+;; Add grunt helpers
+(require 'setup-grunt)
 
 ;; Map files to modes
 (require 'mode-mappings)
@@ -139,12 +116,6 @@
           :type git
           :url "git://github.com/aspiers/smooth-scrolling.git"
           :features smooth-scrolling
-          )
-
-   (:name slime-js ;; slime part for swank-js
-          :type git
-          :url "git://github.com/Gozala/slime-js.git"
-          :features slime-js
           )
 
    (:name emmet-mode ;; new Zencoding mode

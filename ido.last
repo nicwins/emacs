@@ -2,11 +2,30 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/home/winsln/projects/dashboard-old/app/" . "dev/")
+ ("/home/winsln/projects/gruntTest/app/common/" . "directives/")
+ ("/home/winsln/projects/gruntTest/app/" . "common/")
+ ("/home/winsln/projects/gruntTest/" . "app/")
+ ("/home/winsln/projects/dashboard/test/spec/common/" . "directives/")
+ ("/home/winsln/projects/dashboard/test/spec/eac/" . "controllers/")
+ ("/home/winsln/projects/dashboard/app/project/" . "views/")
+ ("/home/winsln/projects/dashboard/app/common/ngGrid/" . "plugins/")
+ ("/home/winsln/projects/dashboard-old/js/eac/" . "EacForm/")
+ ("/home/winsln/projects/dashboard-old/js/" . "common/")
+ ("/home/winsln/projects/dashboard-old/" . "app/")
+ ("/home/winsln/projects/dashboard/app/projects/" . "services/")
+ ("/home/winsln/projects/dashboard/app/eac/" . "controllers/")
+ ("/home/winsln/projects/dashboard/app/common/directives/" . "navpanel/")
+ ("/home/winsln/projects/dashboard/app/ng-grid/" . "plugins/")
+ ("/home/winsln/projects/dashboard/app/common/" . "directives/")
+ ("/home/winsln/Downloads/dashboard-old/js/" . "common/")
+ ("/home/winsln/Downloads/dashboard-old/" . "js/")
+ ("/home/winsln/Downloads/" . "dashboard-old/")
  ("/home/winsln/.emacs.d/el-get/" . "zenburn/")
  ("/home/winsln/.emacs.d/" . "el-get/")
  ("/home/winsln/projects/dashboard/app/bower_components/ng-grid/" . "build/")
- ("/home/winsln/projects/dashboard/app/bower_components/" . "angular-resource/")
- ("/home/winsln/projects/dashboard/test/spec/" . "controllers/")
+ ("/home/winsln/projects/dashboard/app/bower_components/" . "ng-grid/")
+ ("/home/winsln/projects/dashboard/test/spec/" . "common/")
  ("/home/winsln/projects/dashboard/test/" . "spec/")
  ("/su:root@localhost:/etc/mdm/" . "Init/")
  ("/su:root@localhost:/etc/" . "mdm/")
@@ -14,9 +33,9 @@
  ("/etc/mdm/" . "Init/")
  ("/etc/" . "mdm/")
  ("/" . "etc/")
- ("/home/winsln/projects/dashboard/app/scripts/" . "controllers/")
- ("/home/winsln/projects/dashboard/app/" . "bower_components/")
- ("/home/winsln/projects/dashboard/" . "app/")
+ ("/home/winsln/projects/dashboard/app/scripts/" . "services/")
+ ("/home/winsln/projects/dashboard/app/" . "common/")
+ ("/home/winsln/projects/dashboard/" . "test/")
  ("/home/winsln/projects/egghead/bower_components/bootstrap/dist/" . "css/")
  ("/home/winsln/projects/egghead/bower_components/bootstrap/" . "dist/")
  ("/home/winsln/projects/egghead/bower_components/" . "bootstrap/")
@@ -25,73 +44,216 @@
  ("/home/" . "winsln/")
  ("/home/winsln/projects/" . "dashboard/")
  ("/home/winsln/projects/angular-phonecat/" . "app/")
- ("/home/winsln/" . ".emacs.d/")
+ ("/home/winsln/" . "projects/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
- "/home/winsln/.emacs.d/"
+ "/home/winsln/projects/dashboard/test/spec/common/directives/"
  "/home/winsln/projects/dashboard/"
- "/home/winsln/projects/dashboard/app/bower_components/angular-resource/"
- "/home/winsln/projects/dashboard/app/scripts/controllers/"
- "/home/winsln/projects/dashboard/app/scripts/"
- "/home/winsln/projects/dashboard/app/scripts/directives/"
- "/home/winsln/projects/dashboard/app/views/"
- "/home/winsln/projects/dashboard/app/styles/"
+ "/home/winsln/projects/gruntTest/"
+ "/home/winsln/projects/dashboard/app/common/directives/"
+ "/home/winsln/.emacs.d/"
+ "/home/winsln/projects/dashboard/app/common/styles/"
+ "/home/winsln/projects/dashboard-old/"
  "/home/winsln/projects/dashboard/app/"
+ "/home/winsln/projects/dashboard-old/app/dev/"
+ "/home/winsln/projects/dashboard/app/dev/"
+ "/home/winsln/projects/dashboard/app/common/"
+ "/home/winsln/projects/dashboard-old/app/"
+ "/home/winsln/projects/dashboard/app/scripts/"
+ "/home/winsln/projects/gruntTest/app/common/directives/"
+ "/home/winsln/projects/gruntTest/app/"
+ "/home/winsln/projects/grunttest/"
+ "/home/winsln/projects/dashboard/app/eac/controllers/"
+ "/home/winsln/projects/dashboard/app/common/services/"
+ "/home/winsln/projects/dashboard/app/common/ngGrid/plugins/"
+ "/home/winsln/projects/dashboard/app/common/filters/"
+ "/home/winsln/projects/dashboard/app/common/directives/navpanel/"
+ "/home/winsln/projects/dashboard/test/spec/eac/controllers/"
+ "/home/winsln/projects/dashboard/app/eac/views/"
+ "/home/winsln/projects/dashboard/app/project/views/"
+ "/home/winsln/projects/dashboard/app/project/controllers/"
+ "/home/winsln/projects/dashboard/app/project/services/"
+ "/home/winsln/projects/dashboard/app/common/ngGrid/directives/"
+ "/home/winsln/projects/dashboard/app/eac/services/"
+ "/home/winsln/projects/dashboard-old/js/common/"
+ "/home/winsln/projects/dashboard-old/js/eac/EacResources/"
+ "/home/winsln/projects/dashboard/app/projects/services/"
+ "/home/winsln/projects/dashboard/test/spec/filters/"
+ "/home/winsln/projects/dashboard/test/spec/controllers/"
+ "/home/winsln/projects/dashboard/app/projects/controllers/"
+ "/home/winsln/projects/dashboard/app/ng-grid/plugins/"
+ "/home/winsln/projects/dashboard/app/ng-grid/"
+ "/home/winsln/projects/dashboard/app/views/"
+ "/home/winsln/projects/dashboard/app/filters/"
+ "/home/winsln/projects/dashboard/app/eac/"
+ "/home/winsln/projects/dashboard/app/scripts/services/"
+ "/home/winsln/projects/dashboard/app/styles/"
+ "/home/winsln/Downloads/dashboard-old/js/common/"
+ "/home/winsln/projects/dashboard/app/scripts/directives/"
+ "/home/winsln/projects/dashboard/app/scripts/controllers/"
+ "/home/winsln/projects/dashboard/app/bower_components/ng-grid/build/"
+ "/home/winsln/projects/dashboard/app/bower_components/angular-resource/"
  "/home/winsln/.emacs.d/el-get/zenburn/"
  "/home/winsln/"
- "/home/winsln/projects/dashboard/app/bower_components/ng-grid/build/"
  "/su:root@localhost:/etc/mdm/Init/"
  "/etc/mdm/Init/"
- "/home/winsln/projects/egghead/bower_components/bootstrap/dist/css/"
- "/home/winsln/projects/egghead/"
- "/home/winsln/projects/angular-phonecat/app/"
- "/home/winsln/projects/angular-phonecat/app/partials/"
- "/home/winsln/projects/angular-phonecat/app/js/"
 )
 
 ;; ----- ido-work-file-list -----
 (
+ "scrollSpy.js"
+ "karma.conf.js"
+ "Gruntfile.js"
  "init.el"
  "sane-defaults.el"
- "bower.json"
- "angular-resource.js"
- "ProjectBrowser.js"
- "ngGridPlugins.js"
- "responses.js"
+ "setup-grunt.el"
+ "setup-slime-js.el"
+ "main.css"
+ "index.html"
  "app.js"
- "card.js"
- "card.html"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
+ ("/home/winsln/projects/dashboard/" (21077 21851 925877 49000) ".gitignore" ".bowerrc" ".#karma.conf.js" ".jshintrc" "bower.json" "../" "karma.conf.js" ".editorconfig" "karma-e2e.conf.js" ".gitattributes" "./" "node_modules/" "test/" "app/" ".travis.yml" "package.json" "Gruntfile.js")
+
+ ("/home/winsln/projects/" (21077 21352 107340 431000) "gruntTest/" "../" "dashboard/" "./" "dashboard-old/")
+
+ ("/home/winsln/projects/gruntTest/" (21077 21368 931292 696000) ".gitignore" ".bowerrc" ".jshintrc" "bower.json" "../" "karma.conf.js" ".editorconfig" "karma-e2e.conf.js" ".gitattributes" "./" "node_modules/" "test/" "app/" ".travis.yml" "package.json" "Gruntfile.js")
+
+ ("/home/winsln/projects/dashboard/test/spec/common/directives/" (21077 20492 877779 866000) "../" "scrollSpy.js" "./" "autofocus.js")
+
+ ("/home/winsln/projects/dashboard/test/spec/" (21074 38212 351125 0) "dev/" "common/" "../" "./" "app.js" "project/" "eac/")
+
+ ("/home/winsln/projects/dashboard/test/" (21077 20467 585851 719000) ".jshintrc" "../" "runner.html" "./" "spec/")
+
+ ("/home/winsln/projects/dashboard/test/spec/controllers/" (21077 12568 943758 549000) "main.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/common/directives/" (21077 20436 77941 237000) "../" "scrollSpy.js" "navpanel/" ".#scrollSpy.js" "./" "spy.js" "autofocus.js")
+
+ ("/home/winsln/.emacs.d/" (21077 19647 852182 236000) ".gitignore" "ido.last" "setup-ido.el" ".git/" "eshell/" "key-bindings.el" "helpers.el" "setup-grunt.el" "tramp" "setup-dired.el" "persp-confs/" "../" "sane-defaults.el" "init.el" "mode-mappings.el" "recentf" ".gitattributes" "elpa/" "./" "el-get/" "setup-rails.el" "auto-save-list/" "backups/" "setup-js2-mode.el" "custom.el")
+
+ ("/home/winsln/" (21077 19381 736905 42000) "Music/" ".gtk-bookmarks" ".gksu.lock" ".dbus/" ".npm/" "Pictures/" "tmp/" ".bash_history" ".gitconfig" ".gvfs/" ".gnome2_private/" ".slime-history.eld" ".saves/" ".face" "projects/" ".xsession-errors" ".cache/" ".emacs.d/" ".esd_auth" "../" ".swankjsrc" ".local/" ".pulse-cookie" ".bashrc.dpkg-dist" ".slime/" ".ICEauthority" ".bower/" ".thumbnails/" "Documents/" "fontconfig/" "quicklisp/" ".config/" "Public/" "src/" "./" ".mozilla/" ".bash_logout" ".gnome2/" ".cinnamon/" ".pulse/" ".linuxmint/" ".macromedia/" ".profile" ".Xauthority" ".pki/" ".nv/" "Videos/" ".dmrc" ".mono/" ".node-gyp/" "libpeerconnection.log" ".mate2/" "Desktop/" "Templates/" ".gconf/" ".recently-used" ".sbclrc" ".adobe/" ".gstreamer-0.10/" ".gnupg/" "Downloads/")
+
+ ("/home/winsln/projects/dashboard/app/common/" (21077 14963 185123 487000) "../" "main.html" "styles/" "ngGrid/" "./" "services/" "directives/" "filters/")
+
+ ("/home/winsln/projects/dashboard/app/" (21077 15846 450686 271000) ".buildignore" "dev/" "favicon.ico" "common/" "../" "index.html" "404.html" "robots.txt" "./" ".htaccess" "app.js" "project/" "bower_components/" "eac/")
+
+ ("/home/winsln/projects/dashboard-old/app/dev/" (21073 13889 217821 87000) "responses.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/scripts/" (21077 13051 526454 471000) "../" "controllers/" "./" "app.js")
+
+ ("/home/winsln/projects/dashboard-old/app/" (21077 12685 771450 376000) ".buildignore" "dev/" "common/" "../" "index.html" "404.html" "robots.txt" "./" ".htaccess" "app.js" "project/" "bower_components/" "eac/")
+
+ ("/home/winsln/projects/dashboard-old/" (21077 11697 662188 793000) ".gitignore" ".git/" ".bowerrc" ".jshintrc" "bower.json" "../" "karma.conf.js" ".editorconfig" "karma-e2e.conf.js" ".gitattributes" "./" "node_modules/" "test/" "libpeerconnection.log" "app/" ".travis.yml" "package.json" "Gruntfile.js")
+
+ ("/home/winsln/projects/gruntTest/app/common/directives/" (21077 10578 193380 0) "../" "scrollSpy.js" "navpanel/" "./" "spy.js" "autofocus.js")
+
+ ("/home/winsln/projects/gruntTest/app/common/" (21073 9823 787969 0) "../" "main.html" "styles/" "ngGrid/" "./" "services/" "directives/" "filters/")
+
+ ("/home/winsln/projects/gruntTest/app/" (21074 39485 912468 0) ".buildignore" "dev/" "favicon.ico" "common/" "../" "index.html" "404.html" "robots.txt" "./" ".htaccess" "app.js" "project/" "bower_components/" "eac/")
+
+ ("/home/winsln/projects/grunttest/" (21077 5572 452904 129000) ".gitignore" ".bowerrc" ".jshintrc" "bower.json" "../" "karma.conf.js" ".editorconfig" "karma-e2e.conf.js" ".gitattributes" "./" "node_modules/" "test/" "app/" ".travis.yml" "package.json" "Gruntfile.js")
+
+ ("/home/winsln/projects/dashboard/test/spec/eac/controllers/" (21074 41354 396289 767000) "../" "EacWorksheet.js" "./")
+
+ ("/home/winsln/projects/dashboard/app/eac/views/" (21074 35764 47943 856000) "eacWorksheet.html" "eacBrowser.html" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/eac/controllers/" (21074 36333 34947 348000) "EacBrowser.js" "../" "EacWorksheet.js" "./")
+
+ ("/home/winsln/projects/dashboard/test/spec/eac/" (21073 51080 988594 883000) "../" "controllers/" "./" "services/")
+
+ ("/home/winsln/projects/dashboard/test/spec/common/" (21073 51103 432554 857000) "../" "./" "services/" "directives/")
+
+ ("/home/winsln/projects/dashboard/app/common/directives/navpanel/" (21073 49357 571895 826000) "../" "navpanel.js" "./" "navpanel.html")
+
+ ("/home/winsln/projects/dashboard/app/dev/" (21073 13889 217821 87000) "responses.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/project/views/" (21072 19075 183143 710000) "../" "./" "internalDictionary.html" "addProject.html" "projectDetail.html" "projectBrowser.html")
+
+ ("/home/winsln/projects/dashboard/app/project/services/" (21073 13761 786114 110000) "ProjectList.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/project/controllers/" (21073 13748 38145 603000) "AddProject.js" "ProjectDetail.js" "ProjectBrowser.js" "InternalDictionary.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/project/" (21072 19039 15236 949000) "../" "controllers/" "./" "services/" "views/")
+
+ ("/home/winsln/projects/dashboard/app/common/filters/" (21073 13657 230353 42000) "../" "./" "reverse.js")
+
+ ("/home/winsln/projects/dashboard/app/common/styles/" (21072 19013 51303 825000) "../" "./" "main.css" "asi.png")
+
+ ("/home/winsln/projects/dashboard/app/common/services/" (21073 13571 978546 843000) "SecureApi.js" "../" "TokenHandler.js" "./")
+
+ ("/home/winsln/projects/dashboard/app/common/ngGrid/directives/" (21073 13551 410593 461000) "ngCellText.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/eac/styles/" (21072 19023 375277 240000) "../" "eacWorksheet.css" "./")
+
+ ("/home/winsln/projects/dashboard/app/eac/services/" (21073 13507 530692 733000) "EacCollection.js" "../" "EacWorksheet.js" "./")
+
+ ("/home/winsln/projects/dashboard/app/common/ngGrid/plugins/" (21072 19552 970046 103000) "ngGridAutoHeightPlugin.js" "../" "ngGridLayoutPlugin.js" "./")
+
+ ("/home/winsln/projects/dashboard/app/common/ngGrid/" (21072 19542 890067 27000) "../" "./" "directives/" "plugins/")
+
+ ("/home/winsln/projects/dashboard-old/js/common/" (21072 2597 663451 591000) "BaseModel.js" "BaseValidation.js" "App.js" "../" "Widget.js" "./" "MockServer.js" "BaseView.js" "BaseCollection.js" "SharePointSync/")
+
+ ("/home/winsln/projects/dashboard-old/js/eac/EacForm/" (21072 2597 659451 600000) "EacFormTimephaseCollection.js" "EacFormElementModel.js" "EacFormLaborTimephaseView.js" "EacFormElement.handlebars.html" "EacFormElementView.js" "EacFormAssumptionsView.js" "../" "EacFormRepeatable.handlebars.html" "EacFormAssumptions.handlebars.html" "EacFormLaborFooter.handlebars.html" "EacForm.js" "EacForm.handlebars.html" "./" "EacFormLaborElementView.js" "EacFormTimephaseModel.js" "EacFormTimephaseView.js" "EacFormTimephase.handlebars.html" "EacFormView.js" "EacFormLabor.handlebars.html" "EacFormModel.js" "EacFormLaborElementModel.js")
+
+ ("/home/winsln/projects/dashboard-old/js/eac/EacResources/" (21072 57370 760699 908000) "EacResources.js" "../" "months.txt" "EacResourcesEngineeringCodes.handlebars.json" "./" "EacResourcesFTE.handlebars.json" "EacResourcesAccountingMonths.handlebars.json")
+
+ ("/home/winsln/projects/dashboard-old/js/eac/" (21072 2597 663451 591000) "EacExportSet/" "EacNewSet/" "../" "Eac.js" "./" "EacSharepointAdapter.js" "EacForm/" "EacResources/" "EacBrowser/")
+
+ ("/home/winsln/projects/dashboard-old/js/" (21072 2597 663451 591000) "main.js" "config.js" "core.js" "common/" "projects/" "../" "vars/" "./" "scaffold/" "login/" "splash/" "eac/" "router.js")
+
+ ("/home/winsln/projects/dashboard/app/bower_components/" (21072 3016 562506 432000) "angular-ui-utils/" "angular-mocks/" "angular-scenario/" "angular-ui-router/" "angular-sanitize/" "jquery/" "bootstrap/" "../" "angular/" "json3/" "select2/" "./" "angular-ui-select2/" "angular-resource/" "ng-grid/" "angular-cookies/" "es5-shim/" "lodash/")
+
+ ("/home/winsln/projects/dashboard/test/spec/filters/" (21023 45127 0 0) "../" "./" "reverse.js")
+
+ ("/home/winsln/projects/dashboard/app/projects/controllers/" (21072 18891 763615 562000) "AddProject.js" "ProjectDetail.js" "ProjectBrowser.js" "InternalDictionary.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/projects/services/" (21072 18985 639374 376000) "ProjectList.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/projects/" (21072 19039 15236 949000) "../" "controllers/" "./" "services/" "views/")
+
+ ("/home/winsln/projects/dashboard/app/eac/" (21072 19023 375277 240000) "../" "styles/" "controllers/" "./" "services/" "views/")
+
+ ("/home/winsln/projects/dashboard/app/ng-grid/plugins/" (21072 19460 562237 444000) "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/ng-grid/" (21072 19466 30226 152000) "../" "./" "ngGridPlugins.js" "directives/" "plugins/")
+
+ ("/home/winsln/projects/dashboard/app/views/" (21072 18751 107975 676000) "controlbar.html" "card.html" "../" "main.html" "./" "internalDictionary.html" "addProject.html" "projectDetail.html" "projectBrowser.html" "navpanel.html")
+
+ ("/home/winsln/projects/dashboard/app/filters/" (21023 45013 0 0) "../" "./" "reverse.js")
+
+ ("/home/winsln/projects/dashboard/app/services/" (21072 18434 948779 364000) "ProjectList.js" "SecureApi.js" "../" "TokenHandler.js" "./")
+
+ ("/home/winsln/projects/dashboard/app/scripts/services/" (21072 18434 948779 364000) "ProjectList.js" "SecureApi.js" "../" "TokenHandler.js" "./")
+
+ ("/home/winsln/projects/dashboard/app/styles/" (21072 2814 318963 647000) "../" "eacWorksheet.css" "./" "main.css" "asi.png")
+
+ ("/home/winsln/projects/dashboard/app/bower_components/angular-resource/" (21071 64341 496212 11000) "angular-resource.js" "bower.json" "../" ".bower.json" "angular-resource.min.js.map" "./" "angular-resource.min.js" "README.md")
+
+ ("/home/winsln/projects/dashboard/app/scripts/controllers/" (21071 64846 194983 497000) "AddProject.js" "ProjectDetail.js" "ProjectBrowser.js" "InternalDictionary.js" "../" "EacWorksheet.js" "MonthlyEacBrowser.js" "./" "Sidebar.js")
+
+ ("/home/winsln/Downloads/dashboard-old/js/common/" (21072 2597 663451 591000) "BaseModel.js" "BaseValidation.js" "App.js" "../" "Widget.js" "./" "MockServer.js" "BaseView.js" "BaseCollection.js" "SharePointSync/")
+
+ ("/home/winsln/Downloads/dashboard-old/js/" (21072 2597 663451 591000) "main.js" "config.js" "core.js" "common/" "projects/" "../" "vars/" "./" "scaffold/" "login/" "splash/" "eac/" "router.js")
+
+ ("/home/winsln/Downloads/dashboard-old/" (21072 2598 387449 963000) "currentUser/" ".git/" "bower.json" "../" "components/" "index.html" "js/" "css/" "img/" "./" "node_modules/" "README.md" "package.json" "Gruntfile.js")
+
+ ("/home/winsln/Downloads/" (21072 2599 27448 525000) "../" "NVIDIA-Linux-x86_64-325.15.run" "dashboard-new.tar.gz" "Main.kdbx" "dashboard-old.tar.gz" "./" "emacs/" "dashboard-old/" "google-chrome-stable_current_amd64.deb" "dashboard.tar.gz" "quicklisp.lisp")
+
+ ("/home/winsln/projects/dashboard/app/scripts/directives/" (21071 56483 360097 140000) "ngCellText.js" "card.js" "../" "navpanel.js" "./" "autofocus.js" "controlbar.js")
+
+ ("/home/winsln/projects/dashboard/app/bower_components/ng-grid/build/" (21071 49521 871133 133000) "ng-grid.debug.js" "ng-grid.min.js" "ng-grid.js" "../" "./")
+
+ ("/home/winsln/projects/dashboard/app/bower_components/ng-grid/" (21014 61170 0 0) "config/" "ng-grid.css" ".gitignore" "build/" "CHANGELOG.md" "bower.json" "../" "lib/" "GruntFile.js" "ng-grid-2.0.7.debug.js" ".bower.json" ".gitattributes" "src/" "./" "scripts/" "ng-grid.min.css" "ng-grid-2.0.7.min.js" "conf.js" "test/" "README.md" "workbench/" ".travis.yml" "package.json" "plugins/")
+
+ ("/home/winsln/projects/dashboard/node_modules/" (21014 57906 0 0) "grunt-contrib-concat/" "grunt-contrib-copy/" "grunt-contrib-compass/" "grunt-ngmin/" "karma-chrome-launcher/" "karma-script-launcher/" "grunt-google-cdn/" ".bin/" "grunt-karma/" "karma-coffee-preprocessor/" "grunt-contrib-watch/" "karma/" "grunt-rev/" "karma-html2js-preprocessor/" "../" "grunt-contrib-jshint/" "grunt-contrib-imagemin/" "karma-phantomjs-launcher/" "grunt-contrib-connect/" "grunt-contrib-coffee/" "karma-requirejs/" "grunt-contrib-cssmin/" "connect-livereload/" "grunt-open/" "grunt/" "matchdep/" "./" "grunt-svgmin/" "grunt-contrib-htmlmin/" "karma-jasmine/" "grunt-contrib-clean/" "grunt-concurrent/" "karma-firefox-launcher/" "grunt-usemin/" "grunt-contrib-uglify/")
+
+ ("/home/winsln/projects/dashboard/app/scripts/filters/" (21023 45013 0 0) "../" "./" "reverse.js")
+
  ("/home/winsln/.emacs.d/el-get/" (21013 38880 991932 337000) "dired-details/" "popup/" "zenburn/" "smooth-scrolling/" "auto-indent/" "recipes/" "undo-tree/" "../" "autopair/" "slime-js/" "persp-mode/" ".loaddefs.el" "emmet-mode/" "dired-details+/" ".loaddefs.elc" "auto-complete/" "goto-last-change/" "./" "el-get/" "smex/" "magit/" "fuzzy/" "ido-ubiquitous/" "js2-mode/" "package/" "workgroups/" ".status.el.old" ".status.el" "buffer-move/")
-
- ("/home/winsln/.emacs.d/" (21021 40087 895906 789000) ".gitignore" "ido.last" "setup-ido.el" ".git/" "eshell/" "key-bindings.el" "helpers.el" "%backup%~" "tramp" "setup-dired.el" "persp-confs/" "../" "sane-defaults.el" "init.el" "session.1038403f8b24f72611137692122347340900000032000032" "mode-mappings.el" "recentf" ".gitattributes" "elpa/" "./" "el-get/" "setup-slime-js.el" "setup-rails.el" "backups/" "setup-js2-mode.el" "custom.el")
-
- ("/home/winsln/projects/" (21021 39146 60438 720000) "generator-angComponents/" "../" "dashboard/" "./" "dashboard.tar.gz" "bower_components/")
-
- ("/home/winsln/projects/dashboard/" (21021 39956 187822 111000) ".gitignore" ".git/" ".bowerrc" ".jshintrc" "bower.json" "../" "karma.conf.js" ".editorconfig" "karma-e2e.conf.js" ".gitattributes" "./" "node_modules/" "test/" "libpeerconnection.log" "app/" ".travis.yml" "package.json" "Gruntfile.js")
-
- ("/home/winsln/projects/dashboard/app/scripts/controllers/" (21021 38825 446652 260000) "ProjectDetail.js" ".#ProjectBrowser.js" "ProjectBrowser.js" "InternalDictionary.js" "../" "./" "Sidebar.js")
-
- ("/home/winsln/projects/dashboard/app/bower_components/angular-resource/" (21014 61169 839608 780000) "angular-resource.js" "bower.json" "../" ".bower.json" "./" "angular-resource.min.js" "README.md")
-
- ("/home/winsln/projects/dashboard/app/bower_components/" (21014 62396 29090 84000) "angular-ui-utils/" "angular-mocks/" "angular-scenario/" "angular-ui-router/" "angular-sanitize/" "jquery/" "bootstrap/" "../" "angular/" "json3/" "./" "angular-resource/" "ng-grid/" "angular-cookies/" "es5-shim/" "lodash/")
-
- ("/home/winsln/" (21021 37063 969381 152000) "Music/" ".gtk-bookmarks" ".gksu.lock" ".dbus/" ".npm/" "Pictures/" "tmp/" ".bash_history" ".gitconfig" ".gvfs/" ".gnome2_private/" ".slime-history.eld" ".face" "projects/" ".xsession-errors" ".cache/" ".emacs.d/" ".esd_auth" "../" ".swankjsrc" ".local/" ".pulse-cookie" ".bashrc.dpkg-dist" ".slime/" ".ICEauthority" ".bower/" ".thumbnails/" "Documents/" "quicklisp/" ".config/" "Public/" "src/" "./" ".mozilla/" ".bash_logout" ".gnome2/" ".cinnamon/" ".pulse/" ".linuxmint/" ".macromedia/" ".profile" ".Xauthority" ".pki/" ".nv/" "Videos/" ".dmrc" ".mono/" ".node-gyp/" "libpeerconnection.log" ".mate2/" "Desktop/" "Templates/" ".gconf/" ".recently-used" ".sbclrc" ".adobe/" ".gstreamer-0.10/" ".gnupg/" "Downloads/")
-
- ("/home/winsln/projects/dashboard/app/scripts/directives/" (21015 4383 472115 145000) "ngCellText.js" "card.js" "../" "./" "autofocus.js")
-
- ("/home/winsln/projects/dashboard/app/views/" (21015 4354 796183 650000) "card.html" "../" "main.html" "./" "internalDictionary.html" "projectDetail.html" "projectBrowser.html")
-
- ("/home/winsln/projects/dashboard/app/styles/" (21015 4150 788686 800000) "../" "./" "main.css" "asi.png" "projectBrowser.html")
-
- ("/home/winsln/projects/dashboard/app/scripts/" (21015 3315 502774 132000) "responses.js" "../" "controllers/" "./" "ngGridPlugins.js" "app.js" "directives/")
-
- ("/home/winsln/projects/dashboard/app/" (21015 3187 163100 851000) ".buildignore" "favicon.ico" "../" "index.html" "404.html" "styles/" "robots.txt" "./" "scripts/" ".htaccess" "bower_components/" "views/")
 
  ("/home/winsln/.emacs.d/persp-confs/" (21013 50812 458019 842000) "persp-auto-save" "../" "./")
 
@@ -99,19 +261,7 @@
 
  ("/home/winsln/.cinnamon/" (20996 43092 290380 102000) "../" "panel-launchers/" "spices.cache/" "./")
 
- ("/home/winsln/Downloads/" (21013 36712 818996 210000) "../" "NVIDIA-Linux-x86_64-325.15.run" "Main.kdbx" "./" "emacs/" "google-chrome-stable_current_amd64.deb" "dashboard.tar.gz" "quicklisp.lisp")
-
- ("/home/winsln/projects/dashboard/app/bower_components/ng-grid/build/" (21006 52617 811582 915000) "ng-grid.debug.js" "ng-grid.min.js" "ng-grid.js" "../" "./")
-
  ("/home/winsln/.emacs.d/el-get/zenburn/" (21006 56197 615317 652000) ".git/" "../" "./" "zenburn-theme.el" "README.md")
-
- ("/home/winsln/projects/dashboard/app/bower_components/ng-grid/" (21002 4346 0 0) "config/" "ng-grid.css" ".gitignore" "build/" "CHANGELOG.md" "bower.json" "../" "lib/" "GruntFile.js" "ng-grid-2.0.7.debug.js" ".bower.json" ".gitattributes" "src/" "./" "scripts/" "ng-grid.min.css" "ng-grid-2.0.7.min.js" "conf.js" "test/" "README.md" "workbench/" ".travis.yml" "package.json" "plugins/")
-
- ("/home/winsln/projects/dashboard/test/spec/controllers/" (21006 1702 410397 33000) "projectBrowser.js" "../" "./" "headerBar.js" "Sidebar.js")
-
- ("/home/winsln/projects/dashboard/test/spec/" (21001 60919 0 0) "../" "controllers/" "./" "directives/")
-
- ("/home/winsln/projects/dashboard/test/" (21000 18623 0 0) ".jshintrc" "../" "runner.html" "./" "spec/")
 
  ("/etc/mdm/Init/" (20996 40644 584349 500000) "./" "Default" "../")
 

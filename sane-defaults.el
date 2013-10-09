@@ -2,10 +2,6 @@
 (setq custom-file (expand-file-name "custom.el" dotfiles-dir))
 (load custom-file)
 
-;; Write backup files to own directory
-(setq backup-directory-alist `(("." . ,(expand-file-name
-                                        (concat dotfiles-dir "backups")))))
-
 ;; Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t)
@@ -21,11 +17,11 @@
 
 ;; Store auto save in temp
 (setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
+      `((".*" . "~/.saves/")))
 (setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-(setq auto-save-list-file-prefix
-      temporary-file-directory)
+      `((".*" "~/.saves/\\1" t)))
+
+(make-directory "~/.saves/" t)
 
 ;; Shift left, up, down, right to swap buffers
 (windmove-default-keybindings)
@@ -189,5 +185,8 @@ Including indent-buffer, which should not be called automatically on save."
 
 ;; Set js-mode indent to 2 for json files
 (setq js-indent-level 2)
+
+
+(ansi-color-for-comint-mode-on)   ; interpret and use ansi color codes in shell output windows
 
 (provide 'sane-defaults)
