@@ -73,13 +73,13 @@
                    (smex-initialize))
           )
 
-   (:name magit       ; git meet emacs, and a binding
-          :type git
-          :url "git://github.com/magit/magit.git"
-          :features magit
-          :after (progn
-                   (global-set-key (kbd "C-x C-z") 'magit-status))
-          )
+   ;;(:name magit       ; git meet emacs, and a binding
+   ;;       :type git
+   ;;       :url "git://github.com/magit/magit.git"
+   ;;       :features magit
+   ;;       :after (progn
+   ;;                (global-set-key (kbd "C-x C-z") 'magit-status))
+   ;;       )
 
    (:name goto-last-change    ; move pointer back to last change
           :after (progn
@@ -192,8 +192,6 @@
                    )
           )
 ))
-
-
 
 (setq
  my:el-get-packages
