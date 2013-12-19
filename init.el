@@ -31,8 +31,8 @@
 (eval-after-load 'ido '(require 'setup-ido))
 (require 'ido)
 
-;; Add grunt helpers
-(require 'setup-grunt)
+;; Add helpers
+(require 'helpers)
 
 ;; Map files to modes
 (require 'mode-mappings)
@@ -72,14 +72,6 @@
                    (global-set-key (kbd "M-X") 'smex-major-mode-commands)
                    (smex-initialize))
           )
-
-   ;;(:name magit       ; git meet emacs, and a binding
-   ;;       :type git
-   ;;       :url "git://github.com/magit/magit.git"
-   ;;       :features magit
-   ;;       :after (progn
-   ;;                (global-set-key (kbd "C-x C-z") 'magit-status))
-   ;;       )
 
    (:name goto-last-change    ; move pointer back to last change
           :after (progn
@@ -139,24 +131,42 @@
           :features js2-mode
           )
 
-   (:name auto-complete ;; crappy intellisense
-          :features auto-complete
+   (:name auto-complete
+          :website "https://github.com/auto-complete/auto-complete"
+          :description "The most intelligent auto-completion extension."
+          :type github
+          :pkgname "auto-complete/auto-complete"
+          :depends (popup fuzzy)
           :after (progn
-                   (global-auto-complete-mode t)
-                   (global-set-key (kbd "M-s") 'auto-complete)
-                   (define-key ac-complete-mode-map "\C-g" 'ac-stop)
-                   (define-key ac-complete-mode-map "\r" 'ac-complete)
-                   (define-key ac-menu-map "\C-n" 'ac-next)
-                   (define-key ac-menu-map "\C-p" 'ac-previous)
+                                        ;(global-auto-complete-mode t)
+                                        ;(setq ac-comphist-file (expand-file-name "~/.emacs.d/backups/.ac-comphist"))
+                                        ;(set-face-background 'ac-candidate-face "white")
+                                        ;(setq ac-override-local-map t)
+                                        ;(setq ac-use-menu-map t)
+                                        ;(setq ac-ignore-case t)
+                                        ;(setq ac-menu-height 10)
+                                        ;(setq ac-dwim nil))
+                   ))
 
-                   (setq ac-comphist-file (expand-file-name "~/.emacs.d/backups/.ac-comphist"))
-                   (set-face-background 'ac-candidate-face "white")
-                   (setq ac-override-local-map t)
-                   (setq ac-use-menu-map t)
-                   (setq ac-ignore-case t)
-                   (setq ac-menu-height 10)
-                   (setq ac-dwim nil))
-          )
+   (:name magit
+          :website "https://github.com/magit/magit#readme"
+          :description "It's Magit! An Emacs mode for Git."
+          :type github
+          :pkgname "magit/magit"
+          :depends (git-modes)
+          :info "."
+          ;; let el-get care about autoloads so that it works with all OSes
+          :build (if (version<= "24.3" emacs-version)
+                     `(("make" ,(format "EMACS=%s" el-get-emacs) "all"))
+                   `(("make" ,(format "EMACS=%s" el-get-emacs) "docs")))
+          :build/berkeley-unix (("touch" "`find . -name Makefile`") ("gmake"))
+          :after (progn
+                   (global-set-key (kbd "C-x C-z") 'magit-status)))
+
+   (:name git-modes
+          :description "GNU Emacs modes for various Git-related files"
+          :type github
+          :pkgname "magit/git-modes")
 
    (:name ido-ubiquitous ;; Fancy completion all over Emacs
           :features ido-ubiquitous
@@ -191,7 +201,9 @@
                    (persp-mode t)
                    )
           )
-))
+
+
+   ))
 
 (setq
  my:el-get-packages
@@ -207,3 +219,4 @@
 
 ;; Go Fullscreen
 (fullscreen)
+(put 'erase-buffer 'disabled nil)

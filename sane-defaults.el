@@ -145,7 +145,6 @@
   (interactive)
   (untabify (point-min) (point-max)))
 
-
 (defun indent-buffer ()
   (interactive)
   (indent-region (point-min) (point-max)))
@@ -187,6 +186,11 @@ Including indent-buffer, which should not be called automatically on save."
 (setq js-indent-level 2)
 
 
-(ansi-color-for-comint-mode-on)   ; interpret and use ansi color codes in shell output windows
+(ansi-color-for-comint-mode-on) ; interpret and use ansi color codes in shell output windows
+
+;; Switch C-f for search and C-s for forward-char
+;; DOESNT WORK: messes with repetitive C-s and C-s overwrap, need to look into this further.
+;;(global-set-key (kbd "C-s") 'forward-char)
+;;(global-set-key (kbd "C-f") 'isearch-forward)
 
 (provide 'sane-defaults)
