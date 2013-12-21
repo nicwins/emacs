@@ -17,11 +17,11 @@
 
 ;; Store auto save in temp
 (setq backup-directory-alist
-      `((".*" . "~/.saves/")))
+      `((".*" . "~/.emacs.d/backups/.saves/")))
 (setq auto-save-file-name-transforms
-      `((".*" "~/.saves/\\1" t)))
+      `((".*" "~/.emacs.d/backups/.saves/" t)))
 
-(make-directory "~/.saves/" t)
+(make-directory "~/.emacs.d/backups/.saves/" t)
 
 ;; Shift left, up, down, right to swap buffers
 (windmove-default-keybindings)
@@ -80,9 +80,13 @@
 (setq fill-column 80)
 
 ;; Save a list of recent files visited. (open recent file with C-x f)
-(recentf-mode 1)
+(setq recentf-exclude '("~/.emacs.d/backups/.recentf"))
+(setq recentf-save-file (expand-file-name "~/.emacs.d/backups/.recentf" user-emacs-directory))
 (setq recentf-max-saved-items 100) ;; just 20 is too recent
-(setq recentf-ave-file (expand-file-name "~/.emacs.d/backups/.recentf" user-emacs-directory))
+(setq recentf-auto-cleanup 10)
+(setq recentf-auto-save-timer
+      (run-with-idle-timer 30 t 'recentf-save-list))
+(recentf-mode 1)
 
 ;; Undo/redo window configuration with C-c <left>/<right>
 (winner-mode 1)

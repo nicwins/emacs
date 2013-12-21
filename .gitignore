@@ -8,6 +8,8 @@ eshell/
 elpa/
 el-get/
 auto-save-list/
+ido.last
+recentf
 
 #################
 ## Eclipse
