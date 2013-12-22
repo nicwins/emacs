@@ -15,17 +15,7 @@
         "^\\*.*Completions\\*$" "^\\*Ediff" "^\\*tramp" "^\\*cvs-"
         "_region_" " output\\*$" "^TAGS$" "^\*Ido"))
 
-;(defun ido-ignore-crap-buffers (name)
-;  "Ignore the crap buffers"
-;  (string= name "*Messages*"))
-
-;(setq ido-ignore-buffers '(ido-ignore-crap-buffers))
-
-
-(add-hook
- 'ido-setup-hook
- #'(lambda ()
-
+(add-hook 'ido-setup-hook '(lambda ()
      ;; Use C-w to go back up a dir to better match normal usage of C-w
      ;; - insert current file name with C-x C-w instead.
      (define-key ido-file-completion-map (kbd "C-w") 'ido-delete-backward-updir)
@@ -38,17 +28,17 @@
 (add-to-list 'ido-ignore-directories "node_modules")
 
 ;; Enable ido-ubiquitous
-;cond
-;;; New version
-;((fboundp 'ido-ubiquitous)
-; (ido-ubiquitous 1))
-;;; Old version
-;((boundp 'ido-ubiquitous-enabled)
-; ;; Probably not required, since it is enabled by default
-; (setq ido-ubiquitous-enabled t)))
-;
-;defvar ido-cur-item nil)
-;defvar ido-default-item nil)
-;defvar ido-cur-list nil)
+(cond
+ ;; New version
+ ((fboundp 'ido-ubiquitous)
+  (ido-ubiquitous 1))
+ ;; Old version
+ ((boundp 'ido-ubiquitous-enabled)
+  ;; Probably not required, since it is enabled by default
+  (setq ido-ubiquitous-enabled t)))
+
+(defvar ido-cur-item nil)
+(defvar ido-default-item nil)
+(defvar ido-cur-list nil)
 
 (provide 'setup-ido)

@@ -23,6 +23,7 @@
  '(comint-scroll-show-maximum-output t)
  '(comint-scroll-to-bottom-on-input t)
  '(comint-scroll-to-bottom-on-output t)
+ '(ido-everywhere t)
  '(delete-active-region (quote kill))
  '(js2-global-externs
    (quote
