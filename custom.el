@@ -25,10 +25,10 @@
  '(comint-scroll-to-bottom-on-output t)
  '(ido-everywhere t)
  '(delete-active-region (quote kill))
- '(js2-global-externs
-   (quote
-    ("angular" "define" "describe" "expect" "it" "require" "$" "_" "Backbone" "JSON" "setTimeout" "jasmine" "beforeEach" "afterEach" "spyOn" "module" "inject")))
- '(js2-strict-missing-semi-warning nil))
+ '(js2-global-externs (quote ("angular" "define" "describe" "expect" "it" "require" "$" "_" "Backbone" "JSON" "setTimeout" "jasmine" "beforeEach" "afterEach" "spyOn" "module" "inject")))
+ '(js2-strict-missing-semi-warning nil)
+ '(ispell-extra-args (quote ("-a")))
+ '(ispell-program-name "/usr/bin/hunspell"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
