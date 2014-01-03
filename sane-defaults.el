@@ -1,3 +1,10 @@
+;;; sane-defaults --- Sets various emacs default settings
+
+;;; Commentary:
+;;
+;; cribbed from magnars/.emacs.d
+
+;;; Code:
 ;; Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t)
@@ -70,6 +77,7 @@
 (setq column-number-mode t)
 
 ;; Lines should be 80 characters wide, not 72
+(setq-default fill-column 80)
 (setq fill-column 80)
 
 ;; Save a list of recent files visited. (open recent file with C-x f)
@@ -85,7 +93,7 @@
 (winner-mode 1)
 
 ;; Never insert tabs
-(setq default-tab-width 2)
+(setq tab-width 2)
 
 ;; Show me empty lines after buffer end
 (set-default 'indicate-empty-lines t)
@@ -121,6 +129,9 @@
 ;; When popping the mark, continue popping until the cursor actually moves
 ;; Also, if the last command was a copy - skip past all the expand-region cruft.
 (defadvice pop-to-mark-command (around ensure-new-position activate)
+"When popping the mark, continue popping until the cursor moves.
+Also, if the last command was a copy - skip past all the
+expand-region cruft.:"
   (let ((p (point)))
     (when (eq last-command 'save-region-or-current-line)
       ad-do-it
@@ -139,16 +150,18 @@
 
 ;; Whitespace-helpers
 (defun untabify-buffer ()
+"Untabify the entire buffer."
   (interactive)
   (untabify (point-min) (point-max)))
 
 (defun indent-buffer ()
+"Indent the entire buffer."
   (interactive)
   (indent-region (point-min) (point-max)))
 
 (defun cleanup-buffer-safe ()
   "Perform a bunch of safe operations on the whitespace content of a buffer.
-Does not indent buffer, because it is used for a before-save-hook, and that
+Does not indent buffer, because it is used for a 'before-save-hook', and that
 might be bad."
   (interactive)
   (untabify-buffer)
@@ -167,6 +180,7 @@ Including indent-buffer, which should not be called automatically on save."
 
 ;; Newline after inserting closing tag in html-mode
 (defadvice sgml-close-tag (after close-tag-then-newline activate)
+"Add a newline after inserting a closing tag in 'html-mode'."
   (newline-and-indent))
 
 ;; Highlight matching parentheses when the point is on them.
@@ -174,6 +188,7 @@ Including indent-buffer, which should not be called automatically on save."
 
 ;; full screen
 (defun fullscreen ()
+"Set Emacs to fullscreen mode."
   (interactive)
   (set-frame-parameter nil 'fullscreen
                        (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
@@ -186,3 +201,4 @@ Including indent-buffer, which should not be called automatically on save."
 (ansi-color-for-comint-mode-on)
 
 (provide 'sane-defaults)
+;;; sane-defaults.el ends here

@@ -2,6 +2,7 @@
 (add-to-list 'auto-mode-alist '("\\.scss$" . css-mode))
 (autoload 'turn-on-css-eldoc "css-eldoc")
 (add-hook 'css-mode-hook 'turn-on-css-eldoc)
+(add-hook 'css-mode-hook 'fci-mode)
 
 ;; HTML
 (add-to-list 'auto-mode-alist '("\\.html\\'" . html-mode))

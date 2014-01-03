@@ -48,6 +48,7 @@ Will not delete unlisted packages."
      dash
      dired-details+
      emmet-mode
+     f
      fill-column-indicator
      flx-ido
      flycheck
@@ -56,8 +57,12 @@ Will not delete unlisted packages."
      ido-at-point
      ido-ubiquitous
      ido-vertical-mode
+     inf-ruby
      js2-mode
      magit
+     powerline
+     rainbow-delimiters
+     s
      smartparens
      smex
      smooth-scrolling
@@ -76,7 +81,8 @@ Will not delete unlisted packages."
 (require 'auto-complete-config)
 (setq ac-comphist-file  "~/.emacs.d/backups/ac-comphist.dat")
 ;;Make sure we can find the dictionaries
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20131128.233/dict")
+(add-to-list 'ac-dictionary-directories
+             "~/.emacs.d/elpa/auto-complete-20131128.233/dict")
 ;; Use dictionaries by default
 (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
 (global-auto-complete-mode t)
@@ -108,7 +114,8 @@ Will not delete unlisted packages."
 (require 'emmet-mode)
 (add-hook 'sgml-mode-hook 'emmet-mode)
 (add-hook 'css-mode-hook 'emmet-mode)
-(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;indent 2 spaces.
+;; indent 2 spaces.
+(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2)))
 (eval-after-load 'emmet-mode
   '(progn
      (define-key emmet-mode-keymap (kbd "C-j") nil)
@@ -117,7 +124,19 @@ Will not delete unlisted packages."
 
 ;; Fill column indicator
 (require 'fill-column-indicator)
-(setq fci-rule-color "#111122")
+(--each '(css-mode-hook
+          js-mode-hook
+          ruby-mode
+          markdown-mode
+          emacs-lisp-mode-hook)
+  (add-hook it 'fci-mode))
+
+(--each '(css-mode-hook
+          js-mode-hook
+          ruby-mode
+          markdown-mode
+          emacs-lisp-mode-hook)
+  (add-hook it 'auto-fill-mode))
 
 ;; flycheck
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -137,11 +156,28 @@ Will not delete unlisted packages."
 (eval-after-load 'ido '(require 'setup-ido))
 (require 'ido)
 
+;; inferior ruby
+(add-hook 'after-init-hook 'inf-ruby-switch-setup)
+
 ;; js2-mode
 (require 'js2-mode)
 
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
+
+;; powerline
+(require 'powerline)
+(powerline-default-theme)
+
+;; rainbow delimiters
+(require 'rainbow-delimiters)
+(--each '(css-mode-hook
+          js-mode-hook
+          ruby-mode
+          markdown-mode
+          emacs-lisp-mode-hook)
+
+  (add-hook it 'rainbow-delimiters-mode))
 
 ;; ruby mode
 (eval-after-load 'ruby-mode '(require 'setup-ruby-mode))
@@ -152,7 +188,9 @@ Will not delete unlisted packages."
 (--each '(css-mode-hook
           js-mode-hook
           ruby-mode
-          markdown-mode)
+          markdown-mode
+          emacs-lisp-mode-hook)
+
   (add-hook it 'turn-on-smartparens-mode))
 
 ;; smex
