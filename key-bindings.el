@@ -21,4 +21,12 @@
 (global-set-key "\C-x\C-k" 'kill-region)
 (global-set-key "\C-c\C-k" 'kill-region)
 
+;; swap C-f and C-s
+(global-set-key (kbd "C-f") 'isearch-forward)
+(global-set-key (kbd "C-s") 'forward-char)
+(define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
+
+;; duplicate line
+(global-set-key (kbd "C-d") 'duplicate-line)
+(global-set-key (kbd "C-c C-d") 'delete-char)
 (provide 'key-bindings)

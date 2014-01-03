@@ -1,5 +1,7 @@
 ;; CSS
 (add-to-list 'auto-mode-alist '("\\.scss$" . css-mode))
+(autoload 'turn-on-css-eldoc "css-eldoc")
+(add-hook 'css-mode-hook 'turn-on-css-eldoc)
 
 ;; HTML
 (add-to-list 'auto-mode-alist '("\\.html\\'" . html-mode))
@@ -7,6 +9,8 @@
 (add-to-list 'auto-mode-alist '("\\.vm$" . html-mode))
 (add-hook 'html-mode-hook
           (lambda () (local-set-key (kbd "RET") 'reindent-then-newline-and-indent)))
+(eval-after-load "sgml-mode"
+  '(define-key html-mode-map (kbd "C-c C-d") 'ng-snip-show-docs-at-point))
 
 ;; JavaScript
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))

@@ -8,7 +8,7 @@
   (open-line 1)
   (next-line 1)
   (yank))
-(global-set-key (kbd "C-c C-d") 'duplicate-line)
+
 
 (defun grunt-init()
   "Starts the grunt server and grunt test watcher"
@@ -20,18 +20,6 @@
   (comint-send-string "**TEST**" "cd /home/winsln/projects/dashboard; grunt test")
   (comint-send-input)
   (switch-to-buffer "**TEST**"))
-                                        ;(defun clean-winsight-xml ()
-                                        ;  "Remove illegal characters from winsight xml"
-                                        ;  (interactive)
-                                        ;  (revert-buffer t t)
-                                        ;  (goto-char (point-min))
-                                        ;  (while (search-forward "&nbsp;" nil t)
-                                        ;    (replace-match "" nil t))
-                                        ;  (goto-char (point-min))
-                                        ;  (while (search-forward "&" nil t)
-                                        ;    (replace-match "&amp;"))
-                                        ;  (goto-char (point-min))
-                                        ;  (save-buffer))
 
 (defun startup-rails-env ()
   "Start apache, mysqld, and rails"
@@ -57,27 +45,5 @@
   (comint-send-input)
   (switch-to-buffer "**RAILS**")
   )
-  ;;  (message "hello")
-  ;;  (cd "/var/www/html/rails")
-  ;;  (call-process "bundle" nil buf "exec" "rake" "sunspot:solr:start")
-  ;;  (shell buf)
-  ;;  (comint-send-string buf "cd /var/www/html/rails; bundle exec rails s" )
-  ;;  (comint-send-input)
-  ;;  (switch-to-buffer buf)
-  ;;  ))
-
-                                        ;
-                                        ; (let ((buf (generate-new-buffer "async2")))
-                                        ;   (cd "/sudo::/")
-                                        ;   (async-shell-command "service httpd restart" buf)
-                                        ;   ))
-;;(shell-command "cd /var/www/html/rails && bundle exec rake sunspot:solr:start")
-
-;;  (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
-;;                       " | sudo -S service httpd restart"))
-;;
-
-;;
-
 
 (provide 'helpers)

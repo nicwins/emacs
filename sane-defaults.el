@@ -1,7 +1,3 @@
-;; Keep emacs Custom-settings in separate file
-(setq custom-file (expand-file-name "custom.el" dotfiles-dir))
-(load custom-file)
-
 ;; Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t)
@@ -48,9 +44,6 @@
 
 ;; Transparently open compressed files
 (auto-compression-mode t)
-
-;; Enable syntax highlighting for older Emacsen that have it off
-(global-font-lock-mode t)
 
 ;; Answering just 'y' or 'n' will do
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -189,12 +182,7 @@ Including indent-buffer, which should not be called automatically on save."
 ;; Set js-mode indent to 2 for json files
 (setq js-indent-level 2)
 
-
-(ansi-color-for-comint-mode-on) ; interpret and use ansi color codes in shell output windows
-
-;; Switch C-f for search and C-s for forward-char
-;; DOESNT WORK: messes with repetitive C-s and C-s overwrap, need to look into this further.
-;;(global-set-key (kbd "C-s") 'forward-char)
-;;(global-set-key (kbd "C-f") 'isearch-forward)
+;; interpret and use ansi color codes in shell output windows
+(ansi-color-for-comint-mode-on)
 
 (provide 'sane-defaults)

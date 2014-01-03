@@ -13,7 +13,18 @@
       ido-ignore-buffers
       '("\\` " "^\\*ESS\\*" "^\\*Messages\\*" "^\\*Help\\*" "^\\*Buffer"
         "^\\*.*Completions\\*$" "^\\*Ediff" "^\\*tramp" "^\\*cvs-"
-        "_region_" " output\\*$" "^TAGS$" "^\*Ido"))
+        "_region_" " output\\*$" "^TAGS$" "^\*Ido" "^\\*Compile-log\\*"))
+
+;; Try out flx-ido for better flex matching between words
+(require 'flx-ido)
+(flx-ido-mode 1)
+
+;; disable ido faces to see flx highlights.
+(setq ido-use-faces nil)
+
+;; flx-ido looks better with ido-vertical-mode
+;;(require 'ido-vertical-mode)
+;;(ido-vertical-mode)
 
 (add-hook 'ido-setup-hook '(lambda ()
      ;; Use C-w to go back up a dir to better match normal usage of C-w
@@ -27,15 +38,22 @@
 (add-to-list 'ido-ignore-directories "target")
 (add-to-list 'ido-ignore-directories "node_modules")
 
-;; Enable ido-ubiquitous
-(cond
- ;; New version
- ((fboundp 'ido-ubiquitous)
-  (ido-ubiquitous 1))
- ;; Old version
- ((boundp 'ido-ubiquitous-enabled)
-  ;; Probably not required, since it is enabled by default
-  (setq ido-ubiquitous-enabled t)))
+;; Ido at point (C-,)
+(require 'ido-at-point)
+(ido-at-point-mode)
+
+;; ido-ubiquitous
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode 1)
+;; Fix ido-ubiquitous for newer packages
+(defmacro ido-ubiquitous-use-new-completing-read (cmd package)
+  `(eval-after-load ,package
+     '(defadvice ,cmd (around ido-ubiquitous-new activate)
+        (let ((ido-ubiquitous-enable-compatibility nil))
+          ad-do-it))))
+
+(ido-ubiquitous-use-new-completing-read yas-expand 'yasnippet)
+(ido-ubiquitous-use-new-completing-read yas-visit-snippet-file 'yasnippet)
 
 (defvar ido-cur-item nil)
 (defvar ido-default-item nil)
