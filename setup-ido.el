@@ -15,17 +15,6 @@
         "^\\*.*Completions\\*$" "^\\*Ediff" "^\\*tramp" "^\\*cvs-"
         "_region_" " output\\*$" "^TAGS$" "^\*Ido" "^\\*Compile-log\\*"))
 
-;; Try out flx-ido for better flex matching between words
-(require 'flx-ido)
-(flx-ido-mode 1)
-
-;; disable ido faces to see flx highlights.
-(setq ido-use-faces nil)
-
-;; flx-ido looks better with ido-vertical-mode
-;;(require 'ido-vertical-mode)
-;;(ido-vertical-mode)
-
 (add-hook 'ido-setup-hook '(lambda ()
      ;; Use C-w to go back up a dir to better match normal usage of C-w
      ;; - insert current file name with C-x C-w instead.

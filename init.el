@@ -2,7 +2,7 @@
 
 ;;; Commentary:
 ;;
-;; Most of this has been cribbed from gihub/magnars/.emacs.d
+;; Most of this has been cribbed from github/magnars/.emacs.d
 
 ;;; Code:
 
@@ -50,13 +50,11 @@ Will not delete unlisted packages."
      emmet-mode
      f
      fill-column-indicator
-     flx-ido
      flycheck
      god-mode
      highlight-escape-sequences
      ido-at-point
      ido-ubiquitous
-     ido-vertical-mode
      inf-ruby
      js2-mode
      magit

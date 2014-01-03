@@ -15,6 +15,9 @@
 (unless (file-exists-p "~/.emacs.d/elpa/archives/melpa")
   (package-refresh-contents))
 
+(when (not (package-installed-p 'dash))
+  (package-install 'dash))
+
 (require 'dash)
 
 (defun packages-install (packages)
