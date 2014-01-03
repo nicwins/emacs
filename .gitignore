@@ -2,15 +2,9 @@
 ## Emacs
 #################
 
-url/
-server/
-eshell/
 elpa/
-el-get/
-auto-save-list/
-ido.last
-recentf
-tramp
+backups/
+
 
 #################
 ## Eclipse
