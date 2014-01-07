@@ -90,7 +90,7 @@ Will not delete unlisted packages."
 (setq ac-ignore-case nil)
 
 ;; auto-fill
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+;;(add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;; auto-indent
 (require 'auto-indent-mode)
@@ -123,21 +123,14 @@ Will not delete unlisted packages."
 ;; Fill column indicator
 (require 'fill-column-indicator)
 (--each '(css-mode-hook
-          js-mode-hook
+          js2-mode-hook
           ruby-mode
           markdown-mode
           emacs-lisp-mode-hook)
   (add-hook it 'fci-mode))
 
-(--each '(css-mode-hook
-          js-mode-hook
-          ruby-mode
-          markdown-mode
-          emacs-lisp-mode-hook)
-  (add-hook it 'auto-fill-mode))
-
 ;; flycheck
-(add-hook 'after-init-hook #'global-flycheck-mode)
+(add-hook 'after-init-hook 'global-flycheck-mode)
 
 ;; god-mode command modes
 (require 'god-mode)
@@ -170,7 +163,7 @@ Will not delete unlisted packages."
 ;; rainbow delimiters
 (require 'rainbow-delimiters)
 (--each '(css-mode-hook
-          js-mode-hook
+          js2-mode-hook
           ruby-mode
           markdown-mode
           emacs-lisp-mode-hook)
@@ -184,7 +177,8 @@ Will not delete unlisted packages."
 (require 'smartparens-config)
 (setq sp-autoescape-string-quote nil)
 (--each '(css-mode-hook
-          js-mode-hook
+          js2-mode-hook
+          sgml-mode-hook
           ruby-mode
           markdown-mode
           emacs-lisp-mode-hook)
