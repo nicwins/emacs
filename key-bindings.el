@@ -1,4 +1,14 @@
-;; I don't need to kill emacs that easily
+;;; key-bindings.el --- Keybindings related to built-in emacs functions
+
+;;; Commentary:
+
+;; Bindings related to specific modes should go with the code for that mode.
+;; bindings for built in Emacs functions should go here, or this file should be
+;; merged in with init.el
+
+;;; Code:
+
+;; I don't need to kill Emacs that easily
 ;; the mnemonic is C-x REALLY QUIT
 (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-x C-c") 'delete-frame)
@@ -30,3 +40,5 @@
 (global-set-key (kbd "C-d") 'duplicate-line)
 (global-set-key (kbd "C-c C-d") 'delete-char)
 (provide 'key-bindings)
+
+;;; key-bindings.el ends here

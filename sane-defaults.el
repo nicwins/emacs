@@ -15,16 +15,24 @@
 (put 'narrow-to-region 'disabled nil)
 
 ;; Cua Mode
-;;(setq cua-enable-cua-keys nil) ;; only for rectangles
 (cua-mode t)
 
-;; Store auto save in temp
-(setq backup-directory-alist
-      `((".*" . "~/.emacs.d/backups/.saves/")))
-(setq auto-save-file-name-transforms
-      `((".*" "~/.emacs.d/backups/.saves/" t)))
+;; Emacs Autosave Settings
+(setq auto-save-list-file-prefix "~/.emacs.d/backups/.saves/")
+(setq auto-save-file-name-transforms `((".*" "~/.emacs.d/backups/.saves/" t)))
 
-(make-directory "~/.emacs.d/backups/.saves/" t)
+;; Emacs Backup Settings
+(setq
+ backup-by-copying t ; don't clobber symlinks
+ backup-directory-alist
+ `((".*" . "~/.emacs.d/backups/.saves/")) ; don't litter fs
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t) ; use versioned backups
+
+;; Emacs Interlock
+(setq create-lockfiles nil)
 
 ;; Shift left, up, down, right to swap buffers
 (windmove-default-keybindings)
@@ -81,12 +89,12 @@
 (setq fill-column 80)
 
 ;; Save a list of recent files visited. (open recent file with C-x f)
-(setq recentf-exclude '("~/.emacs.d/backups/.recentf"))
+(setq recentf-exclude '("\.recentf"))
 (setq recentf-save-file (expand-file-name "~/.emacs.d/backups/.recentf" user-emacs-directory))
 (setq recentf-max-saved-items 100) ;; just 20 is too recent
-(setq recentf-auto-cleanup 10)
+(setq recentf-auto-cleanup 300)
 (setq recentf-auto-save-timer
-      (run-with-idle-timer 30 t 'recentf-save-list))
+      (run-with-idle-timer 300 t 'recentf-save-list))
 (recentf-mode 1)
 
 ;; Undo/redo window configuration with C-c <left>/<right>

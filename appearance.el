@@ -3,6 +3,10 @@
       color-theme-is-global t
       truncate-partial-width-windows nil)
 
+;; force line word wrapping in text modes
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
 ;; Highlight current line
 (global-hl-line-mode 1)
 

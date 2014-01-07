@@ -2,7 +2,8 @@
 
 ;;; Commentary:
 ;;
-;; Provides helpers to enable automated package install from a list of packages with melpa
+;; Provides helpers to enable automated package install from a list of packages
+;; with melpa.
 
 ;;; Code:
 (require 'package)
