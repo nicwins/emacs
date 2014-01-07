@@ -46,19 +46,23 @@ Will not delete unlisted packages."
      auto-complete
      css-eldoc
      dash
+     diminish
      dired-details+
      emmet-mode
      f
      fill-column-indicator
      flycheck
+     flx-ido
      god-mode
      highlight-escape-sequences
      ido-at-point
      ido-ubiquitous
+     ido-vertical-mode
      inf-ruby
      js2-mode
      magit
      powerline
+     projectile
      rainbow-delimiters
      s
      smartparens
@@ -94,7 +98,8 @@ Will not delete unlisted packages."
 
 ;; auto-indent
 (require 'auto-indent-mode)
-(setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
+;; If you want auto-indent on for files
+(setq auto-indent-on-visit-file t)
 (auto-indent-global-mode)
 
 ;; css-eldoc
@@ -120,21 +125,12 @@ Will not delete unlisted packages."
      (define-key emmet-mode-keymap (kbd "<C-return>") nil)
      (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)))
 
-;; Fill column indicator
-(require 'fill-column-indicator)
-(--each '(css-mode-hook
-          js2-mode-hook
-          ruby-mode
-          markdown-mode
-          emacs-lisp-mode-hook)
-  (add-hook it 'fci-mode))
-
 ;; flycheck
 (add-hook 'after-init-hook 'global-flycheck-mode)
 
 ;; god-mode command modes
 (require 'god-mode)
-(global-set-key (kbd "<escape>") 'god-local-mode)
+(global-set-key (kbd "<escape>") 'god-mode-all)
 (global-set-key (kbd "C-x C-1") 'delete-other-windows)
 (global-set-key (kbd "C-x C-2") 'split-window-below)
 (global-set-key (kbd "C-x C-3") 'split-window-right)
@@ -159,6 +155,14 @@ Will not delete unlisted packages."
 ;; powerline
 (require 'powerline)
 (powerline-default-theme)
+
+;; projectile
+(require 'projectile)
+(setq projectile-keymap-prefix (kbd "C-c C-p"))
+(setq projectile-known-projects-file "~/.emacs.d/backups/projectile-bookmarks.eld")
+(setq projectile-cache-file "/home/winsln/.emacs.d/backups/projectile.cache")
+(projectile-global-mode t)
+(global-set-key '[f2] 'projectile-ag)
 
 ;; rainbow delimiters
 (require 'rainbow-delimiters)

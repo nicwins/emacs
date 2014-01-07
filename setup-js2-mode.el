@@ -11,7 +11,7 @@
 (setq-default js2-basic-offset 2)
 
 (setq js2-warning '(:foreground "orange" :underline nil :weight bold))
-(setq js2-strict-missing-semi-warning nil)
+;;(setq js2-strict-missing-semi-warning nil)
 
 ;; Use lambda for anonymous functions
 (font-lock-add-keywords
