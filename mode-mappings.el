@@ -1,3 +1,8 @@
+;;; This file makes tracing setup convoluted, should be merged with init.el
+;; rather than init -> mode map -> setup-mode
+;; within init.el, you'll need to consolidate the hooks for each mode, by mode,
+;; rather than by activated mode.
+
 ;; CSS
 (add-to-list 'auto-mode-alist '("\\.scss$" . css-mode))
 (autoload 'turn-on-css-eldoc "css-eldoc")
@@ -20,11 +25,11 @@
 ;;(autoload 'js2-mode "js2-mode" nil t)
 (defun my-js2-mode-hook ()
   (if (featurep 'js2-highlight-vars)
-      (js2-highlight-vars-mode))
-  )
+      (js2-highlight-vars-mode)))
+
 (add-hook 'js2-mode-hook 'my-js2-mode-hook)
 (add-hook 'js2-mode-hook (lambda ()
                            (require 'setup-js2-mode)
-                           ))
+                           (subword-mode 1)))
 
 (provide 'mode-mappings)

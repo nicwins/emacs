@@ -46,6 +46,7 @@ Will not delete unlisted packages."
      auto-complete
      css-eldoc
      dash
+     diminish
      dired-details+
      emmet-mode
      f
