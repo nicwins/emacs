@@ -29,7 +29,6 @@
 
 (add-hook 'js2-mode-hook 'my-js2-mode-hook)
 (add-hook 'js2-mode-hook (lambda ()
-                           (require 'setup-js2-mode)
-                           (subword-mode 1)))
+                           (require 'setup-js2-mode)))
 
 (provide 'mode-mappings)

@@ -151,10 +151,12 @@ expand-region cruft.:"
 ;; Seed the random-number generator
 (random t)
 
-;; Whitespace-style
-(setq whitespace-style '(trailing lines space-before-tab
-                                  indentation space-after-tab)
-      whitespace-line-column 100)
+;; Whitespace
+(require 'whitespace)
+(setq whitespace-line-column 100) ;; limit line length
+(setq whitespace-style '(face lines-tail))
+
+(add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;; Whitespace-helpers
 (defun untabify-buffer ()

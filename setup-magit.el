@@ -3,6 +3,10 @@
 ;;; Code:
 
 (set-default 'magit-stage-all-confirm nil)
+(set-face-foreground 'diff-added "#fff")
+(set-face-background 'diff-added "#398439")
+(set-face-foreground 'diff-added "#fff")
+(set-face-background 'diff-removed "#ac2925")
 
 (defadvice magit-status (around magit-fullscreen activate)
   "Set magit status to full-screen."
