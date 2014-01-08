@@ -136,6 +136,19 @@ Will not delete unlisted packages."
 (global-set-key (kbd "C-x C-3") 'split-window-right)
 (global-set-key (kbd "C-x C-0") 'delete-window)
 
+(defun my-update-cursor ()
+"Set the cursor to a red bar if in god mode or read only.
+Else set cursor to a white box."
+  (setq cursor-type (if (or god-local-mode buffer-read-only)
+                        'bar
+                      'box))
+  (set-cursor-color (if (or god-local-mode buffer-read-only)
+                        "#FF0000"
+                      "#FFFFFF")))
+
+(add-hook 'god-mode-enabled-hook 'my-update-cursor)
+(add-hook 'god-mode-disabled-hook 'my-update-cursor)
+
 ;; highlight-escape-sequences
 (hes-mode)
 
@@ -151,6 +164,7 @@ Will not delete unlisted packages."
 
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
+(eval-after-load 'magit '(require 'setup-magit))
 
 ;; powerline
 (require 'powerline)
@@ -163,6 +177,14 @@ Will not delete unlisted packages."
 (setq projectile-cache-file "/home/winsln/.emacs.d/backups/projectile.cache")
 (projectile-global-mode t)
 (global-set-key '[f2] 'projectile-ag)
+
+;;
+;;(defun projectile-update-mode-line ()
+;;  "Report project in mode-line."
+;;  (let* ((project-name (projectile-project-name))
+;;         (message (format " [%s]" (propertize project-name 'face 'persp-selected-face))))
+;;    (setq projectile-mode-line message))
+;;  (force-mode-line-update))
 
 ;; rainbow delimiters
 (require 'rainbow-delimiters)

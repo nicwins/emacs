@@ -80,7 +80,7 @@
 (delete-selection-mode 1)
 
 ;; Always display line and column numbers
-(global-linum-mode 1)
+;;(global-linum-mode 1)
 (setq line-number-mode t)
 (setq column-number-mode t)
 
