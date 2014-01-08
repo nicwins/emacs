@@ -38,7 +38,6 @@
 
 ;; duplicate line
 (global-set-key (kbd "C-d") 'duplicate-line)
-(global-set-key (kbd "C-c C-d") 'delete-char)
 
 ;; collapse lines
 (global-set-key (kbd "C-j")
@@ -57,7 +56,7 @@ Else kill the buffer."
 (add-hook 'shell-mode-hook
           (lambda ()
             (define-key shell-mode-map
-              (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
+              (kbd "C-q") 'comint-delchar-or-eof-or-kill-buffer)))
 
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
 

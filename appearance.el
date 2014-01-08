@@ -40,6 +40,8 @@
 (eval-after-load "smartparens" '(diminish 'smartparens-mode))
 (eval-after-load "auto-complete" '(diminish 'auto-complete-mode))
 (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode))
+(eval-after-load "whitespace" '(diminish 'whitespace-mode))
+(eval-after-load "subword" '(diminish 'subword-mode))
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name

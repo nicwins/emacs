@@ -137,7 +137,7 @@ Will not delete unlisted packages."
 (global-set-key (kbd "C-x C-0") 'delete-window)
 
 (defun my-update-cursor ()
-"Set the cursor to a red bar if in god mode or read only.
+  "Set the cursor to a red bar if in god mode or read only.
 Else set cursor to a white box."
   (setq cursor-type (if (or god-local-mode buffer-read-only)
                         'bar
@@ -178,13 +178,12 @@ Else set cursor to a white box."
 (projectile-global-mode t)
 (global-set-key '[f2] 'projectile-ag)
 
-;;
-;;(defun projectile-update-mode-line ()
-;;  "Report project in mode-line."
-;;  (let* ((project-name (projectile-project-name))
-;;         (message (format " [%s]" (propertize project-name 'face 'persp-selected-face))))
-;;    (setq projectile-mode-line message))
-;;  (force-mode-line-update))
+(defun projectile-update-mode-line ()
+  "Report project in mode-line."
+  (let* ((project-name (projectile-project-name))
+         (message (format " [%s]" project-name)))
+    (setq projectile-mode-line message))
+  (force-mode-line-update))
 
 ;; rainbow delimiters
 (require 'rainbow-delimiters)
