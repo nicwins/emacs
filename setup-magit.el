@@ -14,6 +14,12 @@
   ad-do-it
   (delete-other-windows))
 
+(defadvice magit-commit (around magit-commitdiff activate)
+  "Add the diff buffer to the commit view."
+  ad-do-it
+  (delete-other-windows)
+  (magit-diff-staged))
+
 (defun magit-quit-session ()
   "Restore the previous window configuration and kill the magit buffer."
   (interactive)
