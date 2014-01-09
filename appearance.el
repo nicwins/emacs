@@ -1,3 +1,12 @@
+
+;;; appearance --- Sets appearance defaults not associated with a particular mode
+
+;;; Commentary:
+;; Any appearace customs particular to non-built-in modes should be placed with the set for that
+;; mode, not here.
+
+;;; Code:
+
 (setq visible-bell t
       font-lock-maximum-decoration t
       color-theme-is-global t
@@ -41,7 +50,6 @@
 (eval-after-load "auto-complete" '(diminish 'auto-complete-mode))
 (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode))
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))
-(eval-after-load "subword" '(diminish 'subword-mode))
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
@@ -51,3 +59,4 @@
 (rename-modeline "js2-mode" js2-mode "JS2")
 
 (provide 'appearance)
+;;; appearance.el ends here
