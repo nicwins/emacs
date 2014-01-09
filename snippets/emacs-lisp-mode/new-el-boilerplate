@@ -1,0 +1,16 @@
+# name: new-el-boilerplate
+# key: neb
+# binding: C-c C-n
+# --
+
+;;; ${1:Package Name} --- ${2:Summary}
+
+;;; Commentary:
+;; $3
+
+;;; Code:
+
+$0
+
+(provide '$1)
+;;; $1.el ends here
