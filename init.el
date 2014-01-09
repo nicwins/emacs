@@ -52,21 +52,19 @@ Will not delete unlisted packages."
      f
      fill-column-indicator
      flycheck
-     flx-ido
      god-mode
+     helm
+     helm-projectile
      highlight-escape-sequences
-     ido-at-point
-     ido-ubiquitous
-     ido-vertical-mode
      inf-ruby
      js2-mode
      magit
+     popwin
      powerline
      projectile
      rainbow-delimiters
      s
      smartparens
-     smex
      smooth-scrolling
      undo-tree
      yasnippet
@@ -149,12 +147,20 @@ Else set cursor to a white box."
 (add-hook 'god-mode-enabled-hook 'my-update-cursor)
 (add-hook 'god-mode-disabled-hook 'my-update-cursor)
 
+;; Helm
+(helm-mode t)
+(setq helm-idle-delay 0.1)
+(setq helm-input-idle-delay 0.1)
+(global-set-key (kbd "C-x C-f") 'helm-for-files)
+(define-key helm-map (kbd "C-;") 'helm-execute-persistent-action)
+(global-set-key (kbd "C-x C-d") 'helm-projectile)
+
 ;; highlight-escape-sequences
 (hes-mode)
 
 ;; IDO
-(eval-after-load 'ido '(require 'setup-ido))
-(require 'ido)
+;;(eval-after-load 'ido '(require 'setup-ido))
+;;(require 'ido)
 
 ;; inferior ruby
 (add-hook 'after-init-hook 'inf-ruby-switch-setup)
@@ -165,6 +171,27 @@ Else set cursor to a white box."
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
 (eval-after-load 'magit '(require 'setup-magit))
+
+;; popwin
+(require 'popwin)
+(popwin-mode 1)
+(push '("*Help*" :height 30 :stick t) popwin:special-display-config)
+(push '("*helm for files*" :height 20) popwin:special-display-config)
+(push '("*helm projectile*" :height 20) popwin:special-display-config)
+(push '("*helm-mode-execute-extended-command*" :height 20) popwin:special-display-config)
+(push '("*Warnings*" :height 20) popwin:special-display-config)
+(push '("*Procces List*" :height 20) popwin:special-display-config)
+(push '("*Messages*" :height 20) popwin:special-display-config)
+(push '("*Backtrace*" :height 20) popwin:special-display-config)
+(push '("*Compile-Log*" :height 20 :noselect t) popwin:special-display-config)
+(push '("*Remember*" :height 20) popwin:special-display-config)
+(push '("*undo-tree*" :width 10 :position right) popwin:special-display-config)
+(push '("*All*" :height 20) popwin:special-display-config)
+;; direx
+;;(push '(direx:direx-mode :position left :width 40 :dedicated t)
+;;      popwin:special-display-config)
+
+(provide 'init-popwin)
 
 ;; powerline
 (require 'powerline)
@@ -211,8 +238,8 @@ Else set cursor to a white box."
   (add-hook it 'turn-on-smartparens-mode))
 
 ;; smex
-(require 'smex)
-(smex-initialize)
+;;(require 'smex)
+;;(smex-initialize)
 
 ;; smooth-scrolling
 (require 'smooth-scrolling)
