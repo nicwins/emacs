@@ -19,7 +19,6 @@
                                            (other-window 1)))))
 
 (add-hook 'server-done-hook (lambda ()
-                              (delete-other-windows)
                               (kill-buffer "*magit-diff*")))
 
 (defadvice magit-commit-internal (after magit-commit-diff activate)
@@ -36,6 +35,7 @@
   "Restore the previous window configuration and kill the magit buffer."
   (interactive)
   (kill-buffer)
+  (kill-buffer "*magit-process*")
   (jump-to-register :magit-fullscreen))
 
 (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
