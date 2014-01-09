@@ -1,3 +1,11 @@
+;;; helpers --- My defuns and associated keybindings
+
+;;; Commentary:
+;; This contains my custom defuns and their associated key-bindings. Might want to separate this
+;; into those needed for specific projects vs those that are nice for Emacs itself.
+
+;;; Code:
+
 (require 'comint)
 
 (defun duplicate-line()
@@ -8,7 +16,6 @@
   (open-line 1)
   (next-line 1)
   (yank))
-
 
 (defun grunt-init()
   "Starts the grunt server and grunt test watcher"
@@ -24,7 +31,7 @@
 (defun startup-rails-env ()
   "Start apache, mysqld, and rails"
   (interactive)
-  ; (save-window-excursion
+                                        ; (save-window-excursion
   (let ((buf (generate-new-buffer "mysql")))
     (set-buffer buf)
     (cd "/sudo::/")
@@ -66,11 +73,8 @@
     (if (not (and filename (file-exists-p filename)))
         (message "Buffer is not visiting a file!")
       (let ((new-name (read-file-name "New name: " filename)))
-        (cond
-         ;;((vc-backend filename) (vc-rename-file filename new-name))
-         (t
-          (rename-file filename new-name t)
-          (set-visited-file-name new-name t t)))))))
+        (rename-file filename new-name t)
+        (set-visited-file-name new-name t t)))))
 
 (global-set-key (kbd "C-c r")  'rename-file-and-buffer)
 
@@ -95,3 +99,4 @@
 (global-set-key (kbd "C-c D")  'delete-file-and-buffer)
 
 (provide 'helpers)
+;;; helpers.el ends here

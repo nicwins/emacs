@@ -1,5 +1,4 @@
-
-;;; appearance --- Sets appearance defaults not associated with a particular mode
+;;; appearance --- Sets appearance defaults not associated with a particular mode.
 
 ;;; Commentary:
 ;; Any appearace customs particular to non-built-in modes should be placed with the set for that

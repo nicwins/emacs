@@ -1,5 +1,8 @@
-;;; setup-magit --- Magit Initialization and helpers
+;;; setup-magit --- Magit inits and helpers
+
 ;;; Commentary:
+;; Adds full-screen to magit status, magit-diff with commit, and colorizes the diff screen.
+
 ;;; Code:
 
 (set-default 'magit-stage-all-confirm nil)
@@ -16,8 +19,8 @@
 
 (defadvice magit-commit (around magit-commitdiff activate)
   "Add the diff buffer to the commit view."
-  ad-do-it
   (delete-other-windows)
+  ad-do-it
   (magit-diff-staged))
 
 (defun magit-quit-session ()

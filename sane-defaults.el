@@ -1,10 +1,10 @@
 ;;; sane-defaults --- Sets various emacs default settings
 
 ;;; Commentary:
-;;
 ;; cribbed from magnars/.emacs.d
 
 ;;; Code:
+
 ;; Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t)
