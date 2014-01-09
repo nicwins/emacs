@@ -3,6 +3,12 @@
 ;; within init.el, you'll need to consolidate the hooks for each mode, by mode,
 ;; rather than by activated mode.
 
+;; Eldoc
+
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+
 ;; CSS
 (add-to-list 'auto-mode-alist '("\\.scss$" . css-mode))
 (autoload 'turn-on-css-eldoc "css-eldoc")
