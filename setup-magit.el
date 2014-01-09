@@ -18,9 +18,11 @@
                                            (switch-to-buffer-other-window "*magit-diff*")
                                            (other-window 1)))))
 
-(add-hook 'magit-refresh-file-buffer-hook (lambda () (kill-buffer "*magit-diff*")))
+(add-hook 'server-done-hook (lambda ()
+                              (delete-other-windows)
+                              (kill-buffer "*magit-diff*")))
 
-(defadvice magit-commit-internal (before magit-commit-diff activate)
+(defadvice magit-commit-internal (after magit-commit-diff activate)
   "Add the diff buffer to the commit view."
   (magit-diff-staged))
 
