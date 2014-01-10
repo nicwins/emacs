@@ -272,7 +272,7 @@ Else set cursor to a white box."
 (require 'helpers)
 
 ;; Go Fullscreen
-(fullscreen)
+;;(fullscreen)
 
 (setq redisplay-dont-pause t
       scroll-margin 1
