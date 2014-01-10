@@ -26,10 +26,18 @@
  backup-by-copying t ; don't clobber symlinks
  backup-directory-alist
  `((".*" . "~/.emacs.d/backups/.saves/")) ; don't litter fs
+
  delete-old-versions t
  kept-new-versions 6
  kept-old-versions 2
  version-control t) ; use versioned backups
+
+;; Tramp litter
+(setq tramp-backup-directory-alist backup-directory-alist)
+(setq tramp-auto-save-directory "~/.emacs.d/backups/.saves/")
+
+;; Eshell litter
+(setq eshell-directory-name "~/.emacs.d/backups/eshell/")
 
 ;; Emacs Interlock
 (setq create-lockfiles nil)
