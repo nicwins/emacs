@@ -152,7 +152,7 @@ Else set cursor to a white box."
 (setq helm-input-idle-delay 0.1)
 (global-set-key (kbd "C-x C-f") 'helm-for-files)
 (define-key helm-map (kbd "C-;") 'helm-execute-persistent-action)
-(global-set-key (kbd "C-x C-d") 'helm-projectile)
+(global-set-key (kbd "C-x b") 'helm-mini)
 
 ;; highlight-escape-sequences
 (hes-mode)
@@ -175,22 +175,20 @@ Else set cursor to a white box."
 (require 'popwin)
 (popwin-mode 1)
 (push '("*Help*" :height 30 :stick t) popwin:special-display-config)
-(push '("*helm for files*" :height 20) popwin:special-display-config)
-(push '("*helm projectile*" :height 20) popwin:special-display-config)
+(push '("*helm for files*" :width 0.3 :position right) popwin:special-display-config)
+(push '("*helm projectile*" :width 0.3 :position right) popwin:special-display-config)
+(push '("*helm mini*" :width 0.3 :position right) popwin:special-display-config)
 (push '("*helm-mode-execute-extended-command*" :height 20) popwin:special-display-config)
 (push '("*Warnings*" :height 20) popwin:special-display-config)
+(push '("*helm-mode-magit-diff-working-tree*" :width 0.3 :position right)
+      popwin:special-display-config)
 (push '("*Procces List*" :height 20) popwin:special-display-config)
 (push '("*Messages*" :height 20) popwin:special-display-config)
 (push '("*Backtrace*" :height 20) popwin:special-display-config)
 (push '("*Compile-Log*" :height 20 :noselect t) popwin:special-display-config)
 (push '("*Remember*" :height 20) popwin:special-display-config)
-(push '("*undo-tree*" :width 10 :position right) popwin:special-display-config)
+(push '(" *undo-tree*" :width 0.1 :position right) popwin:special-display-config)
 (push '("*All*" :height 20) popwin:special-display-config)
-;; direx
-;;(push '(direx:direx-mode :position left :width 40 :dedicated t)
-;;      popwin:special-display-config)
-
-(provide 'init-popwin)
 
 ;; powerline
 (require 'powerline)
@@ -201,7 +199,10 @@ Else set cursor to a white box."
 (setq projectile-keymap-prefix (kbd "C-c C-p"))
 (setq projectile-known-projects-file "~/.emacs.d/backups/projectile-bookmarks.eld")
 (setq projectile-cache-file "/home/winsln/.emacs.d/backups/projectile.cache")
+(setq projectile-switch-project-action 'helm-projectile)
+;;(setq projectile-remember-window-configs t)
 (projectile-global-mode t)
+(global-set-key '[f1] 'helm-projectile)
 (global-set-key '[f2] 'projectile-ag)
 
 (defun projectile-update-mode-line ()

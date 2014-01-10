@@ -49,6 +49,7 @@
 (eval-after-load "auto-complete" '(diminish 'auto-complete-mode))
 (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode))
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))
+(eval-after-load "helm" '(diminish 'helm-mode))
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
