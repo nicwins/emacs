@@ -175,9 +175,9 @@ Else set cursor to a white box."
 (require 'popwin)
 (popwin-mode 1)
 (push '("*Help*" :height 30 :stick t) popwin:special-display-config)
-(push '("*helm for files*" :width 0.3 :position right) popwin:special-display-config)
-(push '("*helm projectile*" :width 0.3 :position right) popwin:special-display-config)
-(push '("*helm mini*" :width 0.3 :position right) popwin:special-display-config)
+(push '("*helm for files*" :height 20) popwin:special-display-config)
+(push '("*helm projectile*" :height 20) popwin:special-display-config)
+(push '("*helm mini*" :height 20) popwin:special-display-config)
 (push '("*helm-mode-execute-extended-command*" :height 20) popwin:special-display-config)
 (push '("*Warnings*" :height 20) popwin:special-display-config)
 (push '("*helm-mode-magit-diff-working-tree*" :width 0.3 :position right)
@@ -230,6 +230,7 @@ Else set cursor to a white box."
 (setq sp-autoescape-string-quote nil)
 (--each '(css-mode-hook
           js2-mode-hook
+          js-mode-hook
           sgml-mode-hook
           ruby-mode
           markdown-mode
