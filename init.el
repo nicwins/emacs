@@ -238,6 +238,18 @@ Else set cursor to a white box."
 
   (add-hook it 'turn-on-smartparens-mode))
 
+(sp-local-pair 'js2-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
+(sp-local-pair 'js-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
+(sp-local-pair 'ruby-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
+
+(defun my-open-block-sexp (&rest _ignored)
+  "Insert a new line in a newly opened and newlined block."
+  (newline)
+  (indent-according-to-mode)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+
 ;; smex
 ;;(require 'smex)
 ;;(smex-initialize)
