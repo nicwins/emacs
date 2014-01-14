@@ -64,7 +64,9 @@
            (insert (current-kill 0)))))
 
 (global-set-key (kbd "C-c e") 'eval-and-replace)
+
 ;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude='dashboard/.git' -zcvf dashboard.tgz dashboard
+
 (defun rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."
   (interactive)
@@ -90,6 +92,18 @@
           (kill-buffer))))))
 
 (global-set-key (kbd "C-c D")  'delete-file-and-buffer)
+
+(defun kill-all-dired-buffers ()
+  "Kill all dired buffers."
+  (interactive)
+  (save-excursion
+    (let ((count 0))
+      (dolist (buffer (buffer-list))
+        (set-buffer buffer)
+        (when (equal major-mode 'dired-mode)
+          (setq count (1+ count))
+          (kill-buffer buffer)))
+      (message "Killed %i dired buffer(s)." count))))
 
 (provide 'helpers)
 ;;; helpers.el ends here
