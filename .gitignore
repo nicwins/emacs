@@ -5,6 +5,7 @@
 elpa/
 backups/
 tramp
+auto-save-list/
 
 #################
 ## Eclipse
