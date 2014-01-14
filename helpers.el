@@ -65,7 +65,7 @@
 
 (global-set-key (kbd "C-c e") 'eval-and-replace)
 
-;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude='dashboard/.git' -zcvf dashboard.tgz dashboard
+;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude="dashboard/coverage" --exclude="dashboard/.git" -zcvf dashboard.tgz dashboard
 
 (defun rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."
