@@ -58,8 +58,6 @@ Else kill the buffer."
             (define-key shell-mode-map
               (kbd "C-q") 'comint-delchar-or-eof-or-kill-buffer)))
 
-(global-set-key [remap goto-line] 'goto-line-with-feedback)
-
 (defun goto-line-with-feedback ()
   "Show line numbers temporarily, while prompting for the line number input"
   (interactive)
@@ -68,6 +66,8 @@ Else kill the buffer."
         (linum-mode 1)
         (goto-line (read-number "Goto line: ")))
     (linum-mode -1)))
+
+(global-set-key [remap goto-line] 'goto-line-with-feedback)
 
 (provide 'key-bindings)
 ;;; key-bindings.el ends here

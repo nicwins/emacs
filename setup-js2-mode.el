@@ -9,6 +9,8 @@
 (setq-default js2-include-gears-externs nil)
 (setq-default js2-concat-multiline-strings 'eol)
 (setq-default js2-basic-offset 2)
+(setq-default js2-strict-missing-semi-warning nil)
+(setq-default js2-external-variable ((t (:foreground "#DFAF8F" :weight bold)))))
 
 (setq js2-warning '(:foreground "orange" :underline nil :weight bold))
 ;;(setq js2-strict-missing-semi-warning nil)
