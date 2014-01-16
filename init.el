@@ -123,6 +123,7 @@ Will not delete unlisted packages."
      (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)))
 
 ;; flycheck
+;; NOTE: requires npm install -g jshint for js2-mode
 (add-hook 'after-init-hook 'global-flycheck-mode)
 
 ;; god-mode command modes

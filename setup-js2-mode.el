@@ -1,6 +1,6 @@
-(setq-default js2-global-externs '("angular" "define" "describe" "expect" "it" "require" "$" "_" "Backbone" "JSON" "setTimeout" "jasmine" "beforeEach" "afterEach" "spyOn" "module"))
-
-(setq-default js2-idle-timer-delay 0.1)
+(setq-default js2-global-externs
+              '("angular" "inject" "describe" "expect" "it" "beforeEach" "afterEach" "$" "_" "JSON" "jasmine" "spyOn" "module" "Class"))
+(setq-default js2-idle-timer-delay 0.3)
 (setq-default js2-mirror-mode nil)
 (setq-default js2-strict-inconsistent-return-warning nil)
 (setq-default js2-auto-indent-p t)
@@ -9,11 +9,13 @@
 (setq-default js2-include-gears-externs nil)
 (setq-default js2-concat-multiline-strings 'eol)
 (setq-default js2-basic-offset 2)
-(setq-default js2-strict-missing-semi-warning nil)
-(setq-default js2-external-variable ((t (:foreground "#DFAF8F" :weight bold)))))
 
-(setq js2-warning '(:foreground "orange" :underline nil :weight bold))
-;;(setq js2-strict-missing-semi-warning nil)
+;; Let flycheck handle parse errors
+(setq-default js2-show-parse-errors nil)
+(setq-default js2-strict-missing-semi-warning nil)
+(setq-default js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
+
+(add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
 
 ;; Use lambda for anonymous functions
 (font-lock-add-keywords
@@ -22,15 +24,11 @@
                                         (match-end 1) "\u0192")
                         nil)))))
 
-(defun js2r--does-not-need-semi ()
-  (save-excursion
-    (back-to-indentation)
-    (or (looking-at "if ")
-        (looking-at "function ")
-        (looking-at "for ")
-        (looking-at "while ")
-        (looking-at "try ")
-        (looking-at "} else "))))
-
+;; Use right arrow for return in one-line functions
+(font-lock-add-keywords
+ 'js2-mode `(("function *([^)]*) *{ *\\(return\\) "
+              (0 (progn (compose-region (match-beginning 1)
+                                        (match-end 1) "\u2190")
+                        nil)))))
 
 (provide 'setup-js2-mode)
