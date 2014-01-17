@@ -17,16 +17,35 @@
   (next-line 1)
   (yank))
 
-(defun grunt-init()
-  "Starts the grunt server and grunt test watcher"
+(defun grunt-server()
+  "Starts the grunt server"
   (interactive)
   (shell "**local-server**")
   (comint-send-string "**local-server**" "cd ~/projects/dashboard; grunt server")
-  (comint-send-input)
+  (comint-send-input))
+
+(defun grunt-test()
+  "Starts just the grunt test process"
+  (interactive)
   (shell "**TEST**")
   (comint-send-string "**TEST**" "cd ~/projects/dashboard; grunt test")
   (comint-send-input)
   (switch-to-buffer "**TEST**"))
+
+(defun grunt-init ()
+  "Starts the grunt server and test watcher"
+  (interactive)
+  (grunt-server)
+  (grunt-test))
+
+(defun tar-compress-dashboard ()
+  "Tars up the dashboard project"
+  (interactive)
+  (shell "*tar*")
+  (comint-send-string "**TEST**" "cd ~/projects/dashboard; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude='dashboard/coverage' --exclude='dashboard/.git' -zcvf dashboard.tgz dashboard")
+  (kill-buffer))
+
+;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude="dashboard/coverage" --exclude="dashboard/.git" -zcvf dashboard.tgz dashboard
 
 (defun startup-rails-env ()
   "Start apache, mysqld, and rails"
@@ -64,8 +83,6 @@
            (insert (current-kill 0)))))
 
 (global-set-key (kbd "C-c e") 'eval-and-replace)
-
-;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude="dashboard/coverage" --exclude="dashboard/.git" -zcvf dashboard.tgz dashboard
 
 (defun rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."

@@ -71,6 +71,11 @@
 ;; Answering just 'y' or 'n' will do
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; Don't ask about buffers with processes
+(setq kill-buffer-query-functions
+      (remq 'process-kill-buffer-query-function
+            kill-buffer-query-functions))
+
 ;; UTF-8 please
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
