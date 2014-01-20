@@ -42,8 +42,9 @@
   "Tars up the dashboard project"
   (interactive)
   (shell "*tar*")
-  (comint-send-string "**TEST**" "cd ~/projects/dashboard; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude='dashboard/coverage' --exclude='dashboard/.git' -zcvf dashboard.tgz dashboard")
-  (kill-buffer))
+  (switch-to-buffer "*tar*")
+  (comint-send-string "*tar*" "cd ~/projects/; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude='dashboard/coverage' --exclude='dashboard/.git' -zcvf dashboard.tgz dashboard")
+  (comint-send-input))
 
 ;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude="dashboard/coverage" --exclude="dashboard/.git" -zcvf dashboard.tgz dashboard
 
@@ -69,8 +70,7 @@
   (shell "**RAILS**")
   (comint-send-string "**RAILS**" "cd /var/www/html/rails; bundle exec rails s" )
   (comint-send-input)
-  (switch-to-buffer "**RAILS**")
-  )
+  (switch-to-buffer "**RAILS**"))
 
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."
