@@ -55,22 +55,23 @@
   (let ((buf (generate-new-buffer "mysql")))
     (set-buffer buf)
     (cd "/sudo::/")
-    (async-shell-command "service mysqld start" nil buf)
-    )
+    (async-shell-command "service mysqld start" nil buf))
   (let ((buf (generate-new-buffer "apache")))
     (set-buffer buf)
     (cd "/sudo::/")
-    (async-shell-command "service httpd restart" buf)
-    )
+    (async-shell-command "service httpd restart" buf))
   (let ((buf (generate-new-buffer "solr")))
     (set-buffer buf)
     (cd "/var/www/html/rails")
-    (async-shell-command "bundle exec rake sunspot:solr:start" buf)
-    )
+    (async-shell-command "bundle exec rake sunspot:solr:start" buf))
   (shell "**RAILS**")
   (comint-send-string "**RAILS**" "cd /var/www/html/rails; bundle exec rails s" )
   (comint-send-input)
   (switch-to-buffer "**RAILS**"))
+
+;; Prod -- RAILS_ENV='production' bundle exec unicorn -D -c ./config/unicorn.rb
+
+;; Dev sudo /etc/init.d/avahi-daemon stop
 
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."
@@ -121,6 +122,13 @@
           (setq count (1+ count))
           (kill-buffer buffer)))
       (message "Killed %i dired buffer(s)." count))))
+
+(defun toggle-comment-on-line ()
+  "comment or uncomment current line"
+  (interactive)
+  (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+
+(global-set-key (kbd "C-c c") 'toggle-comment-on-line)
 
 (provide 'helpers)
 ;;; helpers.el ends here
