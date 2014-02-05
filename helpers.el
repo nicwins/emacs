@@ -65,7 +65,7 @@
     (cd "/var/www/html/rails")
     (async-shell-command "bundle exec rake sunspot:solr:start" buf))
   (shell "**RAILS**")
-  (comint-send-string "**RAILS**" "cd /var/www/html/rails; bundle exec rails s" )
+  (comint-send-string "**RAILS**" "cd /var/www/html/rails; bundle exec rails s thin" )
   (comint-send-input)
   (switch-to-buffer "**RAILS**"))
 
