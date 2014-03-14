@@ -48,6 +48,8 @@
 
 ;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude="dashboard/coverage" --exclude="dashboard/.git" -zcvf dashboard.tgz dashboard
 
+;; tar --exclude='rails/log' --exclude='rails/solr/data' --exclude='rails/tmp' --exclude='rails/uploads' --exclude='rails/.git' -zcvf rails.tgz rails
+
 (defun startup-rails-env ()
   "Start apache, mysqld, and rails"
   (interactive)

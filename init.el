@@ -214,14 +214,14 @@ Else set cursor to a white box."
   (force-mode-line-update))
 
 ;; rainbow delimiters
-(require 'rainbow-delimiters)
-(--each '(css-mode-hook
-          js2-mode-hook
-          ruby-mode
-          markdown-mode
-          emacs-lisp-mode-hook)
-
-  (add-hook it 'rainbow-delimiters-mode))
+;;(require 'rainbow-delimiters)
+;;(--each '(css-mode-hook
+;;          js2-mode-hook
+;;          ruby-mode
+;;          markdown-mode
+;;          emacs-lisp-mode-hook)
+;;
+;;  (add-hook it 'rainbow-delimiters-mode))
 
 ;; ruby mode
 (eval-after-load 'ruby-mode '(require 'setup-ruby-mode))
@@ -294,6 +294,11 @@ Else set cursor to a white box."
       scroll-step 1
       scroll-conservatively 10000
       scroll-preserve-screen-position 1)
+
+;; Shell-mode
+(add-hook 'comint-output-filter-functions
+          'comint-truncate-buffer)
+(setq comint-buffer-maximum-size 2000)
 
 (provide 'init)
 ;;; init.el ends here
