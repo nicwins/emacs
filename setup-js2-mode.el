@@ -9,6 +9,7 @@
 (setq-default js2-include-gears-externs nil)
 (setq-default js2-concat-multiline-strings 'eol)
 (setq-default js2-basic-offset 2)
+(setq-default js2-include-node-externs t)
 
 ;; Let flycheck handle parse errors
 (setq-default js2-show-parse-errors nil)
@@ -30,5 +31,7 @@
               (0 (progn (compose-region (match-beginning 1)
                                         (match-end 1) "\u2190")
                         nil)))))
+
+
 
 (provide 'setup-js2-mode)

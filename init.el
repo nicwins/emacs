@@ -53,6 +53,7 @@ Will not delete unlisted packages."
      fill-column-indicator
      flycheck
      god-mode
+     haml-mode
      helm
      helm-projectile
      highlight-escape-sequences
@@ -146,6 +147,8 @@ Else set cursor to a white box."
 
 (add-hook 'god-mode-enabled-hook 'my-update-cursor)
 (add-hook 'god-mode-disabled-hook 'my-update-cursor)
+
+;; HAML-mode
 
 ;; Helm
 (helm-mode t)
@@ -302,3 +305,4 @@ Else set cursor to a white box."
 
 (provide 'init)
 ;;; init.el ends here
+(put 'erase-buffer 'disabled nil)
