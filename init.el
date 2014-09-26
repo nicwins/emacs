@@ -60,10 +60,12 @@ Will not delete unlisted packages."
      inf-ruby
      js2-mode
      magit
-     popwin
+     ;;popwin
      powerline
      projectile
      rainbow-delimiters
+     ruby-block
+     ruby-end
      s
      smartparens
      smooth-scrolling
@@ -154,6 +156,7 @@ Else set cursor to a white box."
 (helm-mode t)
 (setq helm-idle-delay 0.1)
 (setq helm-input-idle-delay 0.1)
+(setq helm-buffers-fuzzy-matching t)
 (global-set-key (kbd "C-x C-f") 'helm-for-files)
 (define-key helm-map (kbd "C-;") 'helm-execute-persistent-action)
 (global-set-key (kbd "C-x b") 'helm-mini)
@@ -176,23 +179,23 @@ Else set cursor to a white box."
 (eval-after-load 'magit '(require 'setup-magit))
 
 ;; popwin
-(require 'popwin)
-(popwin-mode 1)
-(push '("*Help*" :height 30 :stick t) popwin:special-display-config)
-(push '("*helm for files*" :height 20) popwin:special-display-config)
-(push '("*helm projectile*" :height 20) popwin:special-display-config)
-(push '("*helm mini*" :height 20) popwin:special-display-config)
-(push '("*helm-mode-execute-extended-command*" :height 20) popwin:special-display-config)
-(push '("*Warnings*" :height 20) popwin:special-display-config)
-(push '("*helm-mode-magit-diff-working-tree*" :width 0.3 :position right)
-      popwin:special-display-config)
-(push '("*Procces List*" :height 20) popwin:special-display-config)
-(push '("*Messages*" :height 20) popwin:special-display-config)
-(push '("*Backtrace*" :height 20) popwin:special-display-config)
-(push '("*Compile-Log*" :height 20 :noselect t) popwin:special-display-config)
-(push '("*Remember*" :height 20) popwin:special-display-config)
-(push '(" *undo-tree*" :width 0.1 :position right) popwin:special-display-config)
-(push '("*All*" :height 20) popwin:special-display-config)
+;;(require 'popwin)
+;;(popwin-mode 1)
+;;(push '("*Help*" :height 30 :stick t) popwin:special-display-config)
+;;(push '("*helm for files*" :height 20) popwin:special-display-config)
+;;(push '("*helm projectile*" :height 20) popwin:special-display-config)
+;;(push '("*helm mini*" :height 20) popwin:special-display-config)
+;;(push '("*helm-mode-execute-extended-command*" :height 20) popwin:special-display-config)
+;;(push '("*Warnings*" :height 20) popwin:special-display-config)
+;;(push '("*helm-mode-magit-diff-working-tree*" :width 0.3 :position right)
+;;      popwin:special-display-config)
+;;(push '("*Procces List*" :height 20) popwin:special-display-config)
+;;(push '("*Messages*" :height 20) popwin:special-display-config)
+;;(push '("*Backtrace*" :height 20) popwin:special-display-config)
+;;(push '("*Compile-Log*" :height 20 :noselect t) popwin:special-display-config)
+;;(push '("*Remember*" :height 20) popwin:special-display-config)
+;;(push '(" *undo-tree*" :width 0.1 :position right) popwin:special-display-config)
+;;(push '("*All*" :height 20) popwin:special-display-config)
 
 ;; powerline
 (require 'powerline)
@@ -204,7 +207,8 @@ Else set cursor to a white box."
 (setq projectile-known-projects-file "~/.emacs.d/backups/projectile-bookmarks.eld")
 (setq projectile-cache-file "/home/winsln/.emacs.d/backups/projectile.cache")
 (setq projectile-switch-project-action 'helm-projectile)
-;;(setq projectile-remember-window-configs t)
+(setq projectile-enable-caching t)
+(setq projectile-remember-window-configs t)
 (projectile-global-mode t)
 (global-set-key '[f1] 'helm-projectile)
 (global-set-key '[f2] 'projectile-ag)
@@ -217,14 +221,17 @@ Else set cursor to a white box."
   (force-mode-line-update))
 
 ;; rainbow delimiters
-;;(require 'rainbow-delimiters)
-;;(--each '(css-mode-hook
-;;          js2-mode-hook
-;;          ruby-mode
-;;          markdown-mode
-;;          emacs-lisp-mode-hook)
-;;
-;;  (add-hook it 'rainbow-delimiters-mode))
+(require 'rainbow-delimiters)
+(--each '(css-mode-hook
+          js2-mode-hook
+          ruby-mode
+          markdown-mode
+          emacs-lisp-mode-hook)
+
+  (add-hook it 'rainbow-delimiters-mode))
+
+;; ruby-end
+
 
 ;; ruby mode
 (eval-after-load 'ruby-mode '(require 'setup-ruby-mode))
@@ -236,8 +243,8 @@ Else set cursor to a white box."
           js2-mode-hook
           js-mode-hook
           sgml-mode-hook
-          ruby-mode
-          markdown-mode
+          ruby-mode-hook
+          markdown-mode-hook
           emacs-lisp-mode-hook)
 
   (add-hook it 'turn-on-smartparens-mode))
@@ -303,6 +310,9 @@ Else set cursor to a white box."
           'comint-truncate-buffer)
 (setq comint-buffer-maximum-size 2000)
 
+(put 'erase-buffer 'disabled nil)
+
+(set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+
 (provide 'init)
 ;;; init.el ends here
-(put 'erase-buffer 'disabled nil)

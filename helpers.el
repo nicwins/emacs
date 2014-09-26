@@ -48,32 +48,47 @@
 
 ;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude="dashboard/coverage" --exclude="dashboard/.git" -zcvf dashboard.tgz dashboard
 
-;; tar --exclude='rails/log' --exclude='rails/solr/data' --exclude='rails/tmp' --exclude='rails/uploads' --exclude='rails/.git' -zcvf rails.tgz rails
+;; tar --exclude='rails/log' --exclude='rails/solr/data' --exclude='rails/tmp' --exclude='rails/uploads' --exclude='rails/.git'  --exclude='rails/public/client/app/bower_components' --exclude='rails/public/client/node_modules' -zcvf rails.tgz rails
 
-(defun startup-rails-env ()
-  "Start apache, mysqld, and rails"
-  (interactive)
-                                        ; (save-window-excursion
-  (let ((buf (generate-new-buffer "mysql")))
-    (set-buffer buf)
-    (cd "/sudo::/")
-    (async-shell-command "service mysqld start" nil buf))
-  (let ((buf (generate-new-buffer "apache")))
-    (set-buffer buf)
-    (cd "/sudo::/")
-    (async-shell-command "service httpd restart" buf))
-  (let ((buf (generate-new-buffer "solr")))
-    (set-buffer buf)
-    (cd "/var/www/html/rails")
-    (async-shell-command "bundle exec rake sunspot:solr:start" buf))
-  (shell "**RAILS**")
-  (comint-send-string "**RAILS**" "cd /var/www/html/rails; bundle exec rails s thin" )
-  (comint-send-input)
-  (switch-to-buffer "**RAILS**"))
+;;(defun startup-rails-env ()
+;;  "Start apache, mysqld, and rails"
+;;  (interactive)
+;;                                        ; (save-window-excursion
+;;  (let ((buf (generate-new-buffer "mysql")))
+;;    (set-buffer buf)
+;;    (cd "/sudo::/")
+;;    (async-shell-command "service mysqld start" nil buf))
+;;  (let ((buf (generate-new-buffer "apache")))
+;;    (set-buffer buf)
+;;    (cd "/sudo::/")
+;;    (async-shell-command "service httpd restart" buf))
+;;  (let ((buf (generate-new-buffer "solr")))
+;;    (set-buffer buf)
+;;    (cd "/var/www/html/rails")
+;;    (async-shell-command "bundle exec rake sunspot:solr:start" buf))
+;;  (shell "**RAILS**")
+;;  (comint-send-string "**RAILS**" "cd /var/www/html/rails; bundle exec rails s thin" )
+;;  (comint-send-input)
+;;  (switch-to-buffer "**RAILS**"))
 
-;; Prod -- RAILS_ENV='production' bundle exec unicorn -D -c ./config/unicorn.rb
+;; Prod -- RAILS_ENV='production' unicorn -D -c ./config/unicorn.rb
 
 ;; Dev sudo /etc/init.d/avahi-daemon stop
+
+(defun startup-rails-grunt ()
+  "Starts rails server and grunt watcher"
+  (interactive)
+
+  (shell "**RAILS**")
+  (comint-send-string "**RAILS**" "cd /var/www/rails; rails s")
+  (comint-send-input)
+
+  (shell "**GRUNT**")
+  (comint-send-string "**GRUNT**" "cd /var/www/rails/public/client; grunt watch:devserver")
+  (comint-send-input)
+
+  (switch-to-buffer "**RAILS**")
+  )
 
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."

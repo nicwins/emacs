@@ -12,5 +12,7 @@
 (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
 (yas-global-mode 1)
 
+(define-key yas-minor-mode-map (kbd "C-c C-y") 'yas-insert-snippet)
+
 (provide 'setup-yasnippet)
 ;;; setup-yasnippet.el ends here

@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: vars temp migration snippet
+# key: vars
+# binding: direct-keybinding
+# expand-env:
+# type: snippet
+# group: custom
+# --
+rename_column :vars, :$1, :$2
+rename_column :vars, :$3, :$4
+rename_column :vars, :$5, :$6
+rename_column :vars, :$7, :$8
+rename_column :vars, :$9, :$10
+rename_column :vars, :$11, :$12
+rename_column :vars, :$13, :$14
+rename_column :vars, :$15, :$16
+rename_column :vars, :$17, :$18
+rename_column :vars, :$19, :$20
+rename_column :vars, :$21, :$22
