@@ -25,11 +25,15 @@
       (expand-file-name "site-lisp" user-emacs-directory))
 
 ;; Set up load path
-(add-to-list 'load-path user-emacs-directory)
 (add-to-list 'load-path site-lisp-dir)
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
+
+;; Add variable to user-lisp-directory
+(defvar user-lisp-directory)
+(setq user-lisp-directory (expand-file-name "lisp" user-emacs-directory))
 
 ;; Keep emacs Custom-settings in separate file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-file (expand-file-name "custom.el" user-lisp-directory))
 (load custom-file)
 
 ;; Setup packages
