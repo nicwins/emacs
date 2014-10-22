@@ -48,7 +48,7 @@
 
 ;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude="dashboard/coverage" --exclude="dashboard/.git" -zcvf dashboard.tgz dashboard
 
-;; tar --exclude='rails/log' --exclude='rails/solr/data' --exclude='rails/tmp' --exclude='rails/uploads' --exclude='rails/.git'  --exclude='rails/public/client/app/bower_components' --exclude='rails/public/client/node_modules' -zcvf rails.tgz rails
+;; tar --exclude='/var/www/evms-dashboard/log' --exclude='/var/www/evms-dashboard/solr/data' --exclude='/var/www/evms-dashboard/tmp' --exclude='/var/www/evms-dashboard/uploads' --exclude='/var/www/evms-dashboard/.git'  --exclude='/var/www/evms-dashboard/public/client/app/bower_components' --exclude='/var/www/evms-dashboard/public/client/node_modules' -zcvf rails.tgz /var/www/evms-dashboard
 
 ;;(defun startup-rails-env ()
 ;;  "Start apache, mysqld, and rails"

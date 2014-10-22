@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: add-column-migration
+# key: add
+# binding: direct-keybinding
+# --
+t.$2 :$1
+$0

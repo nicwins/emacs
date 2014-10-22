@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: create table migrate snippet
+# key: create
+# binding: direct-keybinding
+# type: snippet
+# group: custom
+# --
+create_table :$1 do |t|
+  $0
+
+  t.timestamps
+end

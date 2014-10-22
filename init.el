@@ -49,10 +49,12 @@ Will not delete unlisted packages."
      diminish
      dired-details+
      emmet-mode
+     evil
      f
      fill-column-indicator
      flycheck
      god-mode
+     goto-chg
      haml-mode
      helm
      helm-projectile
@@ -60,7 +62,6 @@ Will not delete unlisted packages."
      inf-ruby
      js2-mode
      magit
-     ;;popwin
      powerline
      projectile
      rainbow-delimiters
@@ -125,6 +126,10 @@ Will not delete unlisted packages."
      (define-key emmet-mode-keymap (kbd "<C-return>") nil)
      (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)))
 
+;; evil
+;; (require 'evil)
+;; (evil-mode 1)
+
 ;; flycheck
 ;; NOTE: requires npm install -g jshint for js2-mode
 (add-hook 'after-init-hook 'global-flycheck-mode)
@@ -149,6 +154,11 @@ Else set cursor to a white box."
 
 (add-hook 'god-mode-enabled-hook 'my-update-cursor)
 (add-hook 'god-mode-disabled-hook 'my-update-cursor)
+
+;; goto-chg
+(require 'goto-chg)
+(global-set-key [(control ?.)] 'goto-last-change)
+(global-set-key [(control ?,)] 'goto-last-change-reverse)
 
 ;; HAML-mode
 
