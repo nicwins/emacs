@@ -14,9 +14,6 @@
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-;; Cua Mode
-(cua-mode t)
-
 ;; Emacs Autosave Settings
 (setq auto-save-list-file-prefix "~/.emacs.d/backups/.saves/")
 (setq auto-save-file-name-transforms `((".*" "~/.emacs.d/backups/.saves/" t)))

@@ -178,10 +178,6 @@ Else set cursor to a white box."
 ;; highlight-escape-sequences
 (hes-mode)
 
-;; IDO
-;;(eval-after-load 'ido '(require 'setup-ido))
-;;(require 'ido)
-
 ;; inferior ruby
 (add-hook 'after-init-hook 'inf-ruby-switch-setup)
 
@@ -191,25 +187,6 @@ Else set cursor to a white box."
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
 (eval-after-load 'magit '(require 'setup-magit))
-
-;; popwin
-;;(require 'popwin)
-;;(popwin-mode 1)
-;;(push '("*Help*" :height 30 :stick t) popwin:special-display-config)
-;;(push '("*helm for files*" :height 20) popwin:special-display-config)
-;;(push '("*helm projectile*" :height 20) popwin:special-display-config)
-;;(push '("*helm mini*" :height 20) popwin:special-display-config)
-;;(push '("*helm-mode-execute-extended-command*" :height 20) popwin:special-display-config)
-;;(push '("*Warnings*" :height 20) popwin:special-display-config)
-;;(push '("*helm-mode-magit-diff-working-tree*" :width 0.3 :position right)
-;;      popwin:special-display-config)
-;;(push '("*Procces List*" :height 20) popwin:special-display-config)
-;;(push '("*Messages*" :height 20) popwin:special-display-config)
-;;(push '("*Backtrace*" :height 20) popwin:special-display-config)
-;;(push '("*Compile-Log*" :height 20 :noselect t) popwin:special-display-config)
-;;(push '("*Remember*" :height 20) popwin:special-display-config)
-;;(push '(" *undo-tree*" :width 0.1 :position right) popwin:special-display-config)
-;;(push '("*All*" :height 20) popwin:special-display-config)
 
 ;; powerline
 (require 'powerline)
@@ -273,11 +250,6 @@ Else set cursor to a white box."
   (indent-according-to-mode)
   (forward-line -1)
   (indent-according-to-mode))
-
-
-;; smex
-;;(require 'smex)
-;;(smex-initialize)
 
 ;; smooth-scrolling
 (require 'smooth-scrolling)
