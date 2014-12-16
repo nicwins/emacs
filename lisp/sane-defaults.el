@@ -206,14 +206,6 @@ Including indent-buffer, which should not be called automatically on save."
 ;; Highlight matching parentheses when the point is on them.
 (show-paren-mode 1)
 
-;; full screen
-(defun fullscreen ()
-"Set Emacs to fullscreen mode."
-  (interactive)
-  (set-frame-parameter nil 'fullscreen
-                       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
-(global-set-key [f11] 'fullscreen)
-
 ;; Set js-mode indent to 2 for json files
 (setq js-indent-level 2)
 

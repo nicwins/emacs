@@ -5,11 +5,16 @@
 
 ;;; Code:
 
-(set-default 'magit-stage-all-confirm nil)
+(setq-default magit-stage-all-confirm nil)
 (set-face-foreground 'diff-added "#fff")
 (set-face-background 'diff-added "#398439")
 (set-face-foreground 'diff-added "#fff")
 (set-face-background 'diff-removed "#ac2925")
+
+(setq-default magit-highlight-whitespace nil)
+(setq-default magit-highlight-trailing-whitespace nil)
+(setq-default magit-highlight-indentation nil)
+(setq-default magit-diff-refine-hunk nil)
 
 (add-hook 'server-switch-hook (lambda ()
                                 (if (derived-mode-p 'git-commit-mode)

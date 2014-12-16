@@ -45,7 +45,6 @@
 Will not delete unlisted packages."
   (packages-install
    '(ag
-     angular-snippets
      auto-indent-mode
      auto-complete
      css-eldoc
@@ -53,19 +52,16 @@ Will not delete unlisted packages."
      diminish
      dired-details+
      emmet-mode
-     evil
      f
      fill-column-indicator
      flycheck
-     god-mode
-     goto-chg
      haml-mode
      helm
      helm-projectile
      highlight-escape-sequences
-     inf-ruby
      js2-mode
      magit
+     markdown-mode
      powerline
      projectile
      rainbow-delimiters
@@ -99,9 +95,6 @@ Will not delete unlisted packages."
 ;; case sensitivity is important when finding matches
 (setq ac-ignore-case nil)
 
-;; auto-fill
-;;(add-hook 'text-mode-hook 'turn-on-auto-fill)
-
 ;; auto-indent
 (require 'auto-indent-mode)
 ;; If you want auto-indent on for files
@@ -130,39 +123,9 @@ Will not delete unlisted packages."
      (define-key emmet-mode-keymap (kbd "<C-return>") nil)
      (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)))
 
-;; evil
-;; (require 'evil)
-;; (evil-mode 1)
-
 ;; flycheck
 ;; NOTE: requires npm install -g jshint for js2-mode
 (add-hook 'after-init-hook 'global-flycheck-mode)
-
-;; god-mode command modes
-(require 'god-mode)
-(global-set-key (kbd "<escape>") 'god-mode-all)
-(global-set-key (kbd "C-x C-1") 'delete-other-windows)
-(global-set-key (kbd "C-x C-2") 'split-window-below)
-(global-set-key (kbd "C-x C-3") 'split-window-right)
-(global-set-key (kbd "C-x C-0") 'delete-window)
-
-(defun my-update-cursor ()
-  "Set the cursor to a red bar if in god mode or read only.
-Else set cursor to a white box."
-  (setq cursor-type (if (or god-local-mode buffer-read-only)
-                        'bar
-                      'box))
-  (set-cursor-color (if (or god-local-mode buffer-read-only)
-                        "#FF0000"
-                      "#FFFFFF")))
-
-(add-hook 'god-mode-enabled-hook 'my-update-cursor)
-(add-hook 'god-mode-disabled-hook 'my-update-cursor)
-
-;; goto-chg
-(require 'goto-chg)
-(global-set-key [(control ?.)] 'goto-last-change)
-(global-set-key [(control ?,)] 'goto-last-change-reverse)
 
 ;; HAML-mode
 
@@ -178,15 +141,18 @@ Else set cursor to a white box."
 ;; highlight-escape-sequences
 (hes-mode)
 
-;; inferior ruby
-(add-hook 'after-init-hook 'inf-ruby-switch-setup)
-
 ;; js2-mode
 (require 'js2-mode)
 
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
 (eval-after-load 'magit '(require 'setup-magit))
+
+;; Markdown Mode
+(autoload 'markdown-mode "markdown-mode"
+  "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;; powerline
 (require 'powerline)
@@ -283,13 +249,13 @@ Else set cursor to a white box."
 (require 'helpers)
 
 ;; Go Fullscreen
-;;(fullscreen)
+(toggle-frame-fullscreen)
 
-(setq redisplay-dont-pause t
-      scroll-margin 1
-      scroll-step 1
-      scroll-conservatively 10000
-      scroll-preserve-screen-position 1)
+;;(setq redisplay-dont-pause t
+;;      scroll-margin 1
+;;      scroll-step 1
+;;      scroll-conservatively 10000
+;;      scroll-preserve-screen-position 1)
 
 ;; Shell-mode
 (add-hook 'comint-output-filter-functions

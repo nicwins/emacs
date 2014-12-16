@@ -17,78 +17,33 @@
   (next-line 1)
   (yank))
 
-(defun grunt-server()
-  "Starts the grunt server"
-  (interactive)
-  (shell "**local-server**")
-  (comint-send-string "**local-server**" "cd ~/projects/dashboard; grunt server")
-  (comint-send-input))
-
-(defun grunt-test()
-  "Starts just the grunt test process"
-  (interactive)
-  (shell "**TEST**")
-  (comint-send-string "**TEST**" "cd ~/projects/dashboard; grunt test")
-  (comint-send-input)
-  (switch-to-buffer "**TEST**"))
-
-(defun grunt-init ()
-  "Starts the grunt server and test watcher"
-  (interactive)
-  (grunt-server)
-  (grunt-test))
-
 (defun tar-compress-dashboard ()
-  "Tars up the dashboard project"
+  "Tars up the dashboard project."
   (interactive)
   (shell "*tar*")
   (switch-to-buffer "*tar*")
-  (comint-send-string "*tar*" "cd ~/projects/; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude='dashboard/coverage' --exclude='dashboard/.git' -zcvf dashboard.tgz dashboard")
+  (comint-send-string "*tar*" "tar --exclude='/var/www/evms-dashboard/log' --exclude='/var/www/evms-dashboard/solr/data' --exclude='/var/www/evms-dashboard/tmp' --exclude='/var/www/evms-dashboard/uploads' --exclude='/var/www/evms-dashboard/.git'  --exclude='/var/www/evms-dashboard/public/client/app/bower_components' --exclude='/var/www/evms-dashboard/public/client/node_modules' -zcvf rails.tgz /var/www/evms-dashboard")
   (comint-send-input))
 
-;; tar --exclude='dashboard/node_modules' --exclude='dashboard/app/bower_components' --exclude="dashboard/coverage" --exclude="dashboard/.git" -zcvf dashboard.tgz dashboard
-
-;; tar --exclude='/var/www/evms-dashboard/log' --exclude='/var/www/evms-dashboard/solr/data' --exclude='/var/www/evms-dashboard/tmp' --exclude='/var/www/evms-dashboard/uploads' --exclude='/var/www/evms-dashboard/.git'  --exclude='/var/www/evms-dashboard/public/client/app/bower_components' --exclude='/var/www/evms-dashboard/public/client/node_modules' -zcvf rails.tgz /var/www/evms-dashboard
-
-;;(defun startup-rails-env ()
-;;  "Start apache, mysqld, and rails"
-;;  (interactive)
-;;                                        ; (save-window-excursion
-;;  (let ((buf (generate-new-buffer "mysql")))
-;;    (set-buffer buf)
-;;    (cd "/sudo::/")
-;;    (async-shell-command "service mysqld start" nil buf))
-;;  (let ((buf (generate-new-buffer "apache")))
-;;    (set-buffer buf)
-;;    (cd "/sudo::/")
-;;    (async-shell-command "service httpd restart" buf))
-;;  (let ((buf (generate-new-buffer "solr")))
-;;    (set-buffer buf)
-;;    (cd "/var/www/html/rails")
-;;    (async-shell-command "bundle exec rake sunspot:solr:start" buf))
-;;  (shell "**RAILS**")
-;;  (comint-send-string "**RAILS**" "cd /var/www/html/rails; bundle exec rails s thin" )
-;;  (comint-send-input)
-;;  (switch-to-buffer "**RAILS**"))
-
-;; Prod -- RAILS_ENV='production' unicorn -D -c ./config/unicorn.rb
-
-;; Dev sudo /etc/init.d/avahi-daemon stop
-
-(defun startup-rails-grunt ()
-  "Starts rails server and grunt watcher"
+(defun grunt-server()
+  "Starts the grunt server."
   (interactive)
+  (shell "**GULP**")
+  (comint-send-string "**GULP**" "cd ~/projects/evms-dashboard/public/client; gulp")
+  (comint-send-input))
 
+(defun rails-server()
+  "Starts rails"
+  (interactive)
   (shell "**RAILS**")
-  (comint-send-string "**RAILS**" "cd /var/www/rails; rails s")
-  (comint-send-input)
+  (comint-send-string "**RAILS**" "cd ~/projects/evms-dashboard/; rails s")
+  (comint-send-input))
 
-  (shell "**GRUNT**")
-  (comint-send-string "**GRUNT**" "cd /var/www/rails/public/client; grunt watch:devserver")
-  (comint-send-input)
-
-  (switch-to-buffer "**RAILS**")
-  )
+(defun startup-evms-dashboard ()
+  "Start rails server and grunt watcher."
+  (interactive)
+  (grunt-server)
+  (rails-server))
 
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."
@@ -141,7 +96,7 @@
       (message "Killed %i dired buffer(s)." count))))
 
 (defun toggle-comment-on-line ()
-  "comment or uncomment current line"
+  "Comment or uncomment current line."
   (interactive)
   (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
 
