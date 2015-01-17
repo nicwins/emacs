@@ -1,8 +1,6 @@
 ;;; init --- Initial setup
 
 ;;; Commentary:
-;;
-;; Most of this has been cribbed from github/magnars/.emacs.d
 
 ;;; Code:
 
@@ -218,7 +216,7 @@ Will not delete unlisted packages."
 (electric-indent-mode nil)
 
 (defun my-open-block-sexp (&rest _ignored)
-  "Insert a new line in a newly opened and newlined block. _IGNORED params."
+  "Insert a new line in a newly opened and newlined block."
   (newline)
   (indent-according-to-mode)
   (forward-line -1)
@@ -251,7 +249,6 @@ Will not delete unlisted packages."
 (require 'server)
 (unless (server-running-p)
   (server-start))
-
 
 ;; Shell-mode
 (add-hook 'comint-output-filter-functions
