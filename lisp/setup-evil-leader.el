@@ -9,3 +9,4 @@
 (evil-leader/set-key "," 'other-window)
 (evil-leader/set-key "b" 'ibuffer)
 (evil-leader/set-key "x" 'helm-M-x)
+(provide 'setup-evil-leader)

@@ -99,23 +99,12 @@ See `pour-mappings-to'."
 (define-key evil-motion-state-map "k" #'evil-previous-visual-line)
 
 (add-to-list 'evil-emacs-state-modes 'bookmark-bmenu-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-commit-mode)
 
 (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
 (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
 (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
 (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
-
-(evil-define-key 'normal dired-mode-map "h" 'dired-up-directory)
-(evil-define-key 'normal dired-mode-map "l" 'dired-find-alternate-file)
-(evil-define-key 'normal dired-mode-map "o" 'dired-sort-toggle-or-edit)
-(evil-define-key 'normal dired-mode-map "v" 'dired-toggle-marks)
-(evil-define-key 'normal dired-mode-map "m" 'dired-mark)
-(evil-define-key 'normal dired-mode-map "u" 'dired-unmark)
-(evil-define-key 'normal dired-mode-map "U" 'dired-unmark-all-marks)
-(evil-define-key 'normal dired-mode-map "c" 'dired-create-directory)
-(evil-define-key 'normal dired-mode-map "n" 'evil-search-next)
-(evil-define-key 'normal dired-mode-map "N" 'evil-search-previous)
-(evil-define-key 'normal dired-mode-map "q" 'kill-this-buffer)
 
 (evil-set-initial-state 'magit-mode 'normal)
     (evil-set-initial-state 'magit-status-mode 'normal)
