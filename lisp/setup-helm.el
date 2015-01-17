@@ -21,7 +21,6 @@
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x c o") 'helm-occur)
-;;(helm-autoresize-mode 1)
 
 (require 'helm-eshell)
 

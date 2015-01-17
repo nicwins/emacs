@@ -35,6 +35,7 @@
 ;; Keep emacs Custom-settings in separate file
 (setq custom-file (expand-file-name "custom.el" user-lisp-directory))
 (load custom-file)
+(setq make-backup-files nil)
 
 ;; Setup package -- MELPA
 (require 'setup-package)
@@ -52,6 +53,7 @@ Will not delete unlisted packages."
      diminish
      dired-details+
      emmet-mode
+     evil
      f
      fill-column-indicator
      flycheck
@@ -60,6 +62,7 @@ Will not delete unlisted packages."
      helm-projectile
      highlight-escape-sequences
      js2-mode
+     linum-relative
      magit
      markdown-mode
      powerline
@@ -80,6 +83,9 @@ Will not delete unlisted packages."
   (error
    (package-refresh-contents)
    (init--install-packages)))
+
+;; Add helpers
+(require 'helpers)
 
 ;; auto-complete
 (autoload 'auto-complete-mode "auto-complete" nil t)
@@ -125,6 +131,9 @@ Will not delete unlisted packages."
      (define-key emmet-mode-keymap (kbd "<C-return>") nil)
      (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)))
 
+;; evil-mode
+(require 'setup-evil)
+
 ;; flycheck
 ;; NOTE: requires npm install -g jshint for js2-mode
 (add-hook 'after-init-hook 'global-flycheck-mode)
@@ -138,6 +147,9 @@ Will not delete unlisted packages."
 ;; js2-mode
 (require 'js2-mode)
 
+;; relative linum
+(require 'linum-relative)
+
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
 (eval-after-load 'magit '(require 'setup-magit))
@@ -149,30 +161,24 @@ Will not delete unlisted packages."
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;; powerline
-(require 'powerline)
-(powerline-default-theme)
+(require 'setup-powerline)
 
 ;; projectile
 (require 'projectile)
 (setq projectile-keymap-prefix (kbd "C-c C-p"))
-(setq projectile-known-projects-file "~/.emacs.d/backups/projectile-bookmarks.eld")
-(setq projectile-cache-file "/home/winsln/.emacs.d/backups/projectile.cache")
+(setq projectile-known-projects-file "~/.emacs.d/projectile-bookmarks.eld")
+(setq projectile-cache-file "~/.emacs.d/backups/projectile.cache")
 (setq projectile-switch-project-action 'helm-projectile)
-(setq projectile-enable-caching t)
+(setq projectile-enable-caching nil)
 (setq projectile-remember-window-configs t)
-(projectile-global-mode t)
+(projectile-global-mode)
 (global-set-key '[f1] 'helm-projectile)
 (global-set-key '[f2] 'projectile-ag)
 
 (require 'helm-projectile)
 (helm-projectile-on)
 
-(defun projectile-update-mode-line ()
-  "Report project in mode-line."
-  (let* ((project-name (projectile-project-name))
-         (message (format " [%s]" project-name)))
-    (setq projectile-mode-line message))
-  (force-mode-line-update))
+(setq projectile-mode-line (quote (:eval (format " [%s]" (projectile-project-name)))))
 
 ;; rainbow delimiters
 (require 'rainbow-delimiters)
@@ -191,21 +197,25 @@ Will not delete unlisted packages."
 (eval-after-load 'ruby-mode '(require 'setup-ruby-mode))
 
 ;; smartparens default setup
-(require 'smartparens-config)
-(setq sp-autoescape-string-quote nil)
-(--each '(css-mode-hook
-          js2-mode-hook
-          js-mode-hook
-          sgml-mode-hook
-          ruby-mode-hook
-          markdown-mode-hook
-          emacs-lisp-mode-hook)
+;; (require 'smartparens-config)
+;; (setq sp-autoescape-string-quote nil)
+;; (--each '(css-mode-hook
+;;           js2-mode-hook
+;;           js-mode-hook
+;;           sgml-mode-hook
+;;           ruby-mode-hook
+;;           markdown-mode-hook
+;;           emacs-lisp-mode-hook)
 
-  (add-hook it 'turn-on-smartparens-mode))
+;;   (add-hook it 'turn-on-smartparens-mode))
 
-(sp-local-pair 'js2-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
-(sp-local-pair 'js-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
-(sp-local-pair 'ruby-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
+;; (sp-local-pair 'js2-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
+;; (sp-local-pair 'js-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
+;; (sp-local-pair 'ruby-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
+
+;; Electric
+(electric-pair-mode 1)
+(electric-indent-mode nil)
 
 (defun my-open-block-sexp (&rest _ignored)
   "Insert a new line in a newly opened and newlined block. _IGNORED params."
@@ -242,8 +252,6 @@ Will not delete unlisted packages."
 (unless (server-running-p)
   (server-start))
 
-;; Add helpers
-(require 'helpers)
 
 ;; Shell-mode
 (add-hook 'comint-output-filter-functions
