@@ -56,6 +56,7 @@ Will not delete unlisted packages."
      fill-column-indicator
      flycheck
      helm
+     helm-descbinds
      helm-projectile
      highlight-escape-sequences
      js2-mode
@@ -129,16 +130,7 @@ Will not delete unlisted packages."
 (add-hook 'after-init-hook 'global-flycheck-mode)
 
 ;; Helm
-(helm-mode t)
-(setq helm-idle-delay 0.1)
-(setq helm-input-idle-delay 0.1)
-(setq helm-buffers-fuzzy-matching t)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-(global-set-key (kbd "C-x b") 'helm-mini)
-(helm-autoresize-mode 1)
+(require 'setup-helm)
 
 ;; highlight-escape-sequences
 (hes-mode)
@@ -252,9 +244,6 @@ Will not delete unlisted packages."
 
 ;; Add helpers
 (require 'helpers)
-
-;; Go Fullscreen
-(toggle-frame-fullscreen)
 
 ;; Shell-mode
 (add-hook 'comint-output-filter-functions
