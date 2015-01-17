@@ -10,6 +10,8 @@
 (setq-default save-place t)
 (setq save-place-file (expand-file-name ".places" (concat dotfiles-dir "backups")))
 
+;; Standard indent of 2
+(setq standard-indent 2)
 
 ;; Show lambda please
 (global-prettify-symbols-mode 1)

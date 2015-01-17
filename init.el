@@ -26,7 +26,7 @@
 
 ;; Set up load path
 (add-to-list 'load-path site-lisp-dir)
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
+(add-to-list 'load-path "~/.emacs.d/lisp")
 
 ;; Add variable to user-lisp-directory
 (defvar user-lisp-directory)
@@ -36,7 +36,7 @@
 (setq custom-file (expand-file-name "custom.el" user-lisp-directory))
 (load custom-file)
 
-;; Setup packages
+;; Setup package -- MELPA
 (require 'setup-package)
 
 ;; Install packages if they are missing
@@ -55,7 +55,6 @@ Will not delete unlisted packages."
      f
      fill-column-indicator
      flycheck
-     haml-mode
      helm
      helm-projectile
      highlight-escape-sequences
@@ -71,6 +70,7 @@ Will not delete unlisted packages."
      smartparens
      smooth-scrolling
      undo-tree
+     web-mode
      yasnippet
      zenburn-theme)))
 
@@ -114,6 +114,7 @@ Will not delete unlisted packages."
 
 ;; emmet-mode
 (require 'emmet-mode)
+(add-hook 'web-mode-hook 'emmet-mode)
 (add-hook 'sgml-mode-hook 'emmet-mode)
 (add-hook 'css-mode-hook 'emmet-mode)
 (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2)))
@@ -127,16 +128,17 @@ Will not delete unlisted packages."
 ;; NOTE: requires npm install -g jshint for js2-mode
 (add-hook 'after-init-hook 'global-flycheck-mode)
 
-;; HAML-mode
-
 ;; Helm
 (helm-mode t)
 (setq helm-idle-delay 0.1)
 (setq helm-input-idle-delay 0.1)
 (setq helm-buffers-fuzzy-matching t)
-(global-set-key (kbd "C-x C-f") 'helm-for-files)
-(define-key helm-map (kbd "C-;") 'helm-execute-persistent-action)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 (global-set-key (kbd "C-x b") 'helm-mini)
+(helm-autoresize-mode 1)
 
 ;; highlight-escape-sequences
 (hes-mode)
@@ -169,6 +171,9 @@ Will not delete unlisted packages."
 (projectile-global-mode t)
 (global-set-key '[f1] 'helm-projectile)
 (global-set-key '[f2] 'projectile-ag)
+
+(require 'helm-projectile)
+(helm-projectile-on)
 
 (defun projectile-update-mode-line ()
   "Report project in mode-line."
@@ -211,7 +216,7 @@ Will not delete unlisted packages."
 (sp-local-pair 'ruby-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
 
 (defun my-open-block-sexp (&rest _ignored)
-  "Insert a new line in a newly opened and newlined block."
+  "Insert a new line in a newly opened and newlined block. _IGNORED params."
   (newline)
   (indent-according-to-mode)
   (forward-line -1)
@@ -251,12 +256,6 @@ Will not delete unlisted packages."
 ;; Go Fullscreen
 (toggle-frame-fullscreen)
 
-;;(setq redisplay-dont-pause t
-;;      scroll-margin 1
-;;      scroll-step 1
-;;      scroll-conservatively 10000
-;;      scroll-preserve-screen-position 1)
-
 ;; Shell-mode
 (add-hook 'comint-output-filter-functions
           'comint-truncate-buffer)
@@ -265,6 +264,17 @@ Will not delete unlisted packages."
 (put 'erase-buffer 'disabled nil)
 
 (set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+
+;; Web-mode
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 (provide 'init)
 ;;; init.el ends here
