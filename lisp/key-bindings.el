@@ -15,19 +15,12 @@
 (global-set-key (kbd "C-x C-o") 'other-window)
 (global-set-key (kbd "C-x o") 'delete-blank-lines)
 
-;; Smart M-x
-;;(global-set-key (kbd "M-x") 'smex)
-;;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;;(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-
 ;; call macro with f5
 (global-set-key [f5] 'call-last-kbd-macro)
 
-;; backword kill word easily
-(global-set-key "\C-w" 'backward-kill-word)
-
 ;; reset kill region to c-x c-k...
 (global-set-key "\C-x\C-k" 'kill-region)
+
 ;; ...and its fat-fingered cousin
 (global-set-key "\C-c\C-k" 'kill-region)
 
@@ -57,17 +50,6 @@ Else kill the buffer."
           (lambda ()
             (define-key shell-mode-map
               (kbd "C-q") 'comint-delchar-or-eof-or-kill-buffer)))
-
-;;(defun goto-line-with-feedback ()
-;;  "Show line numbers temporarily, while prompting for the line number input"
-;;  (interactive)
-;;  (unwind-protect
-;;      (progn
-;;        (linum-mode 1)
-;;        (goto-line (read-number "Goto line: ")))
-;;    (linum-mode -1)))
-
-;;(global-set-key [remap goto-line] 'goto-line-with-feedback)
 
 (provide 'key-bindings)
 ;;; key-bindings.el ends here
