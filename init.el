@@ -52,6 +52,7 @@ Will not delete unlisted packages."
      dired-details+
      emmet-mode
      evil
+     evil-leader
      f
      fill-column-indicator
      flycheck
@@ -128,6 +129,9 @@ Will not delete unlisted packages."
      (define-key emmet-mode-keymap (kbd "C-j") nil)
      (define-key emmet-mode-keymap (kbd "<C-return>") nil)
      (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)))
+
+;; evil-leader-mode
+(require 'setup-evil-leader)
 
 ;; evil-mode
 (require 'setup-evil)

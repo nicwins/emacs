@@ -72,18 +72,64 @@ See `pour-mappings-to'."
       (cond
        ((null evt) (message ""))
        ((and (integerp evt) (char-equal evt exit-key))
-          (delete-char -1)
-          (set-buffer-modified-p modified)
-          (push 'escape unread-command-events))
+        (delete-char -1)
+        (set-buffer-modified-p modified)
+        (push 'escape unread-command-events))
        (t (push evt unread-command-events))))))
 
 (fill-keymap evil-insert-state-map
-             ;;"SPC" 'cofi/yas-expand-or-spc
-             "j"   'cofi/evil-maybe-exit
-             "C-h" 'backward-delete-char
-             "C-k" 'kill-line
-             "C-y" 'yank
-             "C-e" 'end-of-line)
+  ;;"SPC" 'cofi/yas-expand-or-spc
+  "j"   'cofi/evil-maybe-exit
+  "C-h" 'backward-delete-char
+  "C-k" 'kill-line
+  "C-y" 'yank
+  "C-e" 'end-of-line)
+
+(define-key evil-insert-state-map [left] 'undefined)
+(define-key evil-insert-state-map [right] 'undefined)
+(define-key evil-insert-state-map [up] 'undefined)
+(define-key evil-insert-state-map [down] 'undefined)
+
+(define-key evil-motion-state-map [left] 'undefined)
+(define-key evil-motion-state-map [right] 'undefined)
+(define-key evil-motion-state-map [up] 'undefined)
+(define-key evil-motion-state-map [down] 'undefined)
+
+(define-key evil-motion-state-map "j" #'evil-next-visual-line)
+(define-key evil-motion-state-map "k" #'evil-previous-visual-line)
+
+(add-to-list 'evil-emacs-state-modes 'bookmark-bmenu-mode)
+
+(define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+(define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+(define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+(define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+
+(evil-define-key 'normal dired-mode-map "h" 'dired-up-directory)
+(evil-define-key 'normal dired-mode-map "l" 'dired-find-alternate-file)
+(evil-define-key 'normal dired-mode-map "o" 'dired-sort-toggle-or-edit)
+(evil-define-key 'normal dired-mode-map "v" 'dired-toggle-marks)
+(evil-define-key 'normal dired-mode-map "m" 'dired-mark)
+(evil-define-key 'normal dired-mode-map "u" 'dired-unmark)
+(evil-define-key 'normal dired-mode-map "U" 'dired-unmark-all-marks)
+(evil-define-key 'normal dired-mode-map "c" 'dired-create-directory)
+(evil-define-key 'normal dired-mode-map "n" 'evil-search-next)
+(evil-define-key 'normal dired-mode-map "N" 'evil-search-previous)
+(evil-define-key 'normal dired-mode-map "q" 'kill-this-buffer)
+
+(evil-set-initial-state 'magit-mode 'normal)
+    (evil-set-initial-state 'magit-status-mode 'normal)
+    (evil-set-initial-state 'magit-diff-mode 'normal)
+    (evil-set-initial-state 'magit-log-mode 'normal)
+    (evil-define-key 'normal magit-mode-map
+        "j" 'magit-goto-next-section
+        "k" 'magit-goto-previous-section)
+    (evil-define-key 'normal magit-log-mode-map
+        "j" 'magit-goto-next-section
+        "k" 'magit-goto-previous-section)
+    (evil-define-key 'normal magit-diff-mode-map
+        "j" 'magit-goto-next-section
+        "k" 'magit-goto-previous-section)
 
 (provide 'setup-evil)
 ;;; setup-evil ends here
