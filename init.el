@@ -72,6 +72,7 @@ Will not delete unlisted packages."
      ruby-block
      ruby-end
      robe
+     rvm
      s
      skewer-mode
      smartparens
@@ -227,11 +228,10 @@ Will not delete unlisted packages."
   (add-hook it 'rainbow-delimiters-mode))
 
 ;; robe
-
 (add-hook 'ruby-mode-hook 'robe-mode)
 (push 'company-robe company-backends)
-;; ruby-end
 
+;; ruby-end
 
 ;; ruby mode
 (eval-after-load 'ruby-mode '(require 'setup-ruby-mode))
@@ -263,6 +263,10 @@ Will not delete unlisted packages."
   (indent-according-to-mode)
   (forward-line -1)
   (indent-according-to-mode))
+
+;; RVM Integration
+(require 'rvm)
+(rvm-use-default)
 
 ;; smooth-scrolling
 (require 'smooth-scrolling)

@@ -53,6 +53,9 @@
 (after 'magit (diminish 'magit-auto-revert-mode))
 (after 'company (diminish 'company-mode))
 (after 'subword (diminish 'subword-mode))
+(after 'ruby-end (diminish 'ruby-end-mode))
+(after 'ruby-block (diminish 'ruby-block-mode))
+(after 'robe (diminish 'robe-mode))
 
 
 (defmacro rename-modeline (package-name mode new-name)
