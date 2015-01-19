@@ -38,16 +38,13 @@
 ;; Tramp litter
 (setq tramp-backup-directory-alist backup-directory-alist)
 (setq tramp-auto-save-directory "~/.emacs.d/backups/.saves/")
+(setq tramp-default-method "ssh")
 
 ;; Eshell litter
 (setq eshell-directory-name "~/.emacs.d/backups/eshell/")
 
 ;; Emacs Interlock
 (setq create-lockfiles nil)
-
-;; Shift left, up, down, right to swap buffers
-(windmove-default-keybindings)
-(setq windmove-wrap-around t)
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)

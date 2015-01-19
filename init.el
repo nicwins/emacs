@@ -45,14 +45,16 @@ Will not delete unlisted packages."
   (packages-install
    '(ag
      auto-indent-mode
-     auto-complete
      css-eldoc
+     company
+     company-tern
      dash
      diminish
      dired-details+
      emmet-mode
      evil
      evil-leader
+     evil-surround
      f
      fill-column-indicator
      flycheck
@@ -69,9 +71,12 @@ Will not delete unlisted packages."
      rainbow-delimiters
      ruby-block
      ruby-end
+     robe
      s
+     skewer-mode
      smartparens
      smooth-scrolling
+     tern
      undo-tree
      web-mode
      yasnippet
@@ -86,26 +91,14 @@ Will not delete unlisted packages."
 ;; Add helpers
 (require 'helpers)
 
-;; auto-complete
-(autoload 'auto-complete-mode "auto-complete" nil t)
-(require 'auto-complete-config)
-(setq ac-comphist-file  "~/.emacs.d/backups/ac-comphist.dat")
-;;Make sure we can find the dictionaries
-(add-to-list 'ac-dictionary-directories
-             "~/.emacs.d/elpa/auto-complete-20131128.233/dict")
-;; Use dictionaries by default
-(setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
-(global-auto-complete-mode t)
-;; Start auto-completion after 2 characters of a word
-(setq ac-auto-start 2)
-;; case sensitivity is important when finding matches
-(setq ac-ignore-case nil)
-
 ;; auto-indent
 (require 'auto-indent-mode)
 ;; If you want auto-indent on for files
 (setq auto-indent-on-visit-file t)
 (auto-indent-global-mode)
+
+;; Company Mode
+(global-company-mode t)
 
 ;; css-eldoc
 (require 'css-eldoc)
@@ -136,6 +129,10 @@ Will not delete unlisted packages."
 ;; evil-mode
 (require 'setup-evil)
 
+;; evil-surround
+(require 'evil-surround)
+(global-evil-surround-mode 1)
+
 ;; flycheck
 ;; NOTE: requires npm install -g jshint for js2-mode
 (add-hook 'after-init-hook 'global-flycheck-mode)
@@ -150,6 +147,41 @@ Will not delete unlisted packages."
 (require 'js2-mode)
 
 ;; relative linum
+(after 'linum-relative
+  (defun bw/disable-linum-mode ()
+    "Disables linum-mode"
+    (linum-mode -1))
+
+  (defun bw/linum-non-relative (line-number)
+    "Linum formatter that copies the format"
+    (propertize (format linum-relative-format line-number)
+                'face 'linum))
+
+  (defun bw/linum-relative-formatting ()
+    "Turn on relative formatting"
+    (setq-local linum-format 'linum-relative))
+
+  (defun bw/linum-normal-formatting ()
+    "Turn on non-relative formatting"
+    (setq-local linum-format 'bw/linum-non-relative))
+
+  ;; I never use linum-mode except for this, so it's okay to
+  ;; clobber it
+  (setq linum-format 'bw/linum-non-relative
+        ;; show >> on line where cursor is
+        linum-relative-current-symbol ">>")
+  ;; in Normal mode, use relative numbering
+  (add-hook 'evil-normal-state-entry-hook 'bw/linum-relative-formatting)
+  ;; in Insert mode, use normal line numbering
+  (add-hook 'evil-insert-state-entry-hook 'bw/linum-normal-formatting)
+  ;; turn off linum mode automatically when entering Emacs mode
+  (add-hook 'evil-emacs-state-entry-hook 'bw/disable-linum-mode)
+  ;; turn off linum mode when entering Emacs
+  (add-hook 'evil-emacs-state-entry-hook 'bw/linum-normal-formatting)
+
+  ;; copy linum face so it doesn't look weird
+  (set-face-attribute 'linum-relative-current-face nil :foreground (face-attribute 'font-lock-keyword-face :foreground) :background nil :inherit 'linum :bold t))
+
 (require 'linum-relative)
 
 ;; magit
@@ -176,6 +208,8 @@ Will not delete unlisted packages."
 (projectile-global-mode)
 (global-set-key '[f1] 'helm-projectile)
 (global-set-key '[f2] 'projectile-ag)
+(setq projectile-mode-line '(:eval (with-timeout (0.2 " Projectile[NOOO]")
+                                     (format " Projectile[%s]" (projectile-project-name)))))
 
 (require 'helm-projectile)
 (helm-projectile-on)
@@ -192,6 +226,10 @@ Will not delete unlisted packages."
 
   (add-hook it 'rainbow-delimiters-mode))
 
+;; robe
+
+(add-hook 'ruby-mode-hook 'robe-mode)
+(push 'company-robe company-backends)
 ;; ruby-end
 
 
@@ -261,7 +299,14 @@ Will not delete unlisted packages."
 
 (put 'erase-buffer 'disabled nil)
 
-(set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+;; Skewer
+(add-hook 'js2-mode-hook 'skewer-mode)
+
+;; tern-mode
+(autoload 'tern-mode "tern.el" nil t)
+(add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+
+(add-to-list 'company-backends 'company-tern)
 
 ;; Web-mode
 (require 'web-mode)

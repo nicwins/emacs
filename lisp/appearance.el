@@ -51,6 +51,9 @@
 (after 'yasnippet (diminish 'yas-minor-mode))
 (after 'eldoc (diminish 'eldoc-mode))
 (after 'magit (diminish 'magit-auto-revert-mode))
+(after 'company (diminish 'company-mode))
+(after 'subword (diminish 'subword-mode))
+
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name

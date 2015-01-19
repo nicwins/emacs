@@ -98,27 +98,23 @@ See `pour-mappings-to'."
 (define-key evil-motion-state-map "j" #'evil-next-visual-line)
 (define-key evil-motion-state-map "k" #'evil-previous-visual-line)
 
-(add-to-list 'evil-emacs-state-modes 'bookmark-bmenu-mode)
-(add-to-list 'evil-emacs-state-modes 'magit-commit-mode)
-
 (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
 (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
 (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
 (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
 
-(evil-set-initial-state 'magit-mode 'normal)
-    (evil-set-initial-state 'magit-status-mode 'normal)
-    (evil-set-initial-state 'magit-diff-mode 'normal)
-    (evil-set-initial-state 'magit-log-mode 'normal)
-    (evil-define-key 'normal magit-mode-map
-        "j" 'magit-goto-next-section
-        "k" 'magit-goto-previous-section)
-    (evil-define-key 'normal magit-log-mode-map
-        "j" 'magit-goto-next-section
-        "k" 'magit-goto-previous-section)
-    (evil-define-key 'normal magit-diff-mode-map
-        "j" 'magit-goto-next-section
-        "k" 'magit-goto-previous-section)
+;; State-mode overrides
+(add-to-list 'evil-emacs-state-modes 'bookmark-bmenu-mode)
+(add-to-list 'evil-emacs-state-modes 'ag-mode)
+(add-to-list 'evil-emacs-state-modes 'comint-mode)
+(add-to-list 'evil-emacs-state-modes 'eshell-mode)
+(add-to-list 'evil-emacs-state-modes 'fundamental-mode)
+(add-to-list 'evil-emacs-state-modes 'help-mode)
+(add-to-list 'evil-emacs-state-modes 'term-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-status-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-log-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-diff-mode)
 
 (provide 'setup-evil)
 ;;; setup-evil ends here

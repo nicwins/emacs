@@ -11,6 +11,7 @@
 (setq-default js2-basic-offset 2)
 (setq-default js2-include-node-externs t)
 
+(add-hook 'js2-mode-hook 'js2-imenu-extras-mode)
 ;; Let flycheck handle parse errors
 (setq-default js2-show-parse-errors nil)
 (setq-default js2-strict-missing-semi-warning nil)
