@@ -95,8 +95,8 @@
 (setq column-number-mode t)
 
 ;; Lines should be 80 characters wide, not 72
-(setq-default fill-column 80)
-(setq fill-column 80)
+(setq-default fill-column 120)
+(setq fill-column 120)
 
 ;; Save a list of recent files visited. (open recent file with C-x f)
 (setq recentf-exclude '("\.recentf"))
@@ -162,11 +162,11 @@ expand-region cruft.:"
 (random t)
 
 ;; Whitespace
-(require 'whitespace)
-(setq whitespace-line-column 100) ;; limit line length
-(setq whitespace-style '(face lines-tail))
+;; (require 'whitespace)
+;; (setq whitespace-line-column 120) ;; limit line length
+;; (setq whitespace-style '(face lines-tail))
 
-(add-hook 'prog-mode-hook 'whitespace-mode)
+;; (add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;; Whitespace-helpers
 (defun untabify-buffer ()
