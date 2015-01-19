@@ -43,13 +43,20 @@
 
 ;; Unclutter the modeline
 (require 'diminish)
-(eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
-(eval-after-load "eldoc" '(diminish 'eldoc-mode))
-(eval-after-load "smartparens" '(diminish 'smartparens-mode))
-(eval-after-load "auto-complete" '(diminish 'auto-complete-mode))
-(eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode))
-(eval-after-load "whitespace" '(diminish 'whitespace-mode))
-(eval-after-load "helm" '(diminish 'helm-mode))
+(after 'auto-indent-mode (diminish 'auto-indent-mode))
+(after 'helm (diminish 'helm-mode))
+(after 'whitespace (diminish 'whitespace-mode))
+(after 'undo-tree (diminish 'undo-tree-mode))
+(after 'auto-complete (diminish 'auto-complete-mode))
+(after 'yasnippet (diminish 'yas-minor-mode))
+(after 'eldoc (diminish 'eldoc-mode))
+(after 'magit (diminish 'magit-auto-revert-mode))
+(after 'company (diminish 'company-mode))
+(after 'subword (diminish 'subword-mode))
+(after 'ruby-end (diminish 'ruby-end-mode))
+(after 'ruby-block (diminish 'ruby-block-mode))
+(after 'robe (diminish 'robe-mode))
+
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name

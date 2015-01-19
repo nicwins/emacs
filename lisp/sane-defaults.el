@@ -10,6 +10,12 @@
 (setq-default save-place t)
 (setq save-place-file (expand-file-name ".places" (concat dotfiles-dir "backups")))
 
+;; Standard indent of 2
+(setq standard-indent 2)
+
+;; Show lambda please
+(global-prettify-symbols-mode 1)
+
 ;; Run at full power please
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
@@ -32,16 +38,13 @@
 ;; Tramp litter
 (setq tramp-backup-directory-alist backup-directory-alist)
 (setq tramp-auto-save-directory "~/.emacs.d/backups/.saves/")
+(setq tramp-default-method "ssh")
 
 ;; Eshell litter
 (setq eshell-directory-name "~/.emacs.d/backups/eshell/")
 
 ;; Emacs Interlock
 (setq create-lockfiles nil)
-
-;; Shift left, up, down, right to swap buffers
-(windmove-default-keybindings)
-(setq windmove-wrap-around t)
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
