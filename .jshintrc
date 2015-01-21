@@ -12,7 +12,6 @@
   "nonew" : true,
   "plusplus" : true,
   "unused" : true,
-  "strict" : true,
   "trailing" : true,
   "asi" : false,
   "browser" : true,

@@ -22,6 +22,7 @@
  '(comint-completion-addsuffix t)
  '(comint-completion-autolist t)
  '(comint-input-ignoredups t)
+ '(comint-move-point-for-output t)
  '(comint-scroll-show-maximum-output t)
  '(comint-scroll-to-bottom-on-input t)
  '(comint-scroll-to-bottom-on-output t)
@@ -36,6 +37,7 @@
  '(ispell-extra-args (quote ("-a")))
  '(ispell-program-name "/usr/bin/hunspell")
  '(js2-dynamic-idle-timer-adjust 0)
+ '(standard-indent 2)
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
