@@ -64,7 +64,7 @@ Will not delete unlisted packages."
      highlight-escape-sequences
      js2-mode
      linum-relative
-     magit
+     ;; magit
      markdown-mode
      powerline
      projectile
@@ -187,9 +187,11 @@ Will not delete unlisted packages."
 
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
+(add-to-list 'load-path "~/.emacs.d/lisp/magit")
+(require 'magit)
 (eval-after-load 'magit '(require 'setup-magit))
 
-;; Markdown Mode
+;; markdown Mode
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
@@ -322,6 +324,8 @@ Will not delete unlisted packages."
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+(toggle-frame-fullscreen)
 
 (provide 'init)
 ;;; init.el ends here

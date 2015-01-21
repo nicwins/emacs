@@ -83,7 +83,13 @@ See `pour-mappings-to'."
   "C-h" 'backward-delete-char
   "C-k" 'kill-line
   "C-y" 'yank
-  "C-e" 'end-of-line)
+  "C-e" 'end-of-line
+  "C-a" 'beginning-of-line)
+
+(fill-keymap evil-normal-state-map
+  "C-k" 'kill-line
+  "C-e" 'end-of-line
+  "C-a" 'beginning-of-line)
 
 (define-key evil-insert-state-map [left] 'undefined)
 (define-key evil-insert-state-map [right] 'undefined)
@@ -115,6 +121,16 @@ See `pour-mappings-to'."
 (add-to-list 'evil-emacs-state-modes 'magit-status-mode)
 (add-to-list 'evil-emacs-state-modes 'magit-log-mode)
 (add-to-list 'evil-emacs-state-modes 'magit-diff-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-popup-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-popup-sequence-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-log-select-mode)
+(add-to-list 'evil-emacs-state-modes 'git-rebase-mode)
+
+(defun get-major-mode-name ()
+  "Message the major mode associated with current buffer."
+  (interactive)
+  (message "%s" major-mode))
+
 
 (provide 'setup-evil)
 ;;; setup-evil ends here
