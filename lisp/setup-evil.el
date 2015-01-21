@@ -108,6 +108,8 @@ See `pour-mappings-to'."
 (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
 (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
 (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+(define-key evil-normal-state-map (kbd "C-x C-s") 'undefined)
+(define-key evil-normal-state-map (kbd "C-x s") 'undefined)
 
 ;; State-mode overrides
 (add-to-list 'evil-emacs-state-modes 'bookmark-bmenu-mode)
@@ -125,6 +127,7 @@ See `pour-mappings-to'."
 (add-to-list 'evil-emacs-state-modes 'magit-popup-sequence-mode)
 (add-to-list 'evil-emacs-state-modes 'magit-log-select-mode)
 (add-to-list 'evil-emacs-state-modes 'git-rebase-mode)
+(add-to-list 'evil-emacs-state-modes 'magit-revision-mode)
 
 (defun get-major-mode-name ()
   "Message the major mode associated with current buffer."

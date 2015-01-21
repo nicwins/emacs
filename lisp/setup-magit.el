@@ -17,7 +17,8 @@
       (progn
         ad-do-it
         (jump-to-register :magit-fullscreen))
-    ad-do-it))
+    ad-do-it
+    (delete-other-windows)))
 
 (provide 'setup-magit)
 ;;; setup-magit ends here
