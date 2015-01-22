@@ -189,8 +189,8 @@ Will not delete unlisted packages."
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
 (add-to-list 'load-path "~/.emacs.d/lisp/magit")
-(require 'magit)
 (eval-after-load 'magit '(require 'setup-magit))
+(require 'magit)
 
 ;; markdown Mode
 (autoload 'markdown-mode "markdown-mode"
@@ -328,6 +328,5 @@ Will not delete unlisted packages."
 
 (toggle-frame-fullscreen)
 
-(toggle-frame-fullscreen)
 (provide 'init)
 ;;; init.el ends here
