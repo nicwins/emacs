@@ -30,6 +30,9 @@
    (quote
     ("d070fa185078bf753dcfd873ec63be19fa36a55a0c97dc66848a6d20c5fffdad" default)))
  '(delete-active-region (quote kill))
+ '(eshell-modules-list
+   (quote
+    (eshell-alias eshell-banner eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-term eshell-unix)))
  '(flycheck-jshintrc "~/.emacs.d/.jshintrc")
  '(helm-boring-buffer-regexp-list
    (quote

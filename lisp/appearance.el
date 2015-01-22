@@ -56,6 +56,7 @@
 (after 'ruby-end (diminish 'ruby-end-mode))
 (after 'ruby-block (diminish 'ruby-block-mode))
 (after 'robe (diminish 'robe-mode))
+(after 'magit-backup (diminish 'magit-backup-mode))
 
 
 (defmacro rename-modeline (package-name mode new-name)

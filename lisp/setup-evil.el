@@ -161,6 +161,7 @@ See `pour-mappings-to'."
 (add-to-list 'evil-emacs-state-modes 'magit-log-select-mode)
 (add-to-list 'evil-emacs-state-modes 'git-rebase-mode)
 (add-to-list 'evil-emacs-state-modes 'magit-revision-mode)
+(add-to-list 'evil-emacs-state-modes 'epa-key-list-mode)
 
 (defun get-major-mode-name ()
   "Message the major mode associated with current buffer."
