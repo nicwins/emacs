@@ -131,6 +131,11 @@ See `pour-mappings-to'."
 (define-key evil-motion-state-map [up] 'undefined)
 (define-key evil-motion-state-map [down] 'undefined)
 
+(define-key evil-normal-state-map (kbd "C-x C-s") 'undefined)
+(define-key evil-normal-state-map (kbd "C-x s") 'undefined)
+(define-key evil-normal-state-map (kbd "M-x") 'undefined)
+(define-key evil-insert-state-map (kbd "M-x") 'undefined)
+
 (define-key evil-motion-state-map "j" #'evil-next-visual-line)
 (define-key evil-motion-state-map "k" #'evil-previous-visual-line)
 
@@ -138,8 +143,6 @@ See `pour-mappings-to'."
 (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
 (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
 (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
-(define-key evil-normal-state-map (kbd "C-x C-s") 'undefined)
-(define-key evil-normal-state-map (kbd "C-x s") 'undefined)
 
 ;; State-mode overrides
 (add-to-list 'evil-emacs-state-modes 'bookmark-bmenu-mode)
