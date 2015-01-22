@@ -40,8 +40,7 @@
 
 ;; Install packages if they are missing
 (defun init--install-packages ()
-  "Install below packages if they are missing.
-Will not delete unlisted packages."
+  "Install below packages if they are missing.  Will not delete unlisted packages."
   (packages-install
    '(ace-jump-mode
      ag
