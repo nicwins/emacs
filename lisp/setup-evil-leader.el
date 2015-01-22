@@ -21,5 +21,4 @@
   "K" 'kill-buffer
   "o" 'helm-occur
   "T" 'eshell)
-
-(provide 'setup-evil-leader)
+  (provide 'setup-evil-leader)

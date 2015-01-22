@@ -43,7 +43,8 @@
   "Install below packages if they are missing.
 Will not delete unlisted packages."
   (packages-install
-   '(ag
+   '(ace-jump-mode
+     ag
      auto-indent-mode
      css-eldoc
      company
@@ -341,5 +342,6 @@ Will not delete unlisted packages."
 ;;   )
 ;; (add-hook 'web-mode-hook  'my-web-mode-hook)
 
+(toggle-frame-fullscreen)
 (provide 'init)
 ;;; init.el ends here
