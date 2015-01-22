@@ -65,7 +65,7 @@ Will not delete unlisted packages."
      highlight-escape-sequences
      js2-mode
      linum-relative
-     magit
+     ;; magit
      markdown-mode
      powerline
      projectile
@@ -188,9 +188,11 @@ Will not delete unlisted packages."
 
 ;; magit
 (global-set-key (kbd "C-x C-z") 'magit-status)
+(add-to-list 'load-path "~/.emacs.d/lisp/magit")
+(require 'magit)
 (eval-after-load 'magit '(require 'setup-magit))
 
-;; Markdown Mode
+;; markdown Mode
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
@@ -324,23 +326,7 @@ Will not delete unlisted packages."
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
-;; web-mode
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-
-;; (defun my-web-mode-hook ()
-;;   "Hooks for Web mode."
-;;   (setq web-mode-markup-indent-offset 2)
-;;   (setq web-mode-css-indent-offset 2)
-;;   (setq web-mode-code-indent-offset 2)
-;;   )
-;; (add-hook 'web-mode-hook  'my-web-mode-hook)
+(toggle-frame-fullscreen)
 
 (toggle-frame-fullscreen)
 (provide 'init)
