@@ -204,6 +204,7 @@ Will not delete unlisted packages."
 ;; projectile
 (require 'projectile)
 (setq projectile-keymap-prefix (kbd "C-c C-p"))
+(setq projectile-mode-line (quote (:eval (format " [%s]" (projectile-project-name)))))
 (setq projectile-known-projects-file "~/.emacs.d/projectile-bookmarks.eld")
 (setq projectile-cache-file "~/.emacs.d/backups/projectile.cache")
 (setq projectile-switch-project-action 'helm-projectile)
@@ -212,13 +213,9 @@ Will not delete unlisted packages."
 (projectile-global-mode)
 (global-set-key '[f1] 'helm-projectile)
 (global-set-key '[f2] 'projectile-ag)
-(setq projectile-mode-line '(:eval (with-timeout (0.2 " Projectile[NOOO]")
-                                     (format " Projectile[%s]" (projectile-project-name)))))
 
 (require 'helm-projectile)
 (helm-projectile-on)
-
-(setq projectile-mode-line (quote (:eval (format " [%s]" (projectile-project-name)))))
 
 ;; rainbow delimiters
 (require 'rainbow-delimiters)
@@ -260,7 +257,7 @@ Will not delete unlisted packages."
 (electric-pair-mode 1)
 (electric-indent-mode nil)
 
-(defun my-open-block-sexp (&rest _ignored)
+(defun my-open-block-sexp ()
   "Insert a new line in a newly opened and newlined block."
   (newline)
   (indent-according-to-mode)
