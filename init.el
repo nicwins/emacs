@@ -300,6 +300,8 @@
           'comint-truncate-buffer)
 (setq comint-buffer-maximum-size 2000)
 
+(setq multi-term-program-switches "--login")
+
 (put 'erase-buffer 'disabled nil)
 
 ;; Skewer
