@@ -132,6 +132,8 @@ See `pour-mappings-to'."
 (define-key evil-motion-state-map [down] 'undefined)
 
 (define-key evil-normal-state-map (kbd "C-x C-s") 'undefined)
+(define-key evil-normal-state-map (kbd "C-s") 'undefined)
+(define-key evil-insert-state-map (kbd "C-s") 'undefined)
 (define-key evil-normal-state-map (kbd "C-x s") 'undefined)
 (define-key evil-normal-state-map (kbd "M-x") 'undefined)
 (define-key evil-insert-state-map (kbd "M-x") 'undefined)
