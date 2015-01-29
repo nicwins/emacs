@@ -30,13 +30,17 @@
    (quote
     ("d070fa185078bf753dcfd873ec63be19fa36a55a0c97dc66848a6d20c5fffdad" default)))
  '(delete-active-region (quote kill))
+ '(eshell-buffer-maximum-lines 2000)
+ '(eshell-input-filter-functions nil)
  '(eshell-modules-list
    (quote
     (eshell-alias eshell-banner eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-term eshell-unix)))
- '(flycheck-jshintrc "~/.emacs.d/.jshintrc")
- '(helm-boring-buffer-regexp-list
+ '(eshell-output-filter-functions
    (quote
-    ("\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*Compile-Log\\*")))
+    (eshell-handle-ansi-color eshell-handle-control-codes eshell-truncate-buffer eshell-postoutput-scroll-to-bottom eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt)))
+ '(eshell-scroll-to-bottom-on-input (quote this))
+ '(eshell-scroll-to-bottom-on-output nil)
+ '(flycheck-jshintrc "~/.emacs.d/.jshintrc")
  '(ispell-extra-args (quote ("-a")))
  '(ispell-program-name "/usr/bin/hunspell")
  '(js2-dynamic-idle-timer-adjust 0)

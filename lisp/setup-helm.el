@@ -5,7 +5,14 @@
 
 ;;; Code:
 
-(helm-mode t)
+
+;;; Enable Modes
+;;
+(helm-mode 1)
+(helm-adaptive-mode 1)
+(helm-autoresize-mode 1)
+
+
 (setq helm-idle-delay 0.1)
 (setq helm-input-idle-delay 0.1)
 (setq helm-buffers-fuzzy-matching t
@@ -22,6 +29,8 @@
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x c o") 'helm-occur)
+
+(setq helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*Compile-Log\\*" "\\*magit" "\\*Customize Group"))
 
 (require 'helm-eshell)
 

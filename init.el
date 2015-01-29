@@ -304,14 +304,17 @@
 
 (put 'erase-buffer 'disabled nil)
 
+;; truncate buffers continuously
+(add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
+
 ;; Skewer
 (add-hook 'js2-mode-hook 'skewer-mode)
 
 ;; tern-mode
-(autoload 'tern-mode "tern.el" nil t)
-(add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+;; (autoload 'tern-mode "tern.el" nil t)
+;; (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
 
-(add-to-list 'company-backends 'company-tern)
+;; (add-to-list 'company-backends 'company-tern)
 
 ;; Web-mode
 (require 'web-mode)
