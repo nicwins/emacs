@@ -102,25 +102,9 @@ See `pour-mappings-to'."
   "C-a" 'beginning-of-line)
 
 (fill-keymap evil-normal-state-map
-  "SPC"   'evil-ace-jump-char-mode
-  "S-SPC" 'evil-ace-jump-word-mode
-  "C-SPC" 'evil-ace-jump-line-mode
   "H"     'beginning-of-line
   "L"     'end-of-line)
 
-(fill-keymap evil-operator-state-map
-             ;; works like `f'
-             "SPC"   'evil-ace-jump-char-mode
-             ;; works like `t'
-             "C-SPC" 'evil-ace-jump-char-to-mode
-             "S-SPC" 'evil-ace-jump-word-mode)
-
-(fill-keymap evil-visual-state-map
-             ;; works like `f'
-             "SPC"   'evil-ace-jump-char-mode
-             ;; works like `t'
-             "C-SPC" 'evil-ace-jump-char-to-mode
-             "S-SPC" 'evil-ace-jump-word-mode)
 (define-key evil-insert-state-map [left] 'undefined)
 (define-key evil-insert-state-map [right] 'undefined)
 (define-key evil-insert-state-map [up] 'undefined)

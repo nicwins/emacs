@@ -18,6 +18,7 @@
 (setq-default js2-strict-trailing-comma-warning t)
 
 (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
+(add-hook 'js2-mode-hook (lambda () (electric-pair-mode 1)))
 
 ;; Use lambda for anonymous functions
 (font-lock-add-keywords

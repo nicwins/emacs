@@ -44,6 +44,7 @@
  '(ispell-extra-args (quote ("-a")))
  '(ispell-program-name "/usr/bin/hunspell")
  '(js2-dynamic-idle-timer-adjust 0)
+ '(paradox-github-token t)
  '(standard-indent 2)
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map

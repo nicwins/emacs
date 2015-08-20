@@ -64,9 +64,10 @@
      highlight-escape-sequences
      js2-mode
      linum-relative
-     ;; magit
+     ;; magit ;; using vnext straight from git temporarily.
      markdown-mode
-     powerline
+     paradox
+     ;; powerline
      projectile
      rainbow-delimiters
      ruby-block
@@ -227,8 +228,8 @@
   (add-hook it 'rainbow-delimiters-mode))
 
 ;; robe
-(add-hook 'ruby-mode-hook 'robe-mode)
-(push 'company-robe company-backends)
+;; (add-hook 'ruby-mode-hook 'robe-mode)
+;; (push 'company-robe company-backends)
 
 ;; ruby-end
 
@@ -253,7 +254,7 @@
 ;; (sp-local-pair 'ruby-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
 
 ;; Electric
-(electric-pair-mode 1)
+;; (electric-pair-mode 1) ;; this conflicts with other pair mechs
 (electric-indent-mode nil)
 
 (defun my-open-block-sexp ()

@@ -34,7 +34,7 @@
   (interactive)
   (shell "*tar*")
   (switch-to-buffer "*tar*")
-  (comint-send-string "*tar*" "tar --exclude='/var/www/evms-dashboard/log' --exclude='/var/www/evms-dashboard/solr/data' --exclude='/var/www/evms-dashboard/tmp' --exclude='/var/www/evms-dashboard/uploads' --exclude='/var/www/evms-dashboard/.git'  --exclude='/var/www/evms-dashboard/public/client/app/bower_components' --exclude='/var/www/evms-dashboard/public/client/node_modules' -zcvf rails.tgz /var/www/evms-dashboard")
+  (comint-send-string "*tar*" "tar --exclude='/var/www/evms-dashboard/log' --exclude='/var/www/evms-dashboard/solr/data' --exclude='/var/www/evms-dashboard/tmp' --exclude='/var/www/evms-dashboard/.git'  --exclude='/var/www/evms-dashboard/client/bower_components' --exclude='/var/www/evms-dashboard/client/node_modules' -zcvf rails.tgz /var/www/evms-dashboard")
   (comint-send-input))
 
 (defun grunt-server()
