@@ -58,6 +58,7 @@
      f
      fill-column-indicator
      flycheck
+     guide-key
      helm
      helm-descbinds
      helm-projectile
@@ -138,6 +139,11 @@
 ;; flycheck
 ;; NOTE: requires npm install -g jshint for js2-mode
 (add-hook 'after-init-hook 'global-flycheck-mode)
+
+;; guide-key
+(require 'guide-key)
+(setq guide-key/guide-key-sequence '("SPC"))
+(guide-key-mode 1)
 
 ;; Helm
 (require 'setup-helm)
