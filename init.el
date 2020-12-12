@@ -129,10 +129,10 @@
 
 ;; No splash screen
 (setq inhibit-startup-message t)
-(setq visible-bell t
-      font-lock-maximum-decoration t
-      color-theme-is-global t
-      truncate-partial-width-windows nil)
+(setq-default visible-bell t
+	      font-lock-maximum-decoration t
+	      color-theme-is-global t
+	      truncate-partial-width-windows nil)
 
 ;; Never insert tabs
 (setq tab-width 2)
@@ -196,7 +196,24 @@
 (use-package outshine
   ;; Easier navigation for source files, especially this one
   :delight
-  :hook (emacs-lisp-mode . outshine-mode))
+  :hook (emacs-lisp-mode . outshine-mode)
+  :config
+  (general-def 'outshine-mode-map
+    :prefix "n"
+    :states '(normal)
+    "n" 'outshine-narrow-to-subtree
+    "w" 'widen)
+  (general-def 'outshine-mode-map
+    :states '(normal)
+    "<backtab>" 'outshine-cycle-buffer)
+  (general-def 'outshine-mode-map
+    :states '(normal)
+    :prefix "g"
+    "h" 'outline-up-heading
+    "j" 'outline-forward-same-level
+    "k" 'outline-backward-same-level
+    "l" 'outline-next-visible-heading
+    "o" 'outline-previous-visible-heading))
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
