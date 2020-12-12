@@ -41,7 +41,7 @@
  '(ispell-program-name "/usr/bin/hunspell")
  '(js2-dynamic-idle-timer-adjust 0)
  '(package-selected-packages
-   '(general tide smooth-scrolling smartparens smart-mode-line rjsx-mode rainbow-delimiters markdown-mode magit linum-relative helm-projectile helm-descbinds helm gruvbox-theme flycheck f evil-surround evil-leader evil delight company dash))
+   '(prettier outshine helm-ag aggressive-indent which-key undo-tree key-chord use-package general tide smartparens smart-mode-line rjsx-mode rainbow-delimiters magit helm-projectile helm-descbinds helm gruvbox-theme flycheck f evil-surround evil-leader evil delight company dash))
  '(paradox-github-token t)
  '(standard-indent 2)
  '(vc-annotate-background "#2B2B2B")

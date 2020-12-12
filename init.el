@@ -1,16 +1,10 @@
-;;; init --- Initial setup
+;;; init --- Initial setup -*- lexical-binding: t -*-
 
 ;;; Commentary:
 
 ;;; Code:
 
-;; Turn off mouse interface early in startup to avoid momentary display
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-
-;; No splash screen please ... jeez
-(setq inhibit-startup-message t)
+;;;; General Config
 
 ;; Set path to .emacs.d
 (defvar dotfiles-dir)
@@ -24,231 +18,490 @@
 
 ;; Set up load path
 (add-to-list 'load-path site-lisp-dir)
-(add-to-list 'load-path "~/.emacs.d/lisp")
-
-;; Add variable to user-lisp-directory
-(defvar user-lisp-directory)
-(setq user-lisp-directory (expand-file-name "lisp" user-emacs-directory))
 
 ;; Keep emacs Custom-settings in separate file
-(setq custom-file (expand-file-name "custom.el" user-lisp-directory))
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 (setq make-backup-files nil)
 
-;; Setup package -- MELPA
-(require 'setup-package)
+(save-place-mode 1)
+(setq-default save-place-file (expand-file-name ".places" (concat dotfiles-dir "backups")))
+(setq standard-indent 2)
 
-;; Add helpers
-(require 'helpers)
+;; Run at full power please
+(put 'downcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
-;; Install packages if they are missing
-;; (defun init--install-packages ()
-;;   "Install below packages if they are missing.  Will not delete unlisted packages."
-;;   (packages-install
-;;    '(company
-;;      dash
-;;      delight
-;;      evil
-;;      evil-leader
-;;      evil-surround
-;;      f
-;;      flycheck
-;;      gruvbox-theme
-;;      helm
-;;      helm-ag
-;;      helm-descbinds
-;;      helm-projectile
-;;      key-chord
-;;      linum-relative
-;;      magit
-;;      markdown-mode
-;;      prettier
-;;      projectile
-;;      rainbow-delimiters
-;;      rjsx-mode
-;;      s
-;;      smart-mode-line
-;;      smartparens
-;;      smooth-scrolling
-;;      tide
-;;      undo-tree
-;;      which-key)))
+;; Emacs Autosave Settings
+(setq auto-save-list-file-prefix "~/.emacs.d/backups/.saves/")
+(setq auto-save-file-name-transforms `((".*" "~/.emacs.d/backups/.saves/" t)))
 
-;; Company Mode
+;; Emacs Backup Settings
+(setq
+ backup-by-copying t ; don't clobber symlinks
+ backup-directory-alist
+ `((".*" . "~/.emacs.d/backups/.saves/")) ; don't litter fs
+
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t) ; use versioned backups
+
+;; Tramp litter
+(setq-default tramp-backup-directory-alist backup-directory-alist
+              tramp-auto-save-directory "~/.emacs.d/backups/.saves/"
+              tramp-default-method "ssh")
+
+;; Eshell litter
+(setq-default eshell-directory-name "~/.emacs.d/backups/eshell/")
+
+;; Emacs Interlock
+(setq create-lockfiles nil)
+
+;; Auto refresh buffers
+(global-auto-revert-mode 1)
+
+;; Move files to trash when deleting
+(setq delete-by-moving-to-trash t)
+
+;; Real emacs knights don't use shift to mark things
+(setq shift-select-mode nil)
+
+;; Transparently open compressed files
+(auto-compression-mode t)
+
+;; Answering just 'y' or 'n' will do
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; Don't ask about buffers with processes
+(setq kill-buffer-query-functions
+      (remq 'process-kill-buffer-query-function
+            kill-buffer-query-functions))
+
+;; UTF-8 please
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+;; Show active region
+(transient-mark-mode 1)
+(make-variable-buffer-local 'transient-mark-mode)
+(put 'transient-mark-mode 'permanent-local t)
+(setq-default transient-mark-mode t)
+
+;; Remove text in active region if inserting text
+(delete-selection-mode 1)
+
+;; Save a list of recent files visited. (open recent file with C-x f)
+(setq-default recentf-exclude '("\.recentf")
+              recentf-save-file (expand-file-name
+                                 "~/.emacs.d/backups/.recentf" user-emacs-directory)
+              recentf-max-saved-items 50 ;; just 20 is too recent
+              recentf-auto-cleanup 300
+              recentf-auto-save-timer (run-with-idle-timer 300 t 'recentf-save-list))
+(recentf-mode 1)
+
+;; Show me empty lines after buffer end
+(set-default 'indicate-empty-lines t)
+
+
+;; Sentences do not need double spaces to end. Period.
+(set-default 'sentence-end-double-space nil)
+
+;; Add parts of each file's directory to the buffer name if not unique
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+;; Make backups of files, even when they're in version control
+(setq vc-make-backup-files t)
+
+;; Seed the random-number generator
+(random t)
+
+;;;; Appearance
+
+;; Turn off mouse interface early in startup to avoid momentary display
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
+;; No splash screen
+(setq inhibit-startup-message t)
+(setq visible-bell t
+      font-lock-maximum-decoration t
+      color-theme-is-global t
+      truncate-partial-width-windows nil)
+
+;; Never insert tabs
+(setq tab-width 2)
+
+;; force line word wrapping in text modes
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
+;; Highlight current line
+(global-hl-line-mode 1)
+
+;; Don't defer screen updates when performing operations
+(setq-default redisplay-dont-pause t)
+
+;; org-mode colors
+(setq-default org-todo-keyword-faces
+              '(
+                ("INPR" . (:foreground "yellow" :weight bold))
+                ("DONE" . (:foreground "green" :weight bold))
+                ("IMPEDED" . (:foreground "red" :weight bold))
+                ))
+
+;; Highlight matching parentheses when the point is on them.
+(show-paren-mode 1)
+
+(when window-system
+  (setq frame-title-format '(buffer-file-name "%f" ("%b")))
+  (tooltip-mode -1)
+  (blink-cursor-mode -1))
+
+;; add fill column
+(global-display-fill-column-indicator-mode)
+(set-face-attribute 'fill-column-indicator nil :foreground "grey27")
+(setq-default display-fill-column-indicator-column 99)
+
+;; Show lambda plase
+(global-prettify-symbols-mode 1)
+
+;;;; Initialize Package
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(package-initialize)
+
+;; Bootstrap `use-package'
+(setq-default use-package-verbose nil ; Don't report loading details
+              use-package-enable-imenu-support t ; Let imenu find use-package defs
+              use-package-expand-minimally t) ; minimize expanded code
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+(require 'delight)
+(require 'general)
+
+;;;; Package Configuration
+
+(use-package outshine
+  ;; Easier navigation for source files, especially this one
+  :delight
+  :hook (emacs-lisp-mode . outshine-mode))
+
+(use-package rainbow-delimiters
+  ;; Change color of each inner block delimiter
+  :delight
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package aggressive-indent
+  ;; Indent as you type
+  :delight
+  :hook (prog-mode . aggressive-indent-mode))
+
 (use-package company
-             :delight
-             :config (global-company-mode t))
-
-;; Dash
-(use-package dash)
+  ;; text completion framework
+  :delight
+  :config (global-company-mode t))
 
 ;; Setup Dired
 (use-package dired)
 
-;; Setup Key Chord, used to map evil escape
 (use-package key-chord
-             :init (setq key-chord-two-keys-delay 0.3)
-             :config (key-chord-mode 1))
+  ;; Key-chord, to map jk to evil escape
+  :config (key-chord-mode 1))
 
-;; evil-mode
-(use-package evil)
-(require 'setup-evil)
+(use-package evil
+  ;; Imports vim motion/states into emacs
+  :init
+  (setq evil-emacs-state-cursor '("yellow" box)
+        evil-normal-state-cursor '("green" box)
+        evil-visual-state-cursor '("orange" box)
+        evil-insert-state-cursor '("red" bar)
+        evil-replace-state-cursor '("red" bar)
+        evil-operator-state-cursor '("red" hollow)
+        evil-move-cursor-back nil)
+  :config
+  (evil-mode 1)
+  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  (key-chord-define evil-replace-state-map "jk" 'evil-normal-state)
+  (key-chord-define evil-motion-state-map "jk" 'evil-normal-state)
+  :hook
+  (evil-normal-state-entry . (lambda () (setq display-line-numbers t)))
+  (evil-normal-state-exit . (lambda () (setq display-line-numbers 'relative))))
 
-;; evil-surround
-(use-package evil-surround
-             :ensure t
-             :config (global-evil-surround-mode 1))
-
-;; flycheck
 (use-package flycheck
-             :init (setq flycheck-emacs-lisp-load-path 'inherit)
-             :config (global-flycheck-mode))
+  ;; code linter
+  :config (global-flycheck-mode))
 
-;; Helm
-(use-package helm)
-(require 'setup-helm)
-
-;; relative linum
-(use-package linum-relative)
-(after 'linum-relative
-  (defun bw/disable-linum-mode ()
-    "Disables linum-mode"
-    (linum-mode -1))
-
-  (defun bw/linum-non-relative (line-number)
-    "Linum formatter that copies the format"
-    (propertize (format linum-relative-format line-number)
-                'face 'linum))
-
-  (defun bw/linum-relative-formatting ()
-    "Turn on relative formatting"
-    (setq-local linum-format 'linum-relative))
-
-  (defun bw/linum-normal-formatting ()
-    "Turn on non-relative formatting"
-    (setq-local linum-format 'bw/linum-non-relative))
-
-  ;; I never use linum-mode except for this, so it's okay to
-  ;; clobber it
-  (setq linum-format 'bw/linum-non-relative
-        ;; show >> on line where cursor is
-        linum-relative-current-symbol ">>")
-  ;; in Normal mode, use relative numbering
-  (add-hook 'evil-normal-state-entry-hook 'bw/linum-relative-formatting)
-  ;; in Insert mode, use normal line numbering
-  (add-hook 'evil-insert-state-entry-hook 'bw/linum-normal-formatting)
-  ;; turn off linum mode automatically when entering Emacs mode
-  (add-hook 'evil-emacs-state-entry-hook 'bw/disable-linum-mode)
-  ;; turn off linum mode when entering Emacs
-  (add-hook 'evil-emacs-state-entry-hook 'bw/linum-normal-formatting)
-
-  ;; copy linum face so it doesn't look weird
-  (set-face-attribute 'linum-relative-current-face nil :foreground
-                      (face-attribute 'font-lock-keyword-face :foreground)
-                      :background nil :inherit 'linum :bold t))
-
-;; magit
-(use-package magit)
-(require 'setup-magit)
-
-;; markdown Mode
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
-;; prettier
-;; (require 'prettier-js)
-;; (add-hook 'after-init-hook #'global-prettier-mode)
-;; (setq prettier-js-args '(
-;;   "--bracket-spacing" "true"
-;;   "--single-quote" "true"
-;;   "--no-semi" "true"
-;;   "--jsx-single-quote" "true"
-;;   "--jsx-bracket-same-line" "true"))
-
-
-;; projectile
 (use-package projectile
-             :init
-             (setq projectile-mode-line (quote (:eval (format " [%s]" (projectile-project-name)))))
-             (setq projectile-known-projects-file "~/.emacs.d/projectile-bookmarks.eld")
-             (setq projectile-cache-file "~/.emacs.d/backups/projectile.cache")
-             (setq projectile-switch-project-action 'helm-projectile)
-             (setq projectile-enable-caching nil)
-             (setq projectile-remember-window-configs t)
-             :config (projectile-global-mode))
+  ;; project traversal
+  :init
+  (setq-default projectile-mode-line-function '(lambda () (format "[%s]" (projectile-project-name)))
+                projectile-known-projects-file "~/.emacs.d/projectile-bookmarks.eld"
+                projectile-cache-file "~/.emacs.d/backups/projectile.cache"
+                projectile-switch-project-action 'helm-projectile
+                projectile-enable-caching nil
+                projectile-remember-window-configs t)
+  :config (projectile-mode))
+
+(use-package helm
+  ;; completion and selection framework
+  :delight
+  :init
+  (setq-default helm-idle-delay 0.1
+                helm-input-idle-delay 0.1
+                helm-buffers-fuzzy-matching t
+                helm-recentf-fuzzy-match t
+                helm-locate-fuzzy-match t
+                helm-M-x-fuzzy-match t
+                helm-apropos-fuzzy-match t
+                helm-split-window-in-side-p t
+                helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area"
+                                                 "\\*Minibuf" "\\*Compile-Log\\*" "\\*magit"
+                                                 "\\*Customize Group"))
+  :config
+  (helm-mode 1)
+  (helm-adaptive-mode 1)
+  (helm-autoresize-mode 1))
+
+;; Helm-ag
+(use-package helm-ag)
 
 (use-package helm-projectile
-             :config (helm-projectile-on))
+  ;; integrates helm and projectile
+  :config (helm-projectile-on))
 
-;; rainbow delimiters
-(require 'rainbow-delimiters)
-(--each '(css-mode-hook
-          rjsx-mode-hook
-          ruby-mode
-          markdown-mode
-          emacs-lisp-mode-hook)
+(use-package magit
+  ;; emacs interface for git
+  :config
+  (defadvice magit-status (around magit-fullscreen activate)
+    "Set magit status to full-screen."
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
 
-  (add-hook it 'rainbow-delimiters-mode))
+  (defadvice magit-mode-quit-window (around magit-quit-session activate)
+    "Restore previous window configuration if we are burying magit-status."
+    (if (equal (symbol-name major-mode) "magit-status-mode")
+        (progn
+          ad-do-it
+          (jump-to-register :magit-fullscreen))
+      ad-do-it
+      (delete-other-windows))))
 
-;; rjsx mode
-(add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode))
+(use-package prettier
+  ;; prettify javascript on save
+  :init (setq-default prettier-js-args
+                      '("--bracket-spacing" "true"
+                        "--single-quote" "true"
+                        "--no-semi" "true"
+                        "--jsx-single-quote" "true"
+                        "--jsx-bracket-same-line" "true"))
+  :config (global-prettier-mode))
 
-;; ruby mode
-(eval-after-load 'ruby-mode '(require 'setup-ruby-mode))
+(use-package rjsx-mode
+  ;; react jsx formatting
+  :init (add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode)))
 
-(defun my-open-block-sexp ()
-  "Insert a new line in a newly opened and newlined block."
-  (newline)
-  (indent-according-to-mode)
-  (forward-line -1)
-  (indent-according-to-mode))
+(use-package ruby-mode
+  ;; ruby editor
+  :init (setq ruby-deep-indent-paren nil))
 
-;; smooth-scrolling
-(require 'smooth-scrolling)
+;; javascript lsp
+(use-package tide)
 
-;; tide-mode
-(defun setup-tide-mode ()
-  "Setup function for tide."
+(use-package undo-tree
+  ;; make undo a tree rather than line
+  :delight
+  :config (global-undo-tree-mode))
+
+(use-package gruvbox-theme
+  ;; coding theme
+  :config (load-theme 'gruvbox-dark-hard t))
+
+(use-package smart-mode-line
+  ;; pretties up the mode line
+  :config (sml/setup))
+
+(use-package which-key
+  ;; shows list of available completions when key sequences begin
+  :delight
+  :commands (which-key-mode)
+  :init (which-key-mode)
+  :config
+  (setq which-key-idle-delay 0.2 ;; Time before which-key pops up
+	which-key-allow-evil-operators t ;; Show evil keybindings
+	which-key-sort-order 'which-key-key-order-alpha))
+
+(use-package general
+  ;; key binding manager
+  :config
+  (defun save-all () "Save all open buffers." (interactive) (save-some-buffers t))
+  (general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :non-normal-prefix "M-SPC"
+   "w" 'save-buffer
+   "W" 'save-all
+   "q" 'kill-buffer-and-window
+   "h" 'dired-jump
+   "v" 'split-window-right
+   "e" 'pp-eval-last-sexp
+   "SPC" 'other-window
+   "b" 'ibuffer
+   "x" 'helm-M-x
+   "g" 'magit-status
+   "G" 'magit-blame-mode
+   "k" 'kill-this-buffer
+   "K" 'kill-buffer
+   "o" 'helm-occur
+   "T" 'eshell)
+  (general-def
+    "C-x r q" 'save-buffers-kill-terminal
+    '[f1] 'helm-projectile
+    '[f2] 'projectile-ag
+    '[f5] 'call-last-kbd-macro))
+
+(use-package delight
+  ;; customize mode modeline display
+  :config
+  (delight '((eldoc-mode nil eldoc)
+	     (emacs-lisp-mode "Elisp" :major)
+	     (outline-minor-mode nil outline)
+	     (subword-mode nil subword))))
+  
+
+;;;; Global Helper Functions
+
+(require 'comint)
+
+;; "after" macro definition
+(if (fboundp 'with-eval-after-load)
+    (defmacro after (feature &rest body)
+      "After FEATURE is loaded, evaluate BODY."
+      (declare (indent defun))
+      `(with-eval-after-load ,feature ,@body))
+  (defmacro after (feature &rest body)
+    "After FEATURE is loaded, evaluate BODY."
+    (declare (indent defun))
+    `(eval-after-load ,feature
+       '(progn ,@body))))
+
+(defun duplicate-line()
+  "Duplicates the current line."
   (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (forward-line 1)
+  (yank))
 
-(setq company-tooltip-align-annotations t)
+(defun tar-compress-dashboard ()
+  "Tars up the dashboard project."
+  (interactive)
+  (shell "*tar*")
+  (switch-to-buffer "*tar*")
+  (comint-send-string "*tar*" "tar --exclude='/var/www/evms-dashboard/log' --exclude='/var/www/evms-dashboard/solr/data' --exclude='/var/www/evms-dashboard/tmp' --exclude='/var/www/evms-dashboard/.git'  --exclude='/var/www/evms-dashboard/client/bower_components' --exclude='/var/www/evms-dashboard/client/node_modules' -zcvf rails.tgz /var/www/evms-dashboard")
+  (comint-send-input))
 
-(add-hook 'rjsx-mode-hook #'setup-tide-mode)
+(defun grunt-server()
+  "Start the grunt server."
+  (interactive)
+  (shell "**GULP**")
+  (comint-send-string "**GULP**" "cd ~/projects/evms-dashboard/public/client; gulp")
+  (comint-send-input))
 
-;; undo-tree
-(require 'undo-tree)
-(global-undo-tree-mode)
-(setq undo-tree-mode-lighter "")
+(defun rails-server()
+  "Start rails."
+  (interactive)
+  (shell "**RAILS**")
+  (comint-send-string "**RAILS**" "cd ~/projects/evms-dashboard/; rails s")
+  (comint-send-input))
 
-;; setup Delight, reduce modeline clutter
-(require 'delight)
-(delight '((eldoc-mode nil "eldoc")
-           (helm-mode)
-           (which-key)
-           (company-mode)))
+(defun startup-evms-dashboard ()
+  "Start rails server and grunt watcher."
+  (interactive)
+  (grunt-server)
+  (rails-server))
 
-;; Set up appearance
-(require 'appearance)
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
 
-;; Lets start with a smattering of sanity
-(require 'sane-defaults)
+(global-set-key (kbd "C-c e") 'eval-and-replace)
 
-;; Mode Mapping
+(defun rename-file-and-buffer ()
+  "Rename the current buffer and file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (message "Buffer is not visiting a file!")
+      (let ((new-name (read-file-name "New name: " filename)))
+        (rename-file filename new-name t)
+        (set-visited-file-name new-name t t)))))
+
+(global-set-key (kbd "C-c r")  'rename-file-and-buffer)
+
+(defun delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (when filename
+      (if (vc-backend filename)
+          (vc-delete-file filename)
+        (progn
+          (delete-file filename)
+          (message "Deleted file %s" filename)
+          (kill-buffer))))))
+
+(global-set-key (kbd "C-c D")  'delete-file-and-buffer)
+
+(defun kill-all-dired-buffers ()
+  "Kill all dired buffers."
+  (interactive)
+  (save-excursion
+    (let ((count 0))
+      (dolist (buffer (buffer-list))
+        (set-buffer buffer)
+        (when (equal major-mode 'dired-mode)
+          (setq count (1+ count))
+          (kill-buffer buffer)))
+      (message "Killed %i dired buffer(s)." count))))
+
+(defun toggle-comment-on-line ()
+  "Comment or uncomment current line."
+  (interactive)
+  (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+
+(global-set-key (kbd "C-c c") 'toggle-comment-on-line)
+
+;;;; Built-in Package Config
+
+;; Easily navigate sillycased words
+(global-subword-mode 1)
+
+
+;; Eldoc Mapping
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
 (add-hook 'ielm-mode-hook 'eldoc-mode)
-
-;; Setup key bindings
-;; General.el and which-key are setup here
-(require 'keybindings)
 
 ;; Emacs server
 (require 'server)
@@ -258,10 +511,8 @@
 ;; Shell-mode
 (add-hook 'comint-output-filter-functions
           'comint-truncate-buffer)
-(setq comint-buffer-maximum-size 2000)
-
-(setq multi-term-program-switches "--login")
-
+(setq-default comint-buffer-maximum-size 2000)
+(setq-default multi-term-program-switches "--login")
 (put 'erase-buffer 'disabled nil)
 
 ;; truncate buffers continuously
