@@ -199,21 +199,14 @@
   :hook (emacs-lisp-mode . outshine-mode)
   :config
   (general-def 'outshine-mode-map
-    :prefix "n"
+    :prefix "f"
     :states '(normal)
-    "n" 'outshine-narrow-to-subtree
-    "w" 'widen)
+    "j" 'outline-next-heading
+    "k" 'outline-previous-heading)
   (general-def 'outshine-mode-map
     :states '(normal)
-    "<backtab>" 'outshine-cycle-buffer)
-  (general-def 'outshine-mode-map
-    :states '(normal)
-    :prefix "g"
-    "h" 'outline-up-heading
-    "j" 'outline-forward-same-level
-    "k" 'outline-backward-same-level
-    "l" 'outline-next-visible-heading
-    "o" 'outline-previous-visible-heading))
+    "<tab>" 'outshine-cycle
+    "<backtab>" 'outshine-cycle-buffer))
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
@@ -267,12 +260,12 @@
                 projectile-known-projects-file "~/.emacs.d/projectile-bookmarks.eld"
                 projectile-cache-file "~/.emacs.d/backups/projectile.cache"
                 projectile-switch-project-action 'helm-projectile
-                projectile-enable-caching nil
                 projectile-remember-window-configs t)
   :config (projectile-mode))
 
 (use-package helm
   ;; completion and selection framework
+  :commands helm-autoresize-mode
   :delight
   :init
   (setq-default helm-idle-delay 0.1
@@ -393,7 +386,7 @@
   ;; customize mode modeline display
   :config
   (delight '((eldoc-mode nil eldoc)
-	     (emacs-lisp-mode "Elisp" :major)
+	     (emacs-lisp-mode "Elisp " :major)
 	     (outline-minor-mode nil outline)
 	     (subword-mode nil subword))))
   

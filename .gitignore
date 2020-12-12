@@ -13,6 +13,7 @@ magit/
 transient/
 helm-adaptive-history
 TODO.org
+custom.el
 
 ############
 ## Windows
