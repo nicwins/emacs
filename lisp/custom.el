@@ -6,8 +6,7 @@
  '(ansi-color-names-vector
    ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
  '(auto-indent-next-pair-timer-interval
-   (quote
-    ((sh-mode 1.5)
+   '((sh-mode 1.5)
      (lisp-interaction-mode 1.5)
      (fundamental-mode 1.5)
      (shell-mode 1.5)
@@ -18,7 +17,7 @@
      (html-mode 1.5)
      (js2-mode 1.5)
      (nxml-mode 0.0012033417256673178)
-     (default 0.0005))))
+     (default 0.0005)))
  '(comint-completion-addsuffix t)
  '(comint-completion-autolist t)
  '(comint-input-ignoredups t)
@@ -27,29 +26,27 @@
  '(comint-scroll-to-bottom-on-input t)
  '(comint-scroll-to-bottom-on-output t)
  '(custom-safe-themes
-   (quote
-    ("d070fa185078bf753dcfd873ec63be19fa36a55a0c97dc66848a6d20c5fffdad" default)))
- '(delete-active-region (quote kill))
+   '("d070fa185078bf753dcfd873ec63be19fa36a55a0c97dc66848a6d20c5fffdad" default))
+ '(delete-active-region 'kill)
  '(eshell-buffer-maximum-lines 2000)
  '(eshell-input-filter-functions nil)
  '(eshell-modules-list
-   (quote
-    (eshell-alias eshell-banner eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-term eshell-unix)))
+   '(eshell-alias eshell-banner eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-term eshell-unix))
  '(eshell-output-filter-functions
-   (quote
-    (eshell-handle-ansi-color eshell-handle-control-codes eshell-truncate-buffer eshell-postoutput-scroll-to-bottom eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt)))
- '(eshell-scroll-to-bottom-on-input (quote this))
+   '(eshell-handle-ansi-color eshell-handle-control-codes eshell-truncate-buffer eshell-postoutput-scroll-to-bottom eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt))
+ '(eshell-scroll-to-bottom-on-input 'this)
  '(eshell-scroll-to-bottom-on-output nil)
  '(flycheck-jshintrc "~/.emacs.d/.jshintrc")
- '(ispell-extra-args (quote ("-a")))
+ '(ispell-extra-args '("-a"))
  '(ispell-program-name "/usr/bin/hunspell")
  '(js2-dynamic-idle-timer-adjust 0)
+ '(package-selected-packages
+   '(general tide smooth-scrolling smartparens smart-mode-line rjsx-mode rainbow-delimiters markdown-mode magit linum-relative helm-projectile helm-descbinds helm gruvbox-theme flycheck f evil-surround evil-leader evil delight company dash))
  '(paradox-github-token t)
  '(standard-indent 2)
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
-   (quote
-    ((20 . "#BC8383")
+   '((20 . "#BC8383")
      (40 . "#CC9393")
      (60 . "#DFAF8F")
      (80 . "#D0BF8F")
@@ -66,7 +63,7 @@
      (300 . "#7CB8BB")
      (320 . "#8CD0D3")
      (340 . "#94BFF3")
-     (360 . "#DC8CC3"))))
+     (360 . "#DC8CC3")))
  '(vc-annotate-very-old-color "#DC8CC3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -19,8 +19,7 @@
 (global-hl-line-mode 1)
 
 ;; Set custom theme
-(load-theme 'zenburn t)
-(set-face-attribute 'default nil :font "Droid Sans Mono" :height 100)
+(load-theme 'gruvbox-dark-hard t)
 
 ;; Don't defer screen updates when performing operations
 (setq redisplay-dont-pause t)
@@ -42,29 +41,12 @@
   (blink-cursor-mode -1))
 
 ;; Unclutter the modeline
-(require 'diminish)
-(after 'auto-indent-mode (diminish 'auto-indent-mode))
-(after 'helm (diminish 'helm-mode))
-(after 'whitespace (diminish 'whitespace-mode))
-(after 'undo-tree (diminish 'undo-tree-mode))
-(after 'auto-complete (diminish 'auto-complete-mode))
-(after 'yasnippet (diminish 'yas-minor-mode))
-(after 'eldoc (diminish 'eldoc-mode))
-(after 'magit (diminish 'magit-auto-revert-mode))
-(after 'company (diminish 'company-mode))
-(after 'subword (diminish 'subword-mode))
-(after 'ruby-end (diminish 'ruby-end-mode))
-(after 'ruby-block (diminish 'ruby-block-mode))
-(after 'robe (diminish 'robe-mode))
-(after 'magit-backup (diminish 'magit-backup-mode))
+(sml/setup)
 
-
-(defmacro rename-modeline (package-name mode new-name)
-  `(eval-after-load ,package-name
-     '(defadvice ,mode (after rename-modeline activate)
-        (setq mode-name ,new-name))))
-
-(rename-modeline "js2-mode" js2-mode "JS2")
+;; add fill column
+(global-display-fill-column-indicator-mode)
+(set-face-attribute 'fill-column-indicator nil :foreground "grey27")
+(setq-default display-fill-column-indicator-column 99)
 
 (provide 'appearance)
 ;;; appearance.el ends here

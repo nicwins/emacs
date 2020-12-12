@@ -38,123 +38,78 @@
 ;; Setup package -- MELPA
 (require 'setup-package)
 
-;; Install packages if they are missing
-(defun init--install-packages ()
-  "Install below packages if they are missing.  Will not delete unlisted packages."
-  (packages-install
-   '(ace-jump-mode
-     ag
-     auto-indent-mode
-     css-eldoc
-     company
-     company-tern
-     dash
-     diminish
-     dired-details+
-     emmet-mode
-     evil
-     evil-leader
-     evil-surround
-     f
-     fill-column-indicator
-     flycheck
-     guide-key
-     helm
-     helm-descbinds
-     helm-projectile
-     highlight-escape-sequences
-     js2-mode
-     linum-relative
-     ;; magit ;; using vnext straight from git temporarily.
-     markdown-mode
-     paradox
-     ;; powerline
-     projectile
-     rainbow-delimiters
-     ruby-block
-     ruby-end
-     robe
-     rvm
-     s
-     skewer-mode
-     smartparens
-     smooth-scrolling
-     tern
-     undo-tree
-     web-mode
-     yasnippet
-     zenburn-theme)))
-
-(condition-case nil
-    (init--install-packages)
-  (error
-   (package-refresh-contents)
-   (init--install-packages)))
-
 ;; Add helpers
 (require 'helpers)
 
-;; auto-indent
-(require 'auto-indent-mode)
-;; If you want auto-indent on for files
-(setq auto-indent-on-visit-file t)
-(auto-indent-global-mode)
+;; Install packages if they are missing
+;; (defun init--install-packages ()
+;;   "Install below packages if they are missing.  Will not delete unlisted packages."
+;;   (packages-install
+;;    '(company
+;;      dash
+;;      delight
+;;      evil
+;;      evil-leader
+;;      evil-surround
+;;      f
+;;      flycheck
+;;      gruvbox-theme
+;;      helm
+;;      helm-ag
+;;      helm-descbinds
+;;      helm-projectile
+;;      key-chord
+;;      linum-relative
+;;      magit
+;;      markdown-mode
+;;      prettier
+;;      projectile
+;;      rainbow-delimiters
+;;      rjsx-mode
+;;      s
+;;      smart-mode-line
+;;      smartparens
+;;      smooth-scrolling
+;;      tide
+;;      undo-tree
+;;      which-key)))
 
 ;; Company Mode
-(global-company-mode t)
+(use-package company
+             :delight
+             :config (global-company-mode t))
 
-;; css-eldoc
-(require 'css-eldoc)
+;; Dash
+(use-package dash)
 
 ;; Setup Dired
-(eval-after-load 'dired '(require 'setup-dired))
-(require 'dired)
+(use-package dired)
 
-;; dired-details+
-(require 'dired-details+)
-(setq-default dired-details-hidden-string "--- ")
-
-;; emmet-mode
-(require 'emmet-mode)
-(add-hook 'web-mode-hook 'emmet-mode)
-(add-hook 'sgml-mode-hook 'emmet-mode)
-(add-hook 'css-mode-hook 'emmet-mode)
-(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2)))
-(eval-after-load 'emmet-mode
-  '(progn
-     (define-key emmet-mode-keymap (kbd "C-j") nil)
-     (define-key emmet-mode-keymap (kbd "<C-return>") nil)
-     (define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line)))
-
-;; evil-leader-mode
-(require 'setup-evil-leader)
+;; Setup Key Chord, used to map evil escape
+(use-package key-chord
+             :init (setq key-chord-two-keys-delay 0.3)
+             :config (key-chord-mode 1))
 
 ;; evil-mode
+(use-package evil)
 (require 'setup-evil)
 
 ;; evil-surround
-(require 'evil-surround)
-(global-evil-surround-mode 1)
+(use-package evil-surround
+             :ensure t
+             :config (global-evil-surround-mode 1))
 
 ;; flycheck
-;; NOTE: requires npm install -g jshint for js2-mode
-(add-hook 'after-init-hook 'global-flycheck-mode)
-
-;; guide-key
-(require 'guide-key)
-(setq guide-key/guide-key-sequence '("SPC"))
-(guide-key-mode 1)
+(use-package flycheck
+             :init (setq flycheck-emacs-lisp-load-path 'inherit)
+             :config (global-flycheck-mode))
 
 ;; Helm
+(use-package helm)
 (require 'setup-helm)
 
-;; highlight-escape-sequences
-(hes-mode)
-
-;; js2-mode
-(require 'js2-mode)
-
 ;; relative linum
+(use-package linum-relative)
 (after 'linum-relative
   (defun bw/disable-linum-mode ()
     "Disables linum-mode"
@@ -188,15 +143,13 @@
   (add-hook 'evil-emacs-state-entry-hook 'bw/linum-normal-formatting)
 
   ;; copy linum face so it doesn't look weird
-  (set-face-attribute 'linum-relative-current-face nil :foreground (face-attribute 'font-lock-keyword-face :foreground) :background nil :inherit 'linum :bold t))
-
-(require 'linum-relative)
+  (set-face-attribute 'linum-relative-current-face nil :foreground
+                      (face-attribute 'font-lock-keyword-face :foreground)
+                      :background nil :inherit 'linum :bold t))
 
 ;; magit
-(global-set-key (kbd "C-x C-z") 'magit-status)
-(add-to-list 'load-path "~/.emacs.d/lisp/magit")
-(eval-after-load 'magit '(require 'setup-magit))
-(require 'magit)
+(use-package magit)
+(require 'setup-magit)
 
 ;; markdown Mode
 (autoload 'markdown-mode "markdown-mode"
@@ -204,64 +157,46 @@
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
-;; powerline
-(require 'setup-powerline)
+;; prettier
+;; (require 'prettier-js)
+;; (add-hook 'after-init-hook #'global-prettier-mode)
+;; (setq prettier-js-args '(
+;;   "--bracket-spacing" "true"
+;;   "--single-quote" "true"
+;;   "--no-semi" "true"
+;;   "--jsx-single-quote" "true"
+;;   "--jsx-bracket-same-line" "true"))
+
 
 ;; projectile
-(require 'projectile)
-(setq projectile-keymap-prefix (kbd "C-c C-p"))
-(setq projectile-mode-line (quote (:eval (format " [%s]" (projectile-project-name)))))
-(setq projectile-known-projects-file "~/.emacs.d/projectile-bookmarks.eld")
-(setq projectile-cache-file "~/.emacs.d/backups/projectile.cache")
-(setq projectile-switch-project-action 'helm-projectile)
-(setq projectile-enable-caching nil)
-(setq projectile-remember-window-configs t)
-(projectile-global-mode)
-(global-set-key '[f1] 'helm-projectile)
-(global-set-key '[f2] 'projectile-ag)
+(use-package projectile
+             :init
+             (setq projectile-mode-line (quote (:eval (format " [%s]" (projectile-project-name)))))
+             (setq projectile-known-projects-file "~/.emacs.d/projectile-bookmarks.eld")
+             (setq projectile-cache-file "~/.emacs.d/backups/projectile.cache")
+             (setq projectile-switch-project-action 'helm-projectile)
+             (setq projectile-enable-caching nil)
+             (setq projectile-remember-window-configs t)
+             :config (projectile-global-mode))
 
-(require 'helm-projectile)
-(helm-projectile-on)
+(use-package helm-projectile
+             :config (helm-projectile-on))
 
 ;; rainbow delimiters
 (require 'rainbow-delimiters)
 (--each '(css-mode-hook
-          js2-mode-hook
+          rjsx-mode-hook
           ruby-mode
           markdown-mode
           emacs-lisp-mode-hook)
 
   (add-hook it 'rainbow-delimiters-mode))
 
-;; robe
-;; (add-hook 'ruby-mode-hook 'robe-mode)
-;; (push 'company-robe company-backends)
-
-;; ruby-end
+;; rjsx mode
+(add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode))
 
 ;; ruby mode
 (eval-after-load 'ruby-mode '(require 'setup-ruby-mode))
-
-;; smartparens default setup
-;; (require 'smartparens-config)
-;; (setq sp-autoescape-string-quote nil)
-;; (--each '(css-mode-hook
-;;           js2-mode-hook
-;;           js-mode-hook
-;;           sgml-mode-hook
-;;           ruby-mode-hook
-;;           markdown-mode-hook
-;;           emacs-lisp-mode-hook)
-
-;;   (add-hook it 'turn-on-smartparens-mode))
-
-;; (sp-local-pair 'js2-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
-;; (sp-local-pair 'js-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
-;; (sp-local-pair 'ruby-mode "{" nil :post-handlers '((my-open-block-sexp "RET")))
-
-;; Electric
-;; (electric-pair-mode 1) ;; this conflicts with other pair mechs
-(electric-indent-mode nil)
 
 (defun my-open-block-sexp ()
   "Insert a new line in a newly opened and newlined block."
@@ -270,20 +205,35 @@
   (forward-line -1)
   (indent-according-to-mode))
 
-;; RVM Integration
-(require 'rvm)
-(rvm-use-default)
-
 ;; smooth-scrolling
 (require 'smooth-scrolling)
+
+;; tide-mode
+(defun setup-tide-mode ()
+  "Setup function for tide."
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  (company-mode +1))
+
+(setq company-tooltip-align-annotations t)
+
+(add-hook 'rjsx-mode-hook #'setup-tide-mode)
 
 ;; undo-tree
 (require 'undo-tree)
 (global-undo-tree-mode)
 (setq undo-tree-mode-lighter "")
 
-;; Setup yasnippet
-(require 'setup-yasnippet)
+;; setup Delight, reduce modeline clutter
+(require 'delight)
+(delight '((eldoc-mode nil "eldoc")
+           (helm-mode)
+           (which-key)
+           (company-mode)))
 
 ;; Set up appearance
 (require 'appearance)
@@ -291,11 +241,14 @@
 ;; Lets start with a smattering of sanity
 (require 'sane-defaults)
 
-;; Map files to modes
-(require 'mode-mappings)
+;; Mode Mapping
+(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
+(add-hook 'ielm-mode-hook 'eldoc-mode)
 
 ;; Setup key bindings
-(require 'key-bindings)
+;; General.el and which-key are setup here
+(require 'keybindings)
 
 ;; Emacs server
 (require 'server)
@@ -313,26 +266,6 @@
 
 ;; truncate buffers continuously
 (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
-
-;; Skewer
-(add-hook 'js2-mode-hook 'skewer-mode)
-
-;; tern-mode
-;; (autoload 'tern-mode "tern.el" nil t)
-;; (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
-
-;; (add-to-list 'company-backends 'company-tern)
-
-;; Web-mode
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 (toggle-frame-fullscreen)
 

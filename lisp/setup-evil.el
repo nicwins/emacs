@@ -31,79 +31,10 @@ A `spec' can be a `read-kbd-macro'-readable string or a vector."
                (t (error "Wrong argument")))))
     (funcall setter-fun key cmd)))
 
-(defun take (n lst)
-  "Return at most the first `N' items of `LST'."
-  (let (acc '())
-    (while (and lst (> n 0))
-      (decf n)
-      (push (car lst) acc)
-      (setq  lst (cdr lst)))
-    (nreverse acc)))
+;; Map escape to jk
+(key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
+(key-chord-define evil-replace-state-map "jk" 'evil-normal-state)
 
-(defun group (lst n)
-  "Group `LST' into portions of `N'."
-  (let (groups)
-    (while lst
-      (push (take n lst) groups)
-      (setq lst (nthcdr n lst)))
-    (nreverse groups)))
-
-(defun pour-mappings-to (map mappings)
-  "Call `set-key' with `MAP' on every key-fun pair in `MAPPINGS'.
-`MAPPINGS' is a list of string-fun pairs, with a `READ-KBD-MACRO'-readable string and a interactive-fun."
-  (dolist (mapping (group mappings 2))
-    (set-key map (car mapping) (cadr mapping)))
-  map)
-
-(defun fill-keymap (keymap &rest mappings)
-  "Fill `KEYMAP' with `MAPPINGS'.
-See `pour-mappings-to'."
-  (declare (indent defun))
-  (pour-mappings-to keymap mappings))
-
-(defun fill-keymaps (keymaps &rest mappings)
-  "Fill `KEYMAPS' with `MAPPINGS'.
-See `pour-mappings-to'."
-  (declare (indent defun))
-  (dolist (keymap keymaps keymaps)
-    (let ((map (if (symbolp keymap)
-                   (symbol-value keymap)
-                 keymap)))
-      (pour-mappings-to map mappings))))
-
-(evil-define-command cofi/evil-maybe-exit ()
-  :repeat change
-  (interactive)
-  (let ((modified (buffer-modified-p))
-        (entry-key ?j)
-        (exit-key ?k))
-    (insert entry-key)
-    (let ((evt (read-event (format "Insert %c to exit insert state" exit-key) nil 0.5)))
-      (cond
-       ((null evt) (message ""))
-       ((and (integerp evt) (char-equal evt exit-key))
-        (delete-char -1)
-        (set-buffer-modified-p modified)
-        (push 'escape unread-command-events))
-       (t (push evt unread-command-events))))))
-
-(fill-keymap evil-insert-state-map
-  ;;"SPC" 'cofi/yas-expand-or-spc
-  "j"   'cofi/evil-maybe-exit
-  "C-h" 'backward-delete-char
-  "C-k" 'kill-line
-  "C-y" 'yank
-  "C-e" 'end-of-line
-  "C-a" 'beginning-of-line)
-
-(fill-keymap evil-normal-state-map
-  "C-k" 'kill-line
-  "C-e" 'end-of-line
-  "C-a" 'beginning-of-line)
-
-(fill-keymap evil-normal-state-map
-  "H"     'beginning-of-line
-  "L"     'end-of-line)
 
 (define-key evil-insert-state-map [left] 'undefined)
 (define-key evil-insert-state-map [right] 'undefined)
@@ -119,8 +50,8 @@ See `pour-mappings-to'."
 (define-key evil-normal-state-map (kbd "C-s") 'undefined)
 (define-key evil-insert-state-map (kbd "C-s") 'undefined)
 (define-key evil-normal-state-map (kbd "C-x s") 'undefined)
-(define-key evil-normal-state-map (kbd "M-x") 'undefined)
-(define-key evil-insert-state-map (kbd "M-x") 'undefined)
+;;(define-key evil-normal-state-map (kbd "M-x") 'undefined)
+;;(define-key evil-insert-state-map (kbd "M-x") 'undefined)
 
 (define-key evil-motion-state-map "j" #'evil-next-visual-line)
 (define-key evil-motion-state-map "k" #'evil-previous-visual-line)
