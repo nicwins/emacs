@@ -1,3 +1,0 @@
-* Shell and Eshell
-Get command prompts truly read only.
-Get output readonly.
