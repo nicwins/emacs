@@ -196,39 +196,43 @@
 (use-package outshine
   ;; Easier navigation for source files, especially this one
   :delight
-  :hook (emacs-lisp-mode . outshine-mode)
-  :config
-  (general-def 'outshine-mode-map
-    :prefix "f"
-    :states '(normal)
-    "j" 'outline-next-heading
-    "k" 'outline-previous-heading)
-  (general-def 'outshine-mode-map
-    :states '(normal)
-    "<tab>" 'outshine-cycle
-    "<backtab>" 'outshine-cycle-buffer))
+  :ghook 'emacs-lisp-mode-hook
+  :gfhook '(lambda()
+	     (when (string= user-init-file buffer-file-name)
+	       (outline-hide-body)))
+  :general
+  (outshine-mode-map
+   :states '(normal)
+   "<tab>" 'outshine-cycle
+   "<backtab>" 'outshine-cycle-buffer))
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
   :delight
-  :hook (prog-mode . rainbow-delimiters-mode))
+  :ghook 'prog-mode-hook)
 
 (use-package aggressive-indent
   ;; Indent as you type
   :delight
-  :hook (prog-mode . aggressive-indent-mode))
-
-(use-package company
-  ;; text completion framework
-  :delight
-  :config (global-company-mode t))
+  :ghook 'prog-mode-hook)
+(use
+ (use-package company
+   ;; text completion framework
+   :delight
+   :init
+   (setq completion-styles '(flex))
+   :config
+   (global-company-mode t)
+   (general-def company-active-map
+     "<return>" nil
+     "RET" nil
+     "<backtab>" 'company-select-next-or-abort
+     "C-<backtab>" 'company-select-previous-or-abort
+     "C-f" 'company-filter-candidates
+     "<tab>" 'company-complete-selection))
 
 ;; Setup Dired
 (use-package dired)
-
-(use-package key-chord
-  ;; Key-chord, to map jk to evil escape
-  :config (key-chord-mode 1))
 
 (use-package evil
   ;; Imports vim motion/states into emacs
@@ -242,12 +246,8 @@
         evil-move-cursor-back nil)
   :config
   (evil-mode 1)
-  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-  (key-chord-define evil-replace-state-map "jk" 'evil-normal-state)
-  (key-chord-define evil-motion-state-map "jk" 'evil-normal-state)
-  :hook
-  (evil-normal-state-entry . (lambda () (setq display-line-numbers t)))
-  (evil-normal-state-exit . (lambda () (setq display-line-numbers 'relative))))
+  (general-add-hook 'evil-normal-state-entry-hook '(lambda () (setq display-line-numbers t)))
+  (general-add-hook 'evil-normal-state-exit-hook '(lambda () (setq display-line-numbers 'relative))))
 
 (use-package flycheck
   ;; code linter
@@ -259,37 +259,28 @@
   (setq-default projectile-mode-line-function '(lambda () (format "[%s]" (projectile-project-name)))
                 projectile-known-projects-file "~/.emacs.d/projectile-bookmarks.eld"
                 projectile-cache-file "~/.emacs.d/backups/projectile.cache"
-                projectile-switch-project-action 'helm-projectile
+                projectile-switch-project-action 'project-switch-project
                 projectile-remember-window-configs t)
   :config (projectile-mode))
 
-(use-package helm
-  ;; completion and selection framework
-  :commands helm-autoresize-mode
+(use-package ivy
   :delight
   :init
-  (setq-default helm-idle-delay 0.1
-                helm-input-idle-delay 0.1
-                helm-buffers-fuzzy-matching t
-                helm-recentf-fuzzy-match t
-                helm-locate-fuzzy-match t
-                helm-M-x-fuzzy-match t
-                helm-apropos-fuzzy-match t
-                helm-split-window-in-side-p t
-                helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area"
-                                                 "\\*Minibuf" "\\*Compile-Log\\*" "\\*magit"
-                                                 "\\*Customize Group"))
+  (setq-default ivy-use-virtual-buffers t
+		enable-recursive-minibuffers t)
   :config
-  (helm-mode 1)
-  (helm-adaptive-mode 1)
-  (helm-autoresize-mode 1))
+  (ivy-mode 1)
+  (ivy-configure 'counsel-imenu
+    :update-fn 'auto))
 
-;; Helm-ag
-(use-package helm-ag)
+(use-package counsel
+  :delight
+  :config (counsel-mode))
 
-(use-package helm-projectile
-  ;; integrates helm and projectile
-  :config (helm-projectile-on))
+(use-package swiper)
+
+;; remember recent commands in m-x
+(use-package smex)
 
 (use-package magit
   ;; emacs interface for git
@@ -351,36 +342,53 @@
   :config
   (setq which-key-idle-delay 0.2 ;; Time before which-key pops up
 	which-key-allow-evil-operators t ;; Show evil keybindings
-	which-key-sort-order 'which-key-key-order-alpha))
+	which-key-sort-order 'which-key-key-order-alpha)
+  (which-key-setup-side-window-right))
 
 (use-package general
   ;; key binding manager
-  :config
-  (defun save-all () "Save all open buffers." (interactive) (save-some-buffers t))
-  (general-define-key
-   :states '(normal visual insert emacs)
+  :general
+  (:states '(normal visual insert emacs)
    :prefix "SPC"
    :non-normal-prefix "M-SPC"
+   "r" #'er-switch-to-previous-buffer
    "w" 'save-buffer
    "W" 'save-all
    "q" 'kill-buffer-and-window
-   "h" 'dired-jump
+   "d" 'swiper
    "v" 'split-window-right
    "e" 'pp-eval-last-sexp
    "SPC" 'other-window
    "b" 'ibuffer
-   "x" 'helm-M-x
+   "x" 'counsel-M-x
    "g" 'magit-status
    "G" 'magit-blame-mode
    "k" 'kill-this-buffer
    "K" 'kill-buffer
-   "o" 'helm-occur
-   "T" 'eshell)
-  (general-def
-    "C-x r q" 'save-buffers-kill-terminal
-    '[f1] 'helm-projectile
-    '[f2] 'projectile-ag
-    '[f5] 'call-last-kbd-macro))
+   "T" 'eshell
+   "u" 'undo-tree-visualize
+   "i" 'counsel-imenu
+   "x" 'counsel-M-x
+   "f" 'counsel-find-file
+   "0" 'delete-window
+   "h" '(:ignore t :which-key "Help Functions")
+   "h a" '(counsel-apropos :which-key "Apropos")
+   "h b" '(counsel-descbinds :which-key "Describe Bindings")
+   "h f" '(counsel-describe-function :which-key "Describe Function")
+   "h h" '(help-for-help :which-key "Help for Help")
+   "h m" '(describe-mode :which-key "Describe Mode")
+   "h v" '(counsel-describe-variable :which-key "Describe Variable"))
+
+  (:states '(insert replace)
+   "j" (general-key-dispatch 'self-insert-command
+	 :timeout 0.25
+	 "k" 'evil-normal-state))
+  
+  ("C-x r q" 'save-buffers-kill-terminal
+   '[f1] 'projectile-find-file
+   '[f2] 'projectile-ag
+   '[f5] 'call-last-kbd-macro
+   '[f6] 'ivy-resume))
 
 (use-package delight
   ;; customize mode modeline display
@@ -389,11 +397,22 @@
 	     (emacs-lisp-mode "Elisp " :major)
 	     (outline-minor-mode nil outline)
 	     (subword-mode nil subword))))
-  
+
 
 ;;;; Global Helper Functions
 
 (require 'comint)
+
+;; Helper to interactively save all
+(defun save-all () "Save all open buffers." (interactive) (save-some-buffers t))
+
+;; Helper to quickly switch to prior buffer
+(defun er-switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
 
 ;; "after" macro definition
 (if (fboundp 'with-eval-after-load)
@@ -501,6 +520,93 @@
   (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
 
 (global-set-key (kbd "C-c c") 'toggle-comment-on-line)
+
+;; redefines the silly indent of keyword lists
+;; before
+;;   (:foo bar
+;;         :baz qux)
+;; after
+;;   (:foo bar
+;;    :baz qux)
+(eval-after-load "lisp-mode"
+  '(defun Fuco1/lisp-indent-function (indent-point state)
+     "This function is the normal value of the variable `lisp-indent-function'.
+The function `calculate-lisp-indent' calls this to determine
+if the arguments of a Lisp function call should be indented specially.
+
+INDENT-POINT is the position at which the line being indented begins.
+Point is located at the point to indent under (for default indentation);
+STATE is the `parse-partial-sexp' state for that position.
+
+If the current line is in a call to a Lisp function that has a non-nil
+property `lisp-indent-function' (or the deprecated `lisp-indent-hook'),
+it specifies how to indent.  The property value can be:
+
+* `defun', meaning indent `defun'-style
+  \(this is also the case if there is no property and the function
+  has a name that begins with \"def\", and three or more arguments);
+
+* an integer N, meaning indent the first N arguments specially
+  (like ordinary function arguments), and then indent any further
+  arguments like a body;
+
+* a function to call that returns the indentation (or nil).
+  `lisp-indent-function' calls this function with the same two arguments
+  that it itself received.
+
+This function returns either the indentation to use, or nil if the
+Lisp function does not specify a special indentation."
+     (let ((normal-indent (current-column))
+           (orig-point (point)))
+       (goto-char (1+ (elt state 1)))
+       (parse-partial-sexp (point) calculate-lisp-indent-last-sexp 0 t)
+       (cond
+        ;; car of form doesn't seem to be a symbol, or is a keyword
+        ((and (elt state 2)
+              (or (not (looking-at "\\sw\\|\\s_"))
+                  (looking-at ":")))
+         (if (not (> (save-excursion (forward-line 1) (point))
+                     calculate-lisp-indent-last-sexp))
+             (progn (goto-char calculate-lisp-indent-last-sexp)
+                    (beginning-of-line)
+                    (parse-partial-sexp (point)
+                                        calculate-lisp-indent-last-sexp 0 t)))
+         ;; Indent under the list or under the first sexp on the same
+         ;; line as calculate-lisp-indent-last-sexp.  Note that first
+         ;; thing on that line has to be complete sexp since we are
+         ;; inside the innermost containing sexp.
+         (backward-prefix-chars)
+         (current-column))
+        ((and (save-excursion
+                (goto-char indent-point)
+                (skip-syntax-forward " ")
+                (not (looking-at ":")))
+              (save-excursion
+                (goto-char orig-point)
+                (looking-at ":")))
+         (save-excursion
+           (goto-char (+ 2 (elt state 1)))
+           (current-column)))
+        (t
+         (let ((function (buffer-substring (point)
+                                           (progn (forward-sexp 1) (point))))
+               method)
+           (setq method (or (function-get (intern-soft function)
+                                          'lisp-indent-function)
+                            (get (intern-soft function) 'lisp-indent-hook)))
+           (cond ((or (eq method 'defun)
+                      (and (null method)
+                           (> (length function) 3)
+                           (string-match "\\`def" function)))
+                  (lisp-indent-defform state indent-point))
+                 ((integerp method)
+                  (lisp-indent-specform method state
+                                        indent-point normal-indent))
+                 (method
+                  (funcall method indent-point state)))))))))
+
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda () (setq-local lisp-indent-function #'Fuco1/lisp-indent-function)))
 
 ;;;; Built-in Package Config
 
