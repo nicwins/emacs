@@ -2,20 +2,11 @@
 ## Emacs
 #################
 
-elpa/
-backups/
-tramp
-auto-save-list/
-url/
-recentf
-projectile-bookmarks.eld
-magit/
-transient/
-helm-adaptive-history
+etc/
+var/
+straight/*
+!straight/versions/
 TODO.org
-custom.el
-projects
-smex-items
 
 ############
 ## Windows
