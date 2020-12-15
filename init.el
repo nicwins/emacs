@@ -211,15 +211,15 @@ Lisp function does not specify a special indentation."
 
 (use-package gcmh
   ;; Minimizes GC interference with user activity.
+  :delight
   :config (gcmh-mode 1))
 
 (use-package no-littering
   ;; cleanup all the clutter from varios modes
   ;; places configs in /etc and data in /var
-  :init
-  (setq auto-save-file-name-transforms
-	`((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
-	custom-file (no-littering-expand-etc-file-name "custom.el")))
+  :init (setq auto-save-file-name-transforms
+	      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+	      custom-file (no-littering-expand-etc-file-name "custom.el")))
 
 ;; Automatically bisects init file
 (use-package bug-hunter)
@@ -230,13 +230,21 @@ Lisp function does not specify a special indentation."
 ;; Built-in project defines
 (use-package project)
 
+(use-package projectile
+  ;; project traversal
+  :init
+  (setq-default projectile-mode-line-function '(lambda () (format " [%s] " (projectile-project-name)))
+                projectile-switch-project-action 'project-switch-project
+                projectile-remember-window-configs t)
+  :config (projectile-mode))
+
 (use-package outshine
   ;; Easier navigation for source files, especially this one
   :delight
   :ghook 'emacs-lisp-mode-hook
   :gfhook '(lambda ()
-	    (when (string= user-init-file buffer-file-name)
-	      (outline-hide-body)))
+	     (when (string= user-init-file buffer-file-name)
+	       (outline-hide-body)))
   :general
   (outshine-mode-map
    :states '(normal)
@@ -277,6 +285,13 @@ Lisp function does not specify a special indentation."
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
+(use-package rg)
+
+(use-package xref
+  ;; search project for string
+  :init
+  (setq xref-search-program 'ripgrep))
+
 (use-package evil
   ;; Imports vim motion/states into emacs
   :init
@@ -295,14 +310,6 @@ Lisp function does not specify a special indentation."
 (use-package flycheck
   ;; code linter
   :config (global-flycheck-mode))
-
-(use-package projectile
-  ;; project traversal
-  :init
-  (setq-default projectile-mode-line-function '(lambda () (format "[%s]" (projectile-project-name)))
-                projectile-switch-project-action 'project-switch-project
-                projectile-remember-window-configs t)
-  :config (projectile-mode))
 
 (use-package selectrum
   ;; selection/completion manager
@@ -359,24 +366,44 @@ Lisp function does not specify a special indentation."
 
 (use-package prettier
   ;; prettify javascript on save
-  :init (setq-default prettier-js-args
-                      '("--bracket-spacing" "true"
-                        "--single-quote" "true"
-                        "--no-semi" "true"
-                        "--jsx-single-quote" "true"
-                        "--jsx-bracket-same-line" "true"))
-  :config (global-prettier-mode))
+  :hook (rjsx-mode . prettier-mode))
+
+(use-package json-mode)
+
+(use-package lsp-mode
+  :commands lsp
+  :hook ((rjsx-mode
+	  ruby-mode
+	  json-mode
+	  mhtml-mode) . lsp)
+  :config
+  (setq lsp-eldoc-hook nil
+	lsp-enable-symbol-highlighting t
+	lsp-enable-snippet nil))
+
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-sideline-show-hover nil))
+
+(require 'lsp-ui-flycheck)
 
 (use-package rjsx-mode
   ;; react jsx formatting
-  :init (add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode)))
+  :init (add-to-list 'auto-mode-alist '("\\/.*\\.js\\'" . rjsx-mode)))
 
 (use-package ruby-mode
   ;; ruby editor
   :init (setq ruby-deep-indent-paren nil))
 
-;; javascript lsp
-(use-package tide)
+(defun ruby-prettier ()
+  "Run ruby prettier on save in `ruby-mode'."
+  (interactive)
+  (when (eq major-mode 'ruby-mode)
+    (shell-command-to-string (format "yarn prettier --write %s" buffer-file-name))
+    (revert-buffer :ignore-auto :noconfirm)))
+
+(add-hook 'after-save-hook 'ruby-prettier)
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -414,7 +441,6 @@ Lisp function does not specify a special indentation."
    "W" 'save-all
    "q" 'kill-buffer-and-window
    "v" 'split-window-right
-   ;;"e" 'pp-eval-last-sexp
    "SPC" 'other-window
    "f" 'find-file
    "g" 'magit-status
@@ -425,15 +451,20 @@ Lisp function does not specify a special indentation."
    "u" 'undo-tree-visualize
    "b" 'consult-buffer
    "d" 'consult-line
-   "e" 'consult-flycheck
+   ;;"e" 'consult-flycheck
    "i" 'consult-imenu
    "o" 'consult-outline
    "x" 'execute-extended-command
    "0" 'delete-window
    "h" '(:ignore t :which-key "Help Functions")
-   "h a" '(consult-apropos :which-key "Apropos")
-   "h h" '(help-for-help :which-key "Help for Help")
-   "h k" '(describe-key :which-key "Describe Key"))
+   "h a" 'consult-apropos
+   "h h" 'help-for-help
+   "h k" 'describe-key
+   "h v" 'describe-variable
+   "l" '(:ignore t :which-key "LSP Mappings")
+   "l d" 'xref-find-definitions
+   "l r" 'xref-find-references
+   "l n" 'lsp-rename)
 
   (:states '(normal)
    "p" 'consult-yank-pop)
@@ -444,8 +475,8 @@ Lisp function does not specify a special indentation."
 	 "k" 'evil-normal-state))
   
   ("C-x r q" 'save-buffers-kill-terminal
-   '[f1] 'projectile-find-file
-   '[f2] 'projectile-ag
+   '[f1] 'project-find-file
+   '[f2] 'rg-project
    '[f5] 'call-last-kbd-macro))
 
 (use-package delight
@@ -456,11 +487,7 @@ Lisp function does not specify a special indentation."
 	     (outline-minor-mode nil outline)
 	     (subword-mode nil subword))))
 
-
 ;;;; General Settings
-
-;; show me errors
-(setq debug-on-error t)
 
 ;; Emacs Interlock
 (setq create-lockfiles nil)
@@ -489,26 +516,38 @@ Lisp function does not specify a special indentation."
 ;; Sentences do not need double spaces to end. Period.
 (set-default 'sentence-end-double-space nil)
 
-;; Make backups of files, even when they're in version control
-(setq vc-make-backup-files t)
-
 ;; Seed the random-number generator
 (random t)
 
-;; Transparently open compressed files
-(auto-compression-mode t)
+;;;; Built-in Package Config
+
+;; originial modeline set to vc-parent-buffer-name
+(use-package vc
+  ;; Make backups of files, even when they're in version control
+  :straight nil
+  :config
+  (setq vc-make-backup-files t))
+
+(use-package uniquify
+  ;; Add parts of each file's directory to the buffer name if not unique
+  :straight nil
+  :init
+  (setq uniquify-buffer-name-style 'forward))
+
+(use-package eldoc
+  ;; Use Eldoc for elisp
+  :straight nil
+  :init
+  (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+  (add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
+  (add-hook 'ielm-mode-hook 'eldoc-mode))
+
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
 
 ;; Easily navigate sillycased words
 (global-subword-mode 1)
-
-;;;; Built-in Package Config
-
-;; Add parts of each file's directory to the buffer name if not unique
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
 
 ;; Show active region
 (transient-mark-mode 1)
@@ -530,16 +569,6 @@ Lisp function does not specify a special indentation."
       version-control t
       vc-follow-symlinks t)
 
-;; Eldoc Mapping
-(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-(add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
-(add-hook 'ielm-mode-hook 'eldoc-mode)
-
-;; Emacs server
-(require 'server)
-(unless (server-running-p)
-  (server-start))
-
 ;; Shell-mode
 (add-hook 'comint-output-filter-functions
           'comint-truncate-buffer)
@@ -557,10 +586,11 @@ Lisp function does not specify a special indentation."
 
 ;; No splash screen
 (setq inhibit-startup-message t)
-(setq-default visible-bell t
-	      font-lock-maximum-decoration t
-	      color-theme-is-global t
-	      truncate-partial-width-windows nil)
+(setq-default visible-bell t)
+
+;; 	      font-lock-maximum-decoration t
+;; 	      color-theme-is-global t
+;; 	      truncate-partial-width-windows nil)
 
 ;; Two spaces for tab
 (setq-default standard-indent 2)

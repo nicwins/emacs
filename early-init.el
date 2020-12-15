@@ -5,7 +5,10 @@
 ;;; Code:
 
 ;; Defer Garbage Collection
-(setq gc-cons-threshold 100000000)
+(setq gc-cons-threshold 100000000) ;; 100mb
+
+;; Increase size of data Emacs reads from process
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
 
 ;; We will handle our own package init
 (setq package-enable-at-startup nil)

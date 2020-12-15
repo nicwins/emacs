@@ -6,6 +6,7 @@ etc/
 var/
 straight/*
 !straight/versions/
+elpa/
 TODO.org
 
 ############
