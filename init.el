@@ -304,8 +304,8 @@ Lisp function does not specify a special indentation."
         evil-move-cursor-back nil)
   :config
   (evil-mode 1)
-  (general-add-hook 'evil-normal-state-entry-hook '(lambda () (setq display-line-numbers t)))
-  (general-add-hook 'evil-normal-state-exit-hook '(lambda () (setq display-line-numbers 'relative))))
+  (general-add-hook 'evil-normal-state-entry-hook '(lambda () (setq-local display-line-numbers t)))
+  (general-add-hook 'evil-normal-state-exit-hook '(lambda () (setq-local display-line-numbers 'relative))))
 
 (use-package flycheck
   ;; code linter
@@ -364,9 +364,14 @@ Lisp function does not specify a special indentation."
       ad-do-it
       (delete-other-windows))))
 
-(use-package prettier
-  ;; prettify javascript on save
-  :hook (rjsx-mode . prettier-mode))
+(use-package apheleia
+  :straight
+  (apheleia :type git
+	    :host github
+	    :repo "raxod502/apheleia")
+  :config (apheleia-global-mode +1)
+  (add-to-list 'apheleia-mode-alist '(ruby-mode . prettier)))
+
 
 (use-package json-mode)
 
@@ -384,9 +389,8 @@ Lisp function does not specify a special indentation."
 (use-package lsp-ui
   :commands lsp-ui-mode
   :config
-  (setq lsp-ui-sideline-show-hover nil))
-
-(require 'lsp-ui-flycheck)
+  (setq lsp-ui-sideline-show-hover nil
+	lsp-ui-doc-enable nil))
 
 (use-package rjsx-mode
   ;; react jsx formatting
@@ -395,15 +399,6 @@ Lisp function does not specify a special indentation."
 (use-package ruby-mode
   ;; ruby editor
   :init (setq ruby-deep-indent-paren nil))
-
-(defun ruby-prettier ()
-  "Run ruby prettier on save in `ruby-mode'."
-  (interactive)
-  (when (eq major-mode 'ruby-mode)
-    (shell-command-to-string (format "yarn prettier --write %s" buffer-file-name))
-    (revert-buffer :ignore-auto :noconfirm)))
-
-(add-hook 'after-save-hook 'ruby-prettier)
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -521,6 +516,8 @@ Lisp function does not specify a special indentation."
 
 ;;;; Built-in Package Config
 
+(electric-pair-mode 1)
+
 ;; originial modeline set to vc-parent-buffer-name
 (use-package vc
   ;; Make backups of files, even when they're in version control
@@ -583,6 +580,8 @@ Lisp function does not specify a special indentation."
 (setq-default tramp-default-method "ssh")
 
 ;;;; Appearance
+
+;;(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; No splash screen
 (setq inhibit-startup-message t)
