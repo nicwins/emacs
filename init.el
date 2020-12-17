@@ -55,14 +55,6 @@ Repeated invocations toggle between two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-(defun tar-compress-dashboard ()
-  "Tars up the dashboard project."
-  (interactive)
-  (shell "*tar*")
-  (switch-to-buffer "*tar*")
-  (comint-send-string "*tar*" "tar --exclude='/var/www/evms-dashboard/log' --exclude='/var/www/evms-dashboard/solr/data' --exclude='/var/www/evms-dashboard/tmp' --exclude='/var/www/evms-dashboard/.git'  --exclude='/var/www/evms-dashboard/client/bower_components' --exclude='/var/www/evms-dashboard/client/node_modules' -zcvf rails.tgz /var/www/evms-dashboard")
-  (comint-send-input))
-
 (defun grunt-server()
   "Start the grunt server."
   (interactive)
