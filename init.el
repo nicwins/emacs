@@ -118,8 +118,8 @@ Repeated invocations toggle between two most recently open buffers."
   "Add headers demanded by rubocop to head of file."
   (interactive)
   (save-excursion
-   (goto-char (point-min))
-   (insert "# frozen_string_literal: true\n\n# :nodoc:\n")))
+		(goto-char (point-min))
+		(insert "# frozen_string_literal: true\n\n# :nodoc:\n")))
 
 ;;;; Package Configuration
 
@@ -131,8 +131,8 @@ Repeated invocations toggle between two most recently open buffers."
   ;; cleanup all the clutter from varios modes
   ;; places configs in /etc and data in /var
   :init (setq-default auto-save-file-name-transforms
-	      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
-	      custom-file (no-littering-expand-etc-file-name "custom.el")))
+											`((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+											custom-file (no-littering-expand-etc-file-name "custom.el")))
 
 ;; Automatically bisects init file
 (use-package bug-hunter)
@@ -150,30 +150,26 @@ Repeated invocations toggle between two most recently open buffers."
 								evil-want-keybinding nil)
   :general
   :config
-  (evil-mode 1)
-  ;; Display regular line numbers in normal, relative in insert
-  ;; (general-add-hook
-  ;;  'evil-normal-state-entry-hook '(lambda () (setq-local display-line-numbers t)))
-  ;; (general-add-hook
-  ;;  'evil-normal-state-exit-hook '(lambda () (setq-local display-line-numbers 'relative))
-	)
+  (evil-mode 1))
 
-	(use-package evil-collection
-		:after evil
-		:config
-		(evil-collection-init)
-		(setq-default evil-collection-setup-minibuffer t)
-		(general-def
-			:states '(normal visual)
-			[escape] 'keyboard-quit)
-		(general-def
-			:keymaps
-			'(minibuffer-local-map
-				minibuffer-local-ns-map
-				minibuffer-local-completion-map
-				minibuffer-local-must-match-map
-				minibuffer-local-isearch-map)
-			[escape] 'minibuffer-keyboard-quit))
+(use-package evil-collection
+	:after evil
+	:config
+	(push '"TAB" evil-collection-key-blacklist)
+	(push '"<tab>" evil-collection-key-blacklist)
+	(evil-collection-init)
+	(setq-default evil-collection-setup-minibuffer t)
+	(general-def
+		:states '(normal visual)
+		[escape] 'keyboard-quit)
+	(general-def
+		:keymaps
+		'(minibuffer-local-map
+			minibuffer-local-ns-map
+			minibuffer-local-completion-map
+			minibuffer-local-must-match-map
+			minibuffer-local-isearch-map)
+		[escape] 'minibuffer-keyboard-quit))
 
 ;; Install a newer version of Org after removing the old
 (use-package org)
@@ -181,9 +177,12 @@ Repeated invocations toggle between two most recently open buffers."
 (use-package outshine
   ;; Easier navigation for source files, especially this one
   :ghook 'emacs-lisp-mode-hook
-  :gfhook '(lambda ()
-						 (when (string= user-init-file buffer-file-name)
-							 (outline-hide-body)))
+  :gfhook 'my-init-file-checker
+	:config
+	(defun my-init-file-checker ()
+		"Collapses outline when entering init file."
+		(when (string= user-init-file buffer-file-name)
+			(outline-hide-body)))
   :general
   (outshine-mode-map
    :states '(normal)
@@ -204,16 +203,13 @@ Repeated invocations toggle between two most recently open buffers."
   (setq-default completion-styles '(flex))
   :config
   (global-company-mode t)
-  (general-def company-active-map
-    "<return>" nil
-    "RET" nil
-    "<backtab>" 'company-select-next-or-abort
-    "C-<backtab>" 'company-select-previous-or-abort
-    "<tab>" 'company-complete-selection))
-
-(use-package dired
-  ;; Setup Dired
-  :straight nil)
+	:general
+  (company-active-map
+	 "<return>" nil
+	 "RET" nil
+	 "<backtab>" 'company-select-next-or-abort
+	 "C-<backtab>" 'company-select-previous-or-abort
+	 "<tab>" 'company-complete-selection))
 
 (use-package exec-path-from-shell
   ;; Load path from user shell
@@ -234,11 +230,13 @@ Repeated invocations toggle between two most recently open buffers."
 	:init (doom-modeline-mode 1)
 	:config
 	(setq-default doom-modeline-height 18
-								doom-modeline-buffer-encoding))
+								doom-modeline-buffer-encoding nil
+								doom-modeline-buffer-file-name-style 'relative-to-project
+								doom-modeline-icon (display-graphic-p)))
 
 (use-package selectrum
-  ;; selection/completion manager
-  :config (selectrum-mode +1))
+	;; selection/completion manager
+	:config (selectrum-mode +1))
 
 (use-package prescient
   ;; sorting/filtering manager
@@ -263,14 +261,18 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package projectile
   ;; project traversal
-  :config (projectile-mode +1))
+  :config (projectile-mode +1)
+	(defun my-projectile-ignore-project (project-root)
+		(f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
+  (setq projectile-ignored-project-function #'my-projectile-ignore-project))
 
 (use-package marginalia
   ;; adds annotations to consult
   :straight (:branch "main")
   :init
   (marginalia-mode)
-  (setq-default marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)))
+  (setq-default marginalia-annotators
+								'(marginalia-annotators-heavy marginalia-annotators-light)))
 
 (use-package magit
   ;; emacs interface for git
@@ -302,10 +304,10 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package lsp-mode
   :commands lsp
-  :hook ((rjsx-mode
-					ruby-mode
-					json-mode
-					mhtml-mode) . lsp)
+  :ghook '(rjsx-mode
+					 ruby-mode
+					 json-mode
+					 mhtml-mode)
   :config
   (setq-default lsp-eldoc-hook nil
 								lsp-enable-symbol-highlighting t
@@ -329,8 +331,7 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package inf-ruby
   ;; provides a ruby repl
-  :hook (ruby-mode . inf-ruby-minor-mode))
-
+  :ghook ('ruby-mode #'inf-ruby-minor-mode))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -349,8 +350,9 @@ Repeated invocations toggle between two most recently open buffers."
 (use-package vterm
   ;; better terminal
   :config
-  ;; use f11 as toggle fullscreen in terminal
-  )
+	:general
+	(vterm-mode-map
+	 "<f11>" 'toggle-frame-fullscreen))
 
 (use-package which-key
 	;; shows list of available completions when key sequences begin
@@ -375,15 +377,13 @@ Repeated invocations toggle between two most recently open buffers."
 					 "w" 'save-buffer
 					 "W" 'save-all
 					 "q" 'kill-buffer-and-window
-					 "v" 'split-window-right
-					 "n" 'split-window-below
 					 "SPC" 'other-window
 					 "f" 'find-file
 					 "g" 'magit-status
 					 "G" 'magit-blame-mode
 					 "k" 'kill-this-buffer
 					 "K" 'kill-buffer
-					 "T" 'eshell
+					 "T" 'vterm-other-window
 					 "u" 'undo-tree-visualize
 					 "b" 'consult-buffer
 					 "e" 'consult-flycheck
@@ -391,13 +391,18 @@ Repeated invocations toggle between two most recently open buffers."
 					 "o" 'consult-outline
 					 "x" 'execute-extended-command
 					 "0" 'delete-window
+					 "1" 'delete-other-windows
+					 "2" 'split-window-below
+					 "3" 'split-window-right
 					 "h" '(:ignore t :which-key "Help Functions")
 					 "h a" 'consult-apropos
 					 "h h" 'help-for-help
 					 "h k" 'describe-key
 					 "h v" 'describe-variable
+					 "h b" 'describe-bindings
+					 "h m" 'describe-mode
 					 "l" '(:ignore t :which-key "LSP Mappings")
-					 "l d" 'lsp-find-definitions
+					 "l d" 'lsp-find-definition
 					 "l r" 'lsp-find-references
 					 "l n" 'lsp-rename
 					 "l i" 'lsp-ui-imenu)
@@ -411,13 +416,18 @@ Repeated invocations toggle between two most recently open buffers."
 					 "j" (general-key-dispatch 'self-insert-command
 								 :timeout 0.25
 								 "k" 'evil-normal-state))
-	
+
 	("C-x r q" 'save-buffers-kill-terminal
 	 '[f1] 'project-find-file
 	 '[f2] 'rg-project
 	 '[f3] 'projectile-switch-project
 	 '[f4] 'projectile-run-vterm
 	 '[f5] 'call-last-kbd-macro))
+
+(general-def
+	:keymaps 'xref--xref-buffer-mode-map
+	:states 'motion
+	"TAB" 'xref-quit-and-goto-xref)
 
 ;;;; General Settings
 
