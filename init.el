@@ -38,9 +38,9 @@
               use-package-expand-minimally t) ; minimize expanded code
 
 (straight-use-package 'use-package)
-(straight-use-package 'delight)
+(straight-use-package 'blackout)
 (straight-use-package 'general)
-(require 'delight)
+(require 'blackout)
 (require 'general)
 
 ;;;; Global Helper Functions
@@ -120,13 +120,13 @@ Repeated invocations toggle between two most recently open buffers."
   (interactive)
   (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
 
-;; redefines the silly indent of keyword lists
-;; before
-;;   (:foo bar
-;;         :baz qux)
-;; after
-;;   (:foo bar
-;;    :baz qux)
+(defun ruby-rubocop-header ()
+  "Add headers demanded by rubocop to head of file."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (insert "# frozen_string_literal: true\n\n# :nodoc:\n")))
+
 (eval-after-load "lisp-mode"
   '(defun Fuco1/lisp-indent-function (indent-point state)
      "This function is the normal value of the variable `lisp-indent-function'.
@@ -211,7 +211,7 @@ Lisp function does not specify a special indentation."
 
 (use-package gcmh
   ;; Minimizes GC interference with user activity.
-  :delight
+  :blackout
   :config (gcmh-mode 1))
 
 (use-package no-littering
@@ -240,7 +240,7 @@ Lisp function does not specify a special indentation."
 
 (use-package outshine
   ;; Easier navigation for source files, especially this one
-  :delight
+  :blackout
   :ghook 'emacs-lisp-mode-hook
   :gfhook '(lambda ()
 	     (when (string= user-init-file buffer-file-name)
@@ -253,17 +253,17 @@ Lisp function does not specify a special indentation."
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
-  :delight
+  :blackout
   :ghook 'prog-mode-hook)
 
 (use-package aggressive-indent
   ;; Indent as you type
-  :delight
+  :blackout
   :ghook 'prog-mode-hook)
 
 (use-package company
   ;; text completion framework
-  :delight
+  :blackout
   :init
   (setq completion-styles '(flex))
   :config
@@ -301,11 +301,20 @@ Lisp function does not specify a special indentation."
         evil-insert-state-cursor '("red" bar)
         evil-replace-state-cursor '("red" bar)
         evil-operator-state-cursor '("red" hollow)
-        evil-move-cursor-back nil)
+        evil-move-cursor-back nil
+	evil-want-keybinding nil)
   :config
   (evil-mode 1)
-  (general-add-hook 'evil-normal-state-entry-hook '(lambda () (setq-local display-line-numbers t)))
-  (general-add-hook 'evil-normal-state-exit-hook '(lambda () (setq-local display-line-numbers 'relative))))
+  ;; Display regular line numbers in normal, relative in insert
+  (general-add-hook
+   'evil-normal-state-entry-hook '(lambda () (setq-local display-line-numbers t)))
+  (general-add-hook
+   'evil-normal-state-exit-hook '(lambda () (setq-local display-line-numbers 'relative))))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
 (use-package flycheck
   ;; code linter
@@ -332,12 +341,9 @@ Lisp function does not specify a special indentation."
   :init (fset 'multi-occur #'consult-multi-occur)
   :config (consult-preview-mode))
 
-(use-package consult-selectrum
-  :straight nil)
+(use-package consult-selectrum)
 
-(use-package consult-flycheck
-  ;; adds the consult-flycheck command
-  :straight nil)
+(use-package consult-flycheck)
 
 (use-package marginalia
   ;; adds annotations to consult
@@ -372,7 +378,6 @@ Lisp function does not specify a special indentation."
   :config (apheleia-global-mode +1)
   (add-to-list 'apheleia-mode-alist '(ruby-mode . prettier)))
 
-
 (use-package json-mode)
 
 (use-package lsp-mode
@@ -384,7 +389,8 @@ Lisp function does not specify a special indentation."
   :config
   (setq lsp-eldoc-hook nil
 	lsp-enable-symbol-highlighting t
-	lsp-enable-snippet nil))
+	lsp-enable-snippet nil
+	lsp-modeline-code-actions-segments t))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -398,12 +404,23 @@ Lisp function does not specify a special indentation."
 
 (use-package ruby-mode
   ;; ruby editor
-  :init (setq ruby-deep-indent-paren nil))
+  )
+
+(use-package inf-ruby
+  ;; provides a ruby repl
+  :hook (ruby-mode . inf-ruby-minor-mode))
+
 
 (use-package undo-tree
   ;; make undo a tree rather than line
-  :delight
+  :blackout
   :config (global-undo-tree-mode))
+
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode)))
 
 (use-package gruvbox-theme
   ;; coding theme
@@ -413,9 +430,15 @@ Lisp function does not specify a special indentation."
   ;; pretties up the mode line
   :config (sml/setup))
 
+(use-package vterm
+  ;; better terminal
+  :config
+  ;; use f11 as toggle fullscreen in terminal
+  )
+
 (use-package which-key
   ;; shows list of available completions when key sequences begin
-  :delight
+  :blackout
   :commands (which-key-mode)
   :init (which-key-mode)
   :config
@@ -436,6 +459,7 @@ Lisp function does not specify a special indentation."
    "W" 'save-all
    "q" 'kill-buffer-and-window
    "v" 'split-window-right
+   "n" 'split-window-below
    "SPC" 'other-window
    "f" 'find-file
    "g" 'magit-status
@@ -457,8 +481,8 @@ Lisp function does not specify a special indentation."
    "h k" 'describe-key
    "h v" 'describe-variable
    "l" '(:ignore t :which-key "LSP Mappings")
-   "l d" 'xref-find-definitions
-   "l r" 'xref-find-references
+   "l d" 'lsp-find-definitions
+   "l r" 'lsp-find-references
    "l n" 'lsp-rename)
 
   (:states '(normal)
@@ -474,13 +498,13 @@ Lisp function does not specify a special indentation."
    '[f2] 'rg-project
    '[f5] 'call-last-kbd-macro))
 
-(use-package delight
+(use-package blackout
   ;; customize mode modeline display
-  :config
-  (delight '((eldoc-mode nil eldoc)
-	     (emacs-lisp-mode "Elisp " :major)
-	     (outline-minor-mode nil outline)
-	     (subword-mode nil subword))))
+  :blackout
+  ((eldoc-mode)
+   (emacs-lisp-mode . "Elisp ")
+   (outline-minor-mode)
+   (subword-mode)))
 
 ;;;; General Settings
 
@@ -514,13 +538,23 @@ Lisp function does not specify a special indentation."
 ;; Seed the random-number generator
 (random t)
 
+;; Alias ielm as repl
+(defalias 'repl 'ielm)
+
 ;;;; Built-in Package Config
 
 (electric-pair-mode 1)
 
-;; originial modeline set to vc-parent-buffer-name
+(use-package server
+  ;; The emacs server
+  :straight nil
+  :config
+  (unless (server-running-p)
+    (server-start)))
+
 (use-package vc
   ;; Make backups of files, even when they're in version control
+  ;; originial modeline set to vc-parent-buffer-name
   :straight nil
   :config
   (setq vc-make-backup-files t))
