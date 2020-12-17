@@ -41,9 +41,7 @@
               use-package-expand-minimally t) ; minimize expanded code
 
 (straight-use-package 'use-package)
-(straight-use-package 'blackout)
 (straight-use-package 'general)
-(require 'blackout)
 (require 'general)
 (eval-when-compile (require 'use-package))
 
@@ -126,9 +124,8 @@ Repeated invocations toggle between two most recently open buffers."
 ;;;; Package Configuration
 
 (use-package gcmh
-						 ;; Minimizes GC interference with user activity.
-						 :blackout
-						 :config (gcmh-mode 1))
+	;; Minimizes GC interference with user activity.
+	:config (gcmh-mode 1))
 
 (use-package no-littering
   ;; cleanup all the clutter from varios modes
@@ -183,7 +180,6 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package outshine
   ;; Easier navigation for source files, especially this one
-  :blackout
   :ghook 'emacs-lisp-mode-hook
   :gfhook '(lambda ()
 						 (when (string= user-init-file buffer-file-name)
@@ -196,17 +192,14 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
-  :blackout
   :ghook 'prog-mode-hook)
 
 (use-package aggressive-indent
   ;; Indent as you type
-  :blackout
   :ghook 'prog-mode-hook)
 
 (use-package company
   ;; text completion framework
-  :blackout
   :init
   (setq-default completion-styles '(flex))
   :config
@@ -302,7 +295,6 @@ Repeated invocations toggle between two most recently open buffers."
   (apheleia :type git
 						:host github
 						:repo "raxod502/apheleia")
-	:blackout
   :config (apheleia-global-mode +1)
   (add-to-list 'apheleia-mode-alist '(ruby-mode . prettier)))
 
@@ -342,7 +334,6 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package undo-tree
   ;; make undo a tree rather than line
-  :blackout
   :config (global-undo-tree-mode))
 
 (use-package markdown-mode
@@ -363,7 +354,6 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package which-key
 	;; shows list of available completions when key sequences begin
-	:blackout
 	:commands (which-key-mode)
 	:init (which-key-mode)
 	:config
@@ -426,14 +416,8 @@ Repeated invocations toggle between two most recently open buffers."
 	 '[f1] 'project-find-file
 	 '[f2] 'rg-project
 	 '[f3] 'projectile-switch-project
+	 '[f4] 'projectile-run-vterm
 	 '[f5] 'call-last-kbd-macro))
-
-(use-package blackout
-  ;; customize mode modeline display
-  :blackout
-  ((eldoc-mode)
-   (emacs-lisp-mode . "Elisp")
-   (outline-minor-mode)))
 
 ;;;; General Settings
 
@@ -508,7 +492,6 @@ Repeated invocations toggle between two most recently open buffers."
 
 ;; Easily navigate sillycased words
 (global-subword-mode 1)
-(blackout 'subword-mode)
 
 ;; Show active region
 (transient-mark-mode 1)
