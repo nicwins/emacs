@@ -6,9 +6,12 @@
 
 ;;;; Pre-Package Initialization
 
+;; Set all packages to compile async
+(setq-default comp-deferred-compilation t)
+
 ;; Remove built-in version of Org from the load-path
 (require 'cl-seq)
-(setq load-path
+(setq-default load-path
       (cl-remove-if
        (lambda (x)
 	 (string-match-p "org$" x))
@@ -42,6 +45,7 @@
 (straight-use-package 'general)
 (require 'blackout)
 (require 'general)
+(eval-when-compile (require 'use-package))
 
 ;;;; Global Helper Functions
 
@@ -116,127 +120,74 @@ Repeated invocations toggle between two most recently open buffers."
   "Add headers demanded by rubocop to head of file."
   (interactive)
   (save-excursion
-    (goto-char (point-min))
-    (insert "# frozen_string_literal: true\n\n# :nodoc:\n")))
-
-(eval-after-load "lisp-mode"
-  '(defun Fuco1/lisp-indent-function (indent-point state)
-     "This function is the normal value of the variable `lisp-indent-function'.
-The function `calculate-lisp-indent' calls this to determine
-if the arguments of a Lisp function call should be indented specially.
-
-INDENT-POINT is the position at which the line being indented begins.
-Point is located at the point to indent under (for default indentation);
-STATE is the `parse-partial-sexp' state for that position.
-
-If the current line is in a call to a Lisp function that has a non-nil
-property `lisp-indent-function' (or the deprecated `lisp-indent-hook'),
-it specifies how to indent.  The property value can be:
-
-* `defun', meaning indent `defun'-style
-  \(this is also the case if there is no property and the function
-  has a name that begins with \"def\", and three or more arguments);
-
-* an integer N, meaning indent the first N arguments specially
-  (like ordinary function arguments), and then indent any further
-  arguments like a body;
-
-* a function to call that returns the indentation (or nil).
-  `lisp-indent-function' calls this function with the same two arguments
-  that it itself received.
-
-This function returns either the indentation to use, or nil if the
-Lisp function does not specify a special indentation."
-     (let ((normal-indent (current-column))
-           (orig-point (point)))
-       (goto-char (1+ (elt state 1)))
-       (parse-partial-sexp (point) calculate-lisp-indent-last-sexp 0 t)
-       (cond
-        ;; car of form doesn't seem to be a symbol, or is a keyword
-        ((and (elt state 2)
-              (or (not (looking-at "\\sw\\|\\s_"))
-                  (looking-at ":")))
-         (if (not (> (save-excursion (forward-line 1) (point))
-                     calculate-lisp-indent-last-sexp))
-             (progn (goto-char calculate-lisp-indent-last-sexp)
-                    (beginning-of-line)
-                    (parse-partial-sexp (point)
-                                        calculate-lisp-indent-last-sexp 0 t)))
-         ;; Indent under the list or under the first sexp on the same
-         ;; line as calculate-lisp-indent-last-sexp.  Note that first
-         ;; thing on that line has to be complete sexp since we are
-         ;; inside the innermost containing sexp.
-         (backward-prefix-chars)
-         (current-column))
-        ((and (save-excursion
-                (goto-char indent-point)
-                (skip-syntax-forward " ")
-                (not (looking-at ":")))
-              (save-excursion
-                (goto-char orig-point)
-                (looking-at ":")))
-         (save-excursion
-           (goto-char (+ 2 (elt state 1)))
-           (current-column)))
-        (t
-         (let ((function (buffer-substring (point)
-                                           (progn (forward-sexp 1) (point))))
-               method)
-           (setq method (or (function-get (intern-soft function)
-                                          'lisp-indent-function)
-                            (get (intern-soft function) 'lisp-indent-hook)))
-           (cond ((or (eq method 'defun)
-                      (and (null method)
-                           (> (length function) 3)
-                           (string-match "\\`def" function)))
-                  (lisp-indent-defform state indent-point))
-                 ((integerp method)
-                  (lisp-indent-specform method state
-                                        indent-point normal-indent))
-                 (method
-                  (funcall method indent-point state)))))))))
-
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda () (setq-local lisp-indent-function #'Fuco1/lisp-indent-function)))
+   (goto-char (point-min))
+   (insert "# frozen_string_literal: true\n\n# :nodoc:\n")))
 
 ;;;; Package Configuration
 
 (use-package gcmh
-  ;; Minimizes GC interference with user activity.
-  :blackout
-  :config (gcmh-mode 1))
+						 ;; Minimizes GC interference with user activity.
+						 :blackout
+						 :config (gcmh-mode 1))
 
 (use-package no-littering
   ;; cleanup all the clutter from varios modes
   ;; places configs in /etc and data in /var
-  :init (setq auto-save-file-name-transforms
+  :init (setq-default auto-save-file-name-transforms
 	      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
 	      custom-file (no-littering-expand-etc-file-name "custom.el")))
 
 ;; Automatically bisects init file
 (use-package bug-hunter)
 
+(use-package evil
+  ;; Imports vim motion/states into emacs
+  :init
+  (setq-default evil-emacs-state-cursor '("yellow" box)
+								evil-normal-state-cursor '("green" box)
+								evil-visual-state-cursor '("orange" box)
+								evil-insert-state-cursor '("red" bar)
+								evil-replace-state-cursor '("red" bar)
+								evil-operator-state-cursor '("red" hollow)
+								evil-move-cursor-back nil
+								evil-want-keybinding nil)
+  :general
+  :config
+  (evil-mode 1)
+  ;; Display regular line numbers in normal, relative in insert
+  ;; (general-add-hook
+  ;;  'evil-normal-state-entry-hook '(lambda () (setq-local display-line-numbers t)))
+  ;; (general-add-hook
+  ;;  'evil-normal-state-exit-hook '(lambda () (setq-local display-line-numbers 'relative))
+	)
+
+	(use-package evil-collection
+		:after evil
+		:config
+		(evil-collection-init)
+		(setq-default evil-collection-setup-minibuffer t)
+		(general-def
+			:states '(normal visual)
+			[escape] 'keyboard-quit)
+		(general-def
+			:keymaps
+			'(minibuffer-local-map
+				minibuffer-local-ns-map
+				minibuffer-local-completion-map
+				minibuffer-local-must-match-map
+				minibuffer-local-isearch-map)
+			[escape] 'minibuffer-keyboard-quit))
+
 ;; Install a newer version of Org after removing the old
 (use-package org)
-
-;; Built-in project defines
-(use-package project)
-
-(use-package projectile
-  ;; project traversal
-  :init
-  (setq-default projectile-mode-line-function '(lambda () (format " [%s] " (projectile-project-name)))
-                projectile-switch-project-action 'project-switch-project
-                projectile-remember-window-configs t)
-  :config (projectile-mode))
 
 (use-package outshine
   ;; Easier navigation for source files, especially this one
   :blackout
   :ghook 'emacs-lisp-mode-hook
   :gfhook '(lambda ()
-	     (when (string= user-init-file buffer-file-name)
-	       (outline-hide-body)))
+						 (when (string= user-init-file buffer-file-name)
+							 (outline-hide-body)))
   :general
   (outshine-mode-map
    :states '(normal)
@@ -257,7 +208,7 @@ Lisp function does not specify a special indentation."
   ;; text completion framework
   :blackout
   :init
-  (setq completion-styles '(flex))
+  (setq-default completion-styles '(flex))
   :config
   (global-company-mode t)
   (general-def company-active-map
@@ -279,38 +230,18 @@ Lisp function does not specify a special indentation."
 
 (use-package rg)
 
-(use-package xref
-  ;; search project for string
-  :init
-  (setq xref-search-program 'ripgrep))
-
-(use-package evil
-  ;; Imports vim motion/states into emacs
-  :init
-  (setq evil-emacs-state-cursor '("yellow" box)
-        evil-normal-state-cursor '("green" box)
-        evil-visual-state-cursor '("orange" box)
-        evil-insert-state-cursor '("red" bar)
-        evil-replace-state-cursor '("red" bar)
-        evil-operator-state-cursor '("red" hollow)
-        evil-move-cursor-back nil
-	evil-want-keybinding nil)
-  :config
-  (evil-mode 1)
-  ;; Display regular line numbers in normal, relative in insert
-  (general-add-hook
-   'evil-normal-state-entry-hook '(lambda () (setq-local display-line-numbers t)))
-  (general-add-hook
-   'evil-normal-state-exit-hook '(lambda () (setq-local display-line-numbers 'relative))))
-
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
-
 (use-package flycheck
   ;; code linter
-  :config (global-flycheck-mode))
+	:init
+	(setq-default flycheck-emacs-lisp-load-path 'inherit)
+  :config
+	(global-flycheck-mode))
+
+(use-package doom-modeline
+	:init (doom-modeline-mode 1)
+	:config
+	(setq-default doom-modeline-height 18
+								doom-modeline-buffer-encoding))
 
 (use-package selectrum
   ;; selection/completion manager
@@ -337,12 +268,16 @@ Lisp function does not specify a special indentation."
 
 (use-package consult-flycheck)
 
+(use-package projectile
+  ;; project traversal
+  :config (projectile-mode +1))
+
 (use-package marginalia
   ;; adds annotations to consult
   :straight (:branch "main")
   :init
   (marginalia-mode)
-  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)))
+  (setq-default marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)))
 
 (use-package magit
   ;; emacs interface for git
@@ -365,8 +300,9 @@ Lisp function does not specify a special indentation."
 (use-package apheleia
   :straight
   (apheleia :type git
-	    :host github
-	    :repo "raxod502/apheleia")
+						:host github
+						:repo "raxod502/apheleia")
+	:blackout
   :config (apheleia-global-mode +1)
   (add-to-list 'apheleia-mode-alist '(ruby-mode . prettier)))
 
@@ -375,20 +311,21 @@ Lisp function does not specify a special indentation."
 (use-package lsp-mode
   :commands lsp
   :hook ((rjsx-mode
-	  ruby-mode
-	  json-mode
-	  mhtml-mode) . lsp)
+					ruby-mode
+					json-mode
+					mhtml-mode) . lsp)
   :config
-  (setq lsp-eldoc-hook nil
-	lsp-enable-symbol-highlighting t
-	lsp-enable-snippet nil
-	lsp-modeline-code-actions-segments t))
+  (setq-default lsp-eldoc-hook nil
+								lsp-enable-symbol-highlighting t
+								lsp-enable-snippet nil
+								lsp-modeline-code-actions-segments nil
+								lsp-modeline-diagnostics-enable nil))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
   :config
-  (setq lsp-ui-sideline-show-hover nil
-	lsp-ui-doc-enable nil))
+  (setq-default lsp-ui-sideline-show-hover nil
+								lsp-ui-doc-enable nil))
 
 (use-package rjsx-mode
   ;; react jsx formatting
@@ -418,10 +355,6 @@ Lisp function does not specify a special indentation."
   ;; coding theme
   :config (load-theme 'gruvbox-dark-hard t))
 
-(use-package smart-mode-line
-  ;; pretties up the mode line
-  :config (sml/setup))
-
 (use-package vterm
   ;; better terminal
   :config
@@ -429,93 +362,97 @@ Lisp function does not specify a special indentation."
   )
 
 (use-package which-key
-  ;; shows list of available completions when key sequences begin
-  :blackout
-  :commands (which-key-mode)
-  :init (which-key-mode)
-  :config
-  (setq which-key-idle-delay 0.2 ;; Time before which-key pops up
-	which-key-allow-evil-operators t ;; Show evil keybindings
-	which-key-show-operator-state-maps t
-	which-key-sort-order 'which-key-key-order-alpha)
-  (which-key-setup-side-window-right))
+	;; shows list of available completions when key sequences begin
+	:blackout
+	:commands (which-key-mode)
+	:init (which-key-mode)
+	:config
+	(setq-default
+	 which-key-idle-delay 0.2 ;; Time before which-key pops up
+	 which-key-allow-evil-operators t ;; Show evil keybindings
+	 which-key-show-operator-state-maps t
+	 which-key-sort-order 'which-key-key-order-alpha)
+	(which-key-setup-side-window-right))
 
 (use-package general
-  ;; key binding manager
-  :general
-  (:states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "C-SPC"
-   "r" #'er-switch-to-previous-buffer
-   "w" 'save-buffer
-   "W" 'save-all
-   "q" 'kill-buffer-and-window
-   "v" 'split-window-right
-   "n" 'split-window-below
-   "SPC" 'other-window
-   "f" 'find-file
-   "g" 'magit-status
-   "G" 'magit-blame-mode
-   "k" 'kill-this-buffer
-   "K" 'kill-buffer
-   "T" 'eshell
-   "u" 'undo-tree-visualize
-   "b" 'consult-buffer
-   "d" 'consult-line
-   ;;"e" 'consult-flycheck
-   "i" 'consult-imenu
-   "o" 'consult-outline
-   "x" 'execute-extended-command
-   "0" 'delete-window
-   "h" '(:ignore t :which-key "Help Functions")
-   "h a" 'consult-apropos
-   "h h" 'help-for-help
-   "h k" 'describe-key
-   "h v" 'describe-variable
-   "l" '(:ignore t :which-key "LSP Mappings")
-   "l d" 'lsp-find-definitions
-   "l r" 'lsp-find-references
-   "l n" 'lsp-rename)
+	;; key binding manager
+	:general
+	(:states '(normal visual insert emacs)
+					 :prefix "SPC"
+					 :non-normal-prefix "C-SPC"
+					 "c" 'comment-or-uncomment-region
+					 "r" 'er-switch-to-previous-buffer
+					 "w" 'save-buffer
+					 "W" 'save-all
+					 "q" 'kill-buffer-and-window
+					 "v" 'split-window-right
+					 "n" 'split-window-below
+					 "SPC" 'other-window
+					 "f" 'find-file
+					 "g" 'magit-status
+					 "G" 'magit-blame-mode
+					 "k" 'kill-this-buffer
+					 "K" 'kill-buffer
+					 "T" 'eshell
+					 "u" 'undo-tree-visualize
+					 "b" 'consult-buffer
+					 "e" 'consult-flycheck
+					 "i" 'consult-imenu
+					 "o" 'consult-outline
+					 "x" 'execute-extended-command
+					 "0" 'delete-window
+					 "h" '(:ignore t :which-key "Help Functions")
+					 "h a" 'consult-apropos
+					 "h h" 'help-for-help
+					 "h k" 'describe-key
+					 "h v" 'describe-variable
+					 "l" '(:ignore t :which-key "LSP Mappings")
+					 "l d" 'lsp-find-definitions
+					 "l r" 'lsp-find-references
+					 "l n" 'lsp-rename
+					 "l i" 'lsp-ui-imenu)
 
-  (:states '(normal)
-   "p" 'consult-yank-pop)
-  
-  (:states '(insert replace)
-   "j" (general-key-dispatch 'self-insert-command
-	 :timeout 0.25
-	 "k" 'evil-normal-state))
-  
-  ("C-x r q" 'save-buffers-kill-terminal
-   '[f1] 'project-find-file
-   '[f2] 'rg-project
-   '[f5] 'call-last-kbd-macro))
+	(:states '(normal)
+					 "p" 'consult-yank-pop
+					 "y" 'consult-yank
+					 "/" 'consult-line)
+	
+	(:states '(insert replace)
+					 "j" (general-key-dispatch 'self-insert-command
+								 :timeout 0.25
+								 "k" 'evil-normal-state))
+	
+	("C-x r q" 'save-buffers-kill-terminal
+	 '[f1] 'project-find-file
+	 '[f2] 'rg-project
+	 '[f3] 'projectile-switch-project
+	 '[f5] 'call-last-kbd-macro))
 
 (use-package blackout
   ;; customize mode modeline display
   :blackout
   ((eldoc-mode)
-   (emacs-lisp-mode . "Elisp ")
-   (outline-minor-mode)
-   (subword-mode)))
+   (emacs-lisp-mode . "Elisp")
+   (outline-minor-mode)))
 
 ;;;; General Settings
 
 ;; Emacs Interlock
-(setq create-lockfiles nil)
+(setq-default create-lockfiles nil)
 
 ;; Move files to trash when deleting
-(setq delete-by-moving-to-trash t)
+(setq-default delete-by-moving-to-trash t)
 
 ;; Answering just 'y' or 'n' will do
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Don't ask about buffers with processes
-(setq kill-buffer-query-functions
-      (remq 'process-kill-buffer-query-function
-            kill-buffer-query-functions))
+(setq-default kill-buffer-query-functions
+	      (remq 'process-kill-buffer-query-function
+		    kill-buffer-query-functions))
 
 ;; UTF-8 please
-(setq locale-coding-system 'utf-8)
+(setq-default locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
@@ -549,13 +486,13 @@ Lisp function does not specify a special indentation."
   ;; originial modeline set to vc-parent-buffer-name
   :straight nil
   :config
-  (setq vc-make-backup-files t))
+  (setq-default vc-make-backup-files t))
 
 (use-package uniquify
   ;; Add parts of each file's directory to the buffer name if not unique
   :straight nil
   :init
-  (setq uniquify-buffer-name-style 'forward))
+  (setq-default uniquify-buffer-name-style 'forward))
 
 (use-package eldoc
   ;; Use Eldoc for elisp
@@ -571,6 +508,7 @@ Lisp function does not specify a special indentation."
 
 ;; Easily navigate sillycased words
 (global-subword-mode 1)
+(blackout 'subword-mode)
 
 ;; Show active region
 (transient-mark-mode 1)
@@ -585,12 +523,12 @@ Lisp function does not specify a special indentation."
 (save-place-mode 1)
 
 ;; Emacs Backup Settings - Auto-save config
-(setq backup-by-copying t
-      delete-old-versions t
-      kept-new-versions 6
-      kept-old-versions 2
-      version-control t
-      vc-follow-symlinks t)
+(setq-default backup-by-copying t
+	      delete-old-versions t
+	      kept-new-versions 6
+	      kept-old-versions 2
+	      version-control t
+	      vc-follow-symlinks t)
 
 ;; Shell-mode
 (add-hook 'comint-output-filter-functions
@@ -607,25 +545,25 @@ Lisp function does not specify a special indentation."
 
 ;;;; Appearance
 
-;;(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-
 ;; No splash screen
-(setq inhibit-startup-message t)
+(setq-default inhibit-startup-message t)
+
+;; Be quiet
 (setq-default visible-bell t)
 
-;; 	      font-lock-maximum-decoration t
-;; 	      color-theme-is-global t
-;; 	      truncate-partial-width-windows nil)
+;; Don't scroll horizontally
+(setq-default auto-hscroll-mode nil)
 
 ;; Two spaces for tab
 (setq-default standard-indent 2)
-(setq tab-width 2)
+(setq-default tab-width 2)
 
 ;; force line word wrapping in text modes
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+(setq-default visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 ;; Highlight current line
+(set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
 (global-hl-line-mode 1)
 
 ;; Don't defer screen updates when performing operations
@@ -641,6 +579,14 @@ Lisp function does not specify a special indentation."
 
 ;; Show lambda plase
 (global-prettify-symbols-mode 1)
+
+(set-face-attribute 'completions-annotations nil
+										:inherit '(italic magit-sequence-drop))
+
+(set-face-attribute 'default (selected-frame) :font "Hack" :height 130)
+
+;;(set-face-attribute 'line-number (selected-frame) :height 60)
+;;(set-face-attribute 'line-number-current-line (selected-frame) :height 60)
 
 ;; Full Screen at the end
 (toggle-frame-fullscreen)
