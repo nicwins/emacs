@@ -47,27 +47,27 @@
 
 ;;;; Global Helper Functions
 
-(defun grunt-server()
+(defun my/grunt-server()
   "Start the grunt server."
   (interactive)
   (shell "**GULP**")
   (comint-send-string "**GULP**" "cd ~/projects/evms-dashboard/public/client; gulp")
   (comint-send-input))
 
-(defun rails-server()
+(defun my/rails-server()
   "Start rails."
   (interactive)
   (shell "**RAILS**")
   (comint-send-string "**RAILS**" "cd ~/projects/evms-dashboard/; rails s")
   (comint-send-input))
 
-(defun startup-evms-dashboard ()
+(defun my/startup-evms-dashboard ()
   "Start rails server and grunt watcher."
   (interactive)
   (grunt-server)
   (rails-server))
 
-(defun eval-and-replace ()
+(defun my/eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)
   (backward-kill-sexp)
@@ -77,7 +77,7 @@
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
-(defun rename-file-and-buffer ()
+(defun my/rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."
   (interactive)
   (let ((filename (buffer-file-name)))
@@ -87,7 +87,7 @@
         (rename-file filename new-name t)
         (set-visited-file-name new-name t t)))))
 
-(defun delete-file-and-buffer ()
+(defun my/delete-file-and-buffer ()
   "Kill the current buffer and deletes the file it is visiting."
   (interactive)
   (let ((filename (buffer-file-name)))
@@ -99,7 +99,7 @@
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
-(defun ruby-rubocop-header ()
+(defun my/ruby-rubocop-header ()
   "Add headers demanded by rubocop to head of file."
   (interactive)
   (save-excursion
@@ -161,12 +161,12 @@
 (use-package outshine
   ;; Easier navigation for source files, especially this one
 	:preface
-	(defun my-init-file-checker ()
+	(defun my/init-file-checker ()
 		"Collapses outline when entering init file."
 		(when (string= user-init-file buffer-file-name)
 			(outline-hide-body)))
   :ghook 'emacs-lisp-mode-hook
-  ;;:gfhook 'my-init-file-checker
+  ;;:gfhook 'my/init-file-checker
   :general
   (outshine-mode-map
    :states '(normal)
@@ -261,11 +261,11 @@
 (use-package projectile
   ;; project traversal
 	:preface
-	(defun my-projectile-ignore-project (project-root)
+	(defun my/projectile-ignore-project (project-root)
 		(f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
   :config
 	(projectile-mode +1)
-  (setq projectile-ignored-project-function #'my-projectile-ignore-project))
+  (setq projectile-ignored-project-function #'my/projectile-ignore-project))
 
 (use-package marginalia
   ;; adds annotations to consult
@@ -358,9 +358,9 @@
 (use-package general
 	;; key binding manager
 	:preface
-	(defun save-all () "Save all open buffers." (interactive) (save-some-buffers t))
+	(defun my/save-all () "Save all open buffers." (interactive) (save-some-buffers t))
 
-	(defun switch-to-last-buffer ()
+	(defun my/switch-to-last-buffer ()
 		(interactive)
 		(switch-to-buffer nil))
 
@@ -369,9 +369,9 @@
 					 :prefix "SPC"
 					 :non-normal-prefix "C-SPC"
 					 "c" 'comment-or-uncomment-region
-					 "r" 'switch-to-last-buffer
+					 "r" #'my/switch-to-last-buffer
 					 "w" 'save-buffer
-					 "W" 'save-all
+					 "W" #'my/save-all
 					 "q" 'kill-buffer-and-window
 					 "SPC" 'other-window
 					 "f" 'find-file
@@ -450,13 +450,13 @@
 	;; save workspaces as groups of windows
 	:straight nil
 	:preface
-	(defun no-tab-bar-lines (&rest _)
+	(defun my/no-tab-bar-lines (&rest _)
 		"Hide the `tab-bar' ui."
 		(dolist (frame (frame-list)) (set-frame-parameter frame 'tab-bar-lines 0)))
 	:init
 	(setq-default tab-bar-new-tab-choice "*scratch*")
-	(advice-add #'tab-bar-mode :after #'no-tab-bar-lines)
-	(advice-add #'make-frame :after #'no-tab-bar-lines)
+	(advice-add #'tab-bar-mode :after #'my/no-tab-bar-lines)
+	(advice-add #'make-frame :after #'my/no-tab-bar-lines)
 	:config
 	(tab-bar-mode 1))
 
