@@ -47,16 +47,6 @@
 
 ;;;; Global Helper Functions
 
-;; Helper to interactively save all
-(defun save-all () "Save all open buffers." (interactive) (save-some-buffers t))
-
-;; Helper to quickly switch to prior buffer
-(defun er-switch-to-previous-buffer ()
-  "Switch to previously open buffer.
-Repeated invocations toggle between two most recently open buffers."
-  (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
-
 (defun grunt-server()
   "Start the grunt server."
   (interactive)
@@ -109,11 +99,6 @@ Repeated invocations toggle between two most recently open buffers."
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
-(defun toggle-comment-on-line ()
-  "Comment or uncomment current line."
-  (interactive)
-  (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
-
 (defun ruby-rubocop-header ()
   "Add headers demanded by rubocop to head of file."
   (interactive)
@@ -148,7 +133,6 @@ Repeated invocations toggle between two most recently open buffers."
 								evil-operator-state-cursor '("red" hollow)
 								evil-move-cursor-back nil
 								evil-want-keybinding nil)
-  :general
   :config
   (evil-mode 1))
 
@@ -176,13 +160,13 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package outshine
   ;; Easier navigation for source files, especially this one
-  :ghook 'emacs-lisp-mode-hook
-  :gfhook 'my-init-file-checker
-	:config
+	:preface
 	(defun my-init-file-checker ()
 		"Collapses outline when entering init file."
 		(when (string= user-init-file buffer-file-name)
 			(outline-hide-body)))
+  :ghook 'emacs-lisp-mode-hook
+  ;;:gfhook 'my-init-file-checker
   :general
   (outshine-mode-map
    :states '(normal)
@@ -205,6 +189,7 @@ Repeated invocations toggle between two most recently open buffers."
   (global-company-mode t)
 	:general
   (company-active-map
+	 :states 'insert
 	 "<return>" nil
 	 "RET" nil
 	 "<backtab>" 'company-select-next-or-abort
@@ -240,7 +225,9 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package prescient
   ;; sorting/filtering manager
-  :config (prescient-persist-mode +1))
+  :config
+	(prescient-persist-mode +1)
+	(setq-default prescient-filter-method '(literal regexp fuzzy)))
 
 (use-package selectrum-prescient
   ;; make selectrum use prescient filtering
@@ -261,9 +248,11 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package projectile
   ;; project traversal
-  :config (projectile-mode +1)
+	:preface
 	(defun my-projectile-ignore-project (project-root)
 		(f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
+  :config
+	(projectile-mode +1)
   (setq projectile-ignored-project-function #'my-projectile-ignore-project))
 
 (use-package marginalia
@@ -297,7 +286,8 @@ Repeated invocations toggle between two most recently open buffers."
   (apheleia :type git
 						:host github
 						:repo "raxod502/apheleia")
-  :config (apheleia-global-mode +1)
+  :config
+	(apheleia-global-mode +1)
   (add-to-list 'apheleia-mode-alist '(ruby-mode . prettier)))
 
 (use-package json-mode)
@@ -349,10 +339,9 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package vterm
   ;; better terminal
-  :config
-	:general
-	(vterm-mode-map
-	 "<f11>" 'toggle-frame-fullscreen))
+  :general
+  (vterm-mode-map
+   "<f11>" 'toggle-frame-fullscreen))
 
 (use-package which-key
 	;; shows list of available completions when key sequences begin
@@ -360,7 +349,7 @@ Repeated invocations toggle between two most recently open buffers."
 	:init (which-key-mode)
 	:config
 	(setq-default
-	 which-key-idle-delay 0.2 ;; Time before which-key pops up
+	 which-key-idle-delay 0.5 ;; Time before which-key pops up
 	 which-key-allow-evil-operators t ;; Show evil keybindings
 	 which-key-show-operator-state-maps t
 	 which-key-sort-order 'which-key-key-order-alpha)
@@ -368,12 +357,19 @@ Repeated invocations toggle between two most recently open buffers."
 
 (use-package general
 	;; key binding manager
+	:preface
+	(defun save-all () "Save all open buffers." (interactive) (save-some-buffers t))
+
+	(defun switch-to-last-buffer ()
+		(interactive)
+		(switch-to-buffer nil))
+
 	:general
 	(:states '(normal visual insert emacs)
 					 :prefix "SPC"
 					 :non-normal-prefix "C-SPC"
 					 "c" 'comment-or-uncomment-region
-					 "r" 'er-switch-to-previous-buffer
+					 "r" 'switch-to-last-buffer
 					 "w" 'save-buffer
 					 "W" 'save-all
 					 "q" 'kill-buffer-and-window
@@ -383,6 +379,7 @@ Repeated invocations toggle between two most recently open buffers."
 					 "G" 'magit-blame-mode
 					 "k" 'kill-this-buffer
 					 "K" 'kill-buffer
+					 "t" 'tab-bar-switch-to-tab
 					 "T" 'vterm-other-window
 					 "u" 'undo-tree-visualize
 					 "b" 'consult-buffer
@@ -424,26 +421,115 @@ Repeated invocations toggle between two most recently open buffers."
 	 '[f4] 'projectile-run-vterm
 	 '[f5] 'call-last-kbd-macro))
 
-(general-def
-	:keymaps 'xref--xref-buffer-mode-map
-	:states 'motion
-	"TAB" 'xref-quit-and-goto-xref)
-
 ;;;; General Settings
 
-;; Emacs Interlock
-(setq-default create-lockfiles nil)
+;; Seed the random-number generator
+(random t)
 
-;; Move files to trash when deleting
-(setq-default delete-by-moving-to-trash t)
+;; Alias ielm as repl
+(defalias 'repl 'ielm)
+
+;;;; Built-in Package Config
+
+(use-package xref
+	;; find identifier in prog modes
+	:straight nil
+	:general
+	(xref--xref-buffer-mode-map
+	 :states 'motion
+	 "TAB" 'xref-quit-and-goto-xref))
+
+(use-package elec-pair
+	;; automatically match pairs
+  :straight nil
+  :config
+  (electric-pair-mode 1))
+
+(use-package tab-bar
+	;; save workspaces as groups of windows
+	:straight nil
+	:init
+	(setq-default tab-bar-new-tab-choice "*scratch*")
+	:config
+	(tab-bar-mode 1))
+
+(use-package desktop
+	;; Save buffers and windows on exit
+	:straight nil
+	:init
+	(setq-default desktop-restore-eager 10)
+	:config
+	(desktop-save-mode 1))
+
+(use-package server
+	;; The emacs server
+	:straight nil
+	:config
+	(unless (server-running-p)
+		(server-start)))
+
+(use-package vc
+	;; Make backups of files, even when they're in version control
+	;; originial modeline set to vc-parent-buffer-name
+	:straight nil
+	:init
+	(setq-default vc-make-backup-files t))
+
+(use-package uniquify
+  ;; Add parts of each file's directory to the buffer name if not unique
+  :straight nil
+  :init
+  (setq-default uniquify-buffer-name-style 'forward))
+
+(use-package eldoc
+  ;; Use Eldoc for elisp
+  :straight nil
+	:ghook '(emacs-lisp-mode lisp-interaction-mode ielm-mode))
+
+(use-package autorevert
+  ;; Auto refresh buffers
+	:straight nil
+	:config
+	(global-auto-revert-mode 1))
+
+(use-package subword
+	;; Easily navigate sillycased words
+	:straight nil
+	:config
+	(global-subword-mode 1))
+
+(use-package saveplace
+	;; Store cursor location between sessions
+	:straight nil
+	:config
+	(save-place-mode 1))
+
+(use-package files
+	;; General file handling
+	:straight nil
+	:init
+	(setq-default backup-by-copying t
+								delete-old-versions t
+								kept-new-versions 6
+								kept-old-versions 2
+								version-control t
+								vc-follow-symlinks t
+								create-lockfiles nil
+								delete-by-moving-to-trash t))
+
+;;;; Appearance
+
+;; No splash screen
+(setq-default inhibit-startup-message t)
+
+;; Be quiet
+(setq-default visible-bell t)
+
+;; Don't scroll horizontally
+(setq-default auto-hscroll-mode nil)
 
 ;; Answering just 'y' or 'n' will do
 (defalias 'yes-or-no-p 'y-or-n-p)
-
-;; Don't ask about buffers with processes
-(setq-default kill-buffer-query-functions
-	      (remq 'process-kill-buffer-query-function
-		    kill-buffer-query-functions))
 
 ;; UTF-8 please
 (setq-default locale-coding-system 'utf-8)
@@ -457,95 +543,6 @@ Repeated invocations toggle between two most recently open buffers."
 
 ;; Sentences do not need double spaces to end. Period.
 (set-default 'sentence-end-double-space nil)
-
-;; Seed the random-number generator
-(random t)
-
-;; Alias ielm as repl
-(defalias 'repl 'ielm)
-
-;;;; Built-in Package Config
-
-(electric-pair-mode 1)
-
-(use-package server
-  ;; The emacs server
-  :straight nil
-  :config
-  (unless (server-running-p)
-    (server-start)))
-
-(use-package vc
-  ;; Make backups of files, even when they're in version control
-  ;; originial modeline set to vc-parent-buffer-name
-  :straight nil
-  :config
-  (setq-default vc-make-backup-files t))
-
-(use-package uniquify
-  ;; Add parts of each file's directory to the buffer name if not unique
-  :straight nil
-  :init
-  (setq-default uniquify-buffer-name-style 'forward))
-
-(use-package eldoc
-  ;; Use Eldoc for elisp
-  :straight nil
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-  (add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
-  (add-hook 'ielm-mode-hook 'eldoc-mode))
-
-
-;; Auto refresh buffers
-(global-auto-revert-mode 1)
-
-;; Easily navigate sillycased words
-(global-subword-mode 1)
-
-;; Show active region
-(transient-mark-mode 1)
-(make-variable-buffer-local 'transient-mark-mode)
-(put 'transient-mark-mode 'permanent-local t)
-(setq-default transient-mark-mode t)
-
-;; Remove text in active region if inserting text
-(delete-selection-mode 1)
-
-;; Store cursor location between sessions
-(save-place-mode 1)
-
-;; Emacs Backup Settings - Auto-save config
-(setq-default backup-by-copying t
-	      delete-old-versions t
-	      kept-new-versions 6
-	      kept-old-versions 2
-	      version-control t
-	      vc-follow-symlinks t)
-
-;; Shell-mode
-(add-hook 'comint-output-filter-functions
-          'comint-truncate-buffer)
-(setq-default comint-buffer-maximum-size 2000)
-(setq-default multi-term-program-switches "--login")
-(put 'erase-buffer 'disabled nil)
-
-;; truncate buffers continuously
-(add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
-
-;; Tramp
-(setq-default tramp-default-method "ssh")
-
-;;;; Appearance
-
-;; No splash screen
-(setq-default inhibit-startup-message t)
-
-;; Be quiet
-(setq-default visible-bell t)
-
-;; Don't scroll horizontally
-(setq-default auto-hscroll-mode nil)
 
 ;; Two spaces for tab
 (setq-default standard-indent 2)
@@ -570,16 +567,10 @@ Repeated invocations toggle between two most recently open buffers."
 (set-face-attribute 'fill-column-indicator nil :foreground "grey27")
 (setq-default display-fill-column-indicator-column 99)
 
-;; Show lambda plase
-(global-prettify-symbols-mode 1)
-
 (set-face-attribute 'completions-annotations nil
 										:inherit '(italic magit-sequence-drop))
 
 (set-face-attribute 'default (selected-frame) :font "Hack" :height 130)
-
-;;(set-face-attribute 'line-number (selected-frame) :height 60)
-;;(set-face-attribute 'line-number-current-line (selected-frame) :height 60)
 
 ;; Full Screen at the end
 (toggle-frame-fullscreen)
