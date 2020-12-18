@@ -206,10 +206,22 @@
 
 (use-package flycheck
   ;; code linter
+	:preface
+	(defun my/flycheck-error-selector ()
+		(select-window (get-buffer-window "*Flycheck errors*")))
 	:init
 	(setq-default flycheck-emacs-lisp-load-path 'inherit)
   :config
-	(global-flycheck-mode))
+	(global-flycheck-mode)
+	;; Popup flycheck buffer at bottom
+	(add-to-list 'display-buffer-alist
+							 `(,(rx bos "*Flycheck errors*" eos)
+								 (display-buffer-reuse-window
+									display-buffer-in-side-window)
+								 (side            . bottom)
+								 (reusable-frames . visible)
+								 (window-height   . 0.33)))
+	(advice-add 'flycheck-list-errors :after #'my/flycheck-error-selector))
 
 (use-package doom-modeline
 	:init (doom-modeline-mode 1)
@@ -390,7 +402,8 @@
 					 "l d" 'lsp-find-definition
 					 "l r" 'lsp-find-references
 					 "l n" 'lsp-rename
-					 "l i" 'lsp-ui-imenu)
+					 "l i" 'lsp-ui-imenu
+					 "l e" 'flycheck-list-errors)
 
 	(:states '(normal)
 					 "p" 'consult-yank-pop
