@@ -294,10 +294,7 @@
 
 (use-package lsp-mode
   :commands lsp
-  :ghook '(rjsx-mode
-					 ruby-mode
-					 json-mode
-					 mhtml-mode)
+  :ghook '(rjsx-mode ruby-mode json-mode mhtml-mode)
   :config
   (setq-default lsp-eldoc-hook nil
 								lsp-enable-symbol-highlighting t
@@ -315,10 +312,6 @@
   ;; react jsx formatting
   :init (add-to-list 'auto-mode-alist '("\\/.*\\.js\\'" . rjsx-mode)))
 
-(use-package ruby-mode
-  ;; ruby editor
-  )
-
 (use-package inf-ruby
   ;; provides a ruby repl
   :ghook ('ruby-mode #'inf-ruby-minor-mode))
@@ -327,11 +320,6 @@
   ;; make undo a tree rather than line
   :config (global-undo-tree-mode))
 
-(use-package markdown-mode
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-	 ("\\.md\\'" . markdown-mode)
-	 ("\\.markdown\\'" . markdown-mode)))
 
 (use-package gruvbox-theme
   ;; coding theme
@@ -448,8 +436,14 @@
 (use-package tab-bar
 	;; save workspaces as groups of windows
 	:straight nil
+	:preface
+	(defun no-tab-bar-lines (&rest _)
+		"Hide the `tab-bar' ui."
+		(dolist (frame (frame-list)) (set-frame-parameter frame 'tab-bar-lines 0)))
 	:init
 	(setq-default tab-bar-new-tab-choice "*scratch*")
+	(advice-add #'tab-bar-mode :after #'no-tab-bar-lines)
+	(advice-add #'make-frame :after #'no-tab-bar-lines)
 	:config
 	(tab-bar-mode 1))
 
@@ -480,6 +474,12 @@
   :straight nil
   :init
   (setq-default uniquify-buffer-name-style 'forward))
+
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+				 ("\\.md\\'" . markdown-mode)
+				 ("\\.markdown\\'" . markdown-mode)))
 
 (use-package eldoc
   ;; Use Eldoc for elisp
