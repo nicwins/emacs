@@ -224,8 +224,8 @@
 	(advice-add 'flycheck-list-errors :after #'my/flycheck-error-selector))
 
 (use-package doom-modeline
-	:init (doom-modeline-mode 1)
 	:config
+	(doom-modeline-mode 1)
 	(setq-default doom-modeline-height 18
 								doom-modeline-buffer-encoding nil
 								doom-modeline-buffer-file-name-style 'relative-to-project
@@ -306,9 +306,9 @@
 
 (use-package lsp-mode
   :commands lsp
-  :ghook '(rjsx-mode ruby-mode json-mode mhtml-mode)
-  :config
-  (setq-default lsp-eldoc-hook nil
+  :hook ((rjsx-mode ruby-mode json-mode mhtml-mode) . lsp)
+	:config
+	(setq-default lsp-eldoc-hook nil
 								lsp-enable-symbol-highlighting t
 								lsp-enable-snippet nil
 								lsp-modeline-code-actions-segments nil
@@ -318,7 +318,9 @@
   :commands lsp-ui-mode
   :config
   (setq-default lsp-ui-sideline-show-hover nil
-								lsp-ui-doc-enable nil))
+								lsp-ui-doc-enable nil
+								lsp-ui-sideline-show-code-actions nil
+								lsp-ui-sideline-show-symbol nil))
 
 (use-package rjsx-mode
   ;; react jsx formatting
@@ -326,7 +328,7 @@
 
 (use-package inf-ruby
   ;; provides a ruby repl
-  :ghook ('ruby-mode #'inf-ruby-minor-mode))
+  :hook (ruby-mode . inf-ruby-minor-mode))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -497,7 +499,7 @@
 (use-package eldoc
   ;; Use Eldoc for elisp
   :straight nil
-	:ghook '(emacs-lisp-mode lisp-interaction-mode ielm-mode))
+  :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
 
 (use-package autorevert
   ;; Auto refresh buffers
