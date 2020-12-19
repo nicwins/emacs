@@ -306,13 +306,17 @@
 
 (use-package lsp-mode
   :commands lsp
-  :hook ((rjsx-mode ruby-mode json-mode mhtml-mode sql-mode) . lsp)
+  :hook ((rjsx-mode
+          ruby-mode
+          json-mode
+          mhtml-mode
+          sql-mode
+          yaml-mode) . lsp)
 	:config
-	(setq-default lsp-eldoc-hook nil
-								lsp-enable-symbol-highlighting t
+	(setq-default lsp-enable-symbol-highlighting t
 								lsp-enable-snippet nil
-								lsp-modeline-code-actions-segments nil
-								lsp-modeline-diagnostics-enable nil))
+								lsp-modeline-diagnostics-enable nil
+								))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -320,7 +324,25 @@
   (setq-default lsp-ui-sideline-show-hover nil
 								lsp-ui-doc-enable nil
 								lsp-ui-sideline-show-code-actions nil
-								lsp-ui-sideline-show-symbol nil))
+								lsp-ui-sideline-show-symbol nil
+								lsp-headerline-breadcrumb-enable nil))
+
+;; (use-package dap-mode
+;; 	:preface
+;; 	(defun my/rails-debug ()
+;; 		(interactive)
+;; 		(dap-debug
+;; 		 (list :name "Run"
+;; 					 :type "Ruby"
+;; 					 :cwd #'projectile-project-root
+;; 					 :request "launch"
+;; 					 :program (format "%s/bin/rails" #'projectile-project-root)
+;; 					 :args "server")))
+;; 	:init
+;; 	(setq-default dap-auto-configure +1)
+;; 	:config
+;; 	(dap-mode +1)
+;; 	(require 'dap-ruby))
 
 (use-package rjsx-mode
   ;; react jsx formatting
@@ -344,6 +366,10 @@
   :general
   (vterm-mode-map
    "<f11>" 'toggle-frame-fullscreen))
+
+(use-package yaml-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
 
 (use-package which-key
 	;; shows list of available completions when key sequences begin
@@ -535,7 +561,7 @@
 (use-package sql
 	:straight nil
 	:init
-	(setq-default sql-product 'sqlite))
+	(setq-default sql-product 'postgres))
 
 ;;;; Appearance
 
@@ -565,8 +591,9 @@
 (set-default 'sentence-end-double-space nil)
 
 ;; Two spaces for tab
-(setq-default standard-indent 2)
-(setq-default tab-width 2)
+(setq-default standard-indent 2
+							tab-width 2
+							indent-tabs-mode nil)
 
 ;; force line word wrapping in text modes
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
