@@ -12,15 +12,15 @@
 ;; Remove built-in version of Org from the load-path
 (require 'cl-seq)
 (setq-default load-path
-      (cl-remove-if
-       (lambda (x)
-	 (string-match-p "org$" x))
-       load-path))
+							(cl-remove-if
+							 (lambda (x)
+								 (string-match-p "org$" x))
+							 load-path))
 
 ;;;; Initialize Package
 
-;; Bootstrap `straight'
-;; this also initializes package.el
+;; This is only needed once, near the top of the file
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -33,6 +33,7 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
 (setq-default straight-use-package-by-default t)
 
 ;; Bootstrap `use-package'
@@ -42,7 +43,6 @@
 
 (straight-use-package 'use-package)
 (straight-use-package 'general)
-(require 'general)
 (eval-when-compile (require 'use-package))
 
 ;;;; Global Helper Functions
@@ -306,7 +306,7 @@
 
 (use-package lsp-mode
   :commands lsp
-  :hook ((rjsx-mode ruby-mode json-mode mhtml-mode) . lsp)
+  :hook ((rjsx-mode ruby-mode json-mode mhtml-mode sql-mode) . lsp)
 	:config
 	(setq-default lsp-eldoc-hook nil
 								lsp-enable-symbol-highlighting t
@@ -531,6 +531,11 @@
 								vc-follow-symlinks t
 								create-lockfiles nil
 								delete-by-moving-to-trash t))
+
+(use-package sql
+	:straight nil
+	:init
+	(setq-default sql-product 'sqlite))
 
 ;;;; Appearance
 
