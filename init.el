@@ -43,6 +43,7 @@
 
 (straight-use-package 'use-package)
 (straight-use-package 'general)
+(require 'general)
 (eval-when-compile (require 'use-package))
 
 ;;;; Global Helper Functions
@@ -132,28 +133,26 @@
 								evil-replace-state-cursor '("red" bar)
 								evil-operator-state-cursor '("red" hollow)
 								evil-move-cursor-back nil
-								evil-want-keybinding nil)
+								evil-want-keybinding nil
+                evil-want-integration t)
   :config
   (evil-mode 1))
 
 (use-package evil-collection
 	:after evil
 	:config
-	(push '"TAB" evil-collection-key-blacklist)
-	(push '"<tab>" evil-collection-key-blacklist)
 	(evil-collection-init)
-	(setq-default evil-collection-setup-minibuffer t)
-	(general-def
-		:states '(normal visual)
-		[escape] 'keyboard-quit)
-	(general-def
-		:keymaps
-		'(minibuffer-local-map
-			minibuffer-local-ns-map
-			minibuffer-local-completion-map
-			minibuffer-local-must-match-map
-			minibuffer-local-isearch-map)
-		[escape] 'minibuffer-keyboard-quit))
+	(setq-default evil-collection-setup-minibuffer t))
+  ;; :general
+	;; (:states '(normal visual)
+	;;          [escape] 'keyboard-quit)
+	;; (:keymaps
+	;;  '(minibuffer-local-map
+	;; 	 minibuffer-local-ns-map
+	;; 	 minibuffer-local-completion-map
+	;; 	 minibuffer-local-must-match-map
+	;; 	 minibuffer-local-isearch-map)
+	;;  [escape] 'minibuffer-keyboard-quit))
 
 ;; Install a newer version of Org after removing the old
 (use-package org)
@@ -166,7 +165,7 @@
 		(when (string= user-init-file buffer-file-name)
 			(outline-hide-body)))
   :ghook 'emacs-lisp-mode-hook
-  ;;:gfhook 'my/init-file-checker
+  ;; :gfhook 'my/init-file-checker
   :general
   (outshine-mode-map
    :states '(normal)
@@ -184,25 +183,21 @@
 (use-package company
   ;; text completion framework
   :init
-  (setq-default completion-styles '(flex))
-  :config
-  (global-company-mode t)
-	:general
-  (company-active-map
-	 :states 'insert
-	 "<return>" nil
-	 "RET" nil
-	 "<backtab>" 'company-select-next-or-abort
-	 "C-<backtab>" 'company-select-previous-or-abort
-	 "<tab>" 'company-complete-selection))
+  (setq-default company-dabbrev-other-buffers t
+                company-dabbrev-code-other-buffers t
+                company-show-numbers t
+                company-minimum-prefix-length 3
+                company-dabbrev-downcase nil
+                company-dabbrev-ignore-case t
+                company-idle-delay 0)
+  :hook ((text-mode-hook . company-mode)
+         (prog-mode-hook . company-mode)))
 
 (use-package exec-path-from-shell
   ;; Load path from user shell
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
-
-(use-package rg)
 
 (use-package flycheck
   ;; code linter
@@ -267,6 +262,27 @@
 	(projectile-mode +1)
   (setq projectile-ignored-project-function #'my/projectile-ignore-project))
 
+(use-package rg
+  ;; faster grep
+  :preface
+  (defun my/rg-buffer-selector()
+    (select-window (get-buffer-window "*rg*")))
+  (defun my/rg-candidate-selector ()
+    (interactive)
+    (compilation-next-error 1)
+    (compilation-display-error))
+  (defun my/rg-select-and-quit ()
+    (interactive)
+    (compile-goto-error))
+  :hook (rg-filter . my/rg-buffer-selector)
+  :general
+  (rg-mode-map
+   :states 'motion
+   "TAB" 'my/rg-candidate-selector
+   "RET" 'compile-goto-error)
+  :config
+  (setq next-error-hook nil))
+
 (use-package marginalia
   ;; adds annotations to consult
   :straight (:branch "main")
@@ -310,7 +326,6 @@
           ruby-mode
           json-mode
           mhtml-mode
-          sql-mode
           yaml-mode) . lsp)
 	:config
 	(setq-default lsp-enable-symbol-highlighting t
@@ -371,6 +386,12 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
 
+(use-package sqlformat
+  :hook (sql-mode . sqlformat-on-save-mode)
+  :config
+  (setq-default sqlformat-command 'pgformatter
+                sqlformat-args '("-s2" "-g")))
+
 (use-package which-key
 	;; shows list of available completions when key sequences begin
 	:commands (which-key-mode)
@@ -386,16 +407,13 @@
 (use-package general
 	;; key binding manager
 	:preface
-	(defun my/save-all () "Save all open buffers." (interactive) (save-some-buffers t))
-
-	(defun my/switch-to-last-buffer ()
-		(interactive)
-		(switch-to-buffer nil))
-
+	(defun my/save-all () "Save all open buffers." (save-some-buffers t))
+	(defun my/switch-to-last-buffer () "Flip between two buffers." (switch-to-buffer nil))
 	:general
 	(:states '(normal visual insert emacs)
 					 :prefix "SPC"
 					 :non-normal-prefix "C-SPC"
+           "" '(nil :which-key "Commands")
 					 "c" 'comment-or-uncomment-region
 					 "r" #'my/switch-to-last-buffer
 					 "w" 'save-buffer
@@ -426,6 +444,7 @@
 					 "h v" 'describe-variable
 					 "h b" 'describe-bindings
 					 "h m" 'describe-mode
+           "h f" 'describe-function
 					 "l" '(:ignore t :which-key "LSP Mappings")
 					 "l d" 'lsp-find-definition
 					 "l r" 'lsp-find-references
@@ -449,7 +468,6 @@
 	 '[f3] 'projectile-switch-project
 	 '[f4] 'projectile-run-vterm
 	 '[f5] 'call-last-kbd-macro))
-
 ;;;; General Settings
 
 ;; Seed the random-number generator
