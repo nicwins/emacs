@@ -43,8 +43,8 @@
 
 (straight-use-package 'use-package)
 (straight-use-package 'general)
-(require 'general)
-(eval-when-compile (require 'use-package))
+(eval-when-compile (require 'use-package)
+                   (require 'general))
 
 ;;;; Global Helper Functions
 
@@ -143,16 +143,6 @@
 	:config
 	(evil-collection-init)
 	(setq-default evil-collection-setup-minibuffer t))
-  ;; :general
-	;; (:states '(normal visual)
-	;;          [escape] 'keyboard-quit)
-	;; (:keymaps
-	;;  '(minibuffer-local-map
-	;; 	 minibuffer-local-ns-map
-	;; 	 minibuffer-local-completion-map
-	;; 	 minibuffer-local-must-match-map
-	;; 	 minibuffer-local-isearch-map)
-	;;  [escape] 'minibuffer-keyboard-quit))
 
 ;; Install a newer version of Org after removing the old
 (use-package org)
@@ -408,7 +398,10 @@
 	;; key binding manager
 	:preface
 	(defun my/save-all () "Save all open buffers." (save-some-buffers t))
-	(defun my/switch-to-last-buffer () "Flip between two buffers." (switch-to-buffer nil))
+	(defun my/switch-to-last-buffer ()
+    "Flip between two buffers."
+    (interactive)
+    (switch-to-buffer nil))
 	:general
 	(:states '(normal visual insert emacs)
 					 :prefix "SPC"
@@ -450,7 +443,10 @@
 					 "l r" 'lsp-find-references
 					 "l n" 'lsp-rename
 					 "l i" 'lsp-ui-imenu
-					 "l e" 'flycheck-list-errors)
+					 "l e" 'flycheck-list-errors
+           "m" '(:ignore t :which-key "Extra Motions")
+           "m a" 'beginning-of-defun
+           "m e" 'end-of-defun)
 
 	(:states '(normal)
 					 "p" 'consult-yank-pop
@@ -468,6 +464,7 @@
 	 '[f3] 'projectile-switch-project
 	 '[f4] 'projectile-run-vterm
 	 '[f5] 'call-last-kbd-macro))
+
 ;;;; General Settings
 
 ;; Seed the random-number generator
