@@ -109,51 +109,56 @@
 (use-package no-littering
   ;; cleanup all the clutter from varios modes
   ;; places configs in /etc and data in /var
-  :init (setq-default auto-save-file-name-transforms
-		      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
-		      custom-file (no-littering-expand-etc-file-name "custom.el")))
+  :custom
+  (auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  (custom-file (no-littering-expand-etc-file-name "custom.el")))
 
 ;; Automatically bisects init file
 (use-package bug-hunter)
 
 (use-package evil
   ;; Imports vim motion/states into emacs
-  :init
-  (setq-default evil-emacs-state-cursor '("yellow" box)
-		evil-normal-state-cursor '("green" box)
-		evil-visual-state-cursor '("orange" box)
-		evil-insert-state-cursor '("red" bar)
-		evil-replace-state-cursor '("red" bar)
-		evil-operator-state-cursor '("red" hollow)
-		evil-move-cursor-back nil
-		evil-want-keybinding nil
-                evil-want-integration t)
+  :custom
+  (evil-emacs-state-cursor '("yellow" box))
+  (evil-normal-state-cursor '("green" box))
+  (evil-visual-state-cursor '("orange" box))
+  (evil-insert-state-cursor '("red" bar))
+  (evil-replace-state-cursor '("red" bar))
+  (evil-operator-state-cursor '("red" hollow))
+  (evil-move-cursor-back nil)
+  (evil-want-keybinding nil)
+  (evil-want-integration t)
   :config
   (evil-mode 1))
 
 (use-package evil-collection
   ;; Make evil bindings available in most modes
   :after evil
+  :custom
+  (evil-collection-setup-minibuffer t)
   :config
-  (evil-collection-init)
-  (setq-default evil-collection-setup-minibuffer t))
+  (evil-collection-init))
 
 (use-package evil-surround
+  ;; Allow the s key in normal mode to surround text objects
   :config
   (global-evil-surround-mode 1))
+
+(use-package evil-goggles
+  ;; Display visual hints for evil mode
+  :config
+  (evil-goggles-mode t)
+  (set-face-attribute 'evil-goggles-default-face nil :inherit 'query-replace))
+
+(use-package ace-window)
 
 ;; Install a newer version of Org after removing the old
 (use-package org)
 
 (use-package outshine
   ;; Easier navigation for source files, especially this one
-  :preface
-  (defun my/init-file-checker ()
-    "Collapses outline when entering init file."
-    (when (string= user-init-file buffer-file-name)
-      (outline-hide-body)))
-  :ghook 'emacs-lisp-mode-hook
-  ;; :gfhook 'my/init-file-checker
+  :hook (emacs-lisp-mode)
   :general
   (outshine-mode-map
    :states '(normal)
@@ -162,24 +167,23 @@
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
-  :ghook 'prog-mode-hook)
+  :hook prog-mode)
 
 (use-package aggressive-indent
   ;; Indent as you type
-  :ghook 'prog-mode-hook)
+  :hook prog-mode)
 
 (use-package company
   ;; text completion framework
-  :init
-  (setq-default company-dabbrev-other-buffers t
-                company-dabbrev-code-other-buffers t
-                company-show-numbers t
-                company-minimum-prefix-length 3
-                company-dabbrev-downcase nil
-                company-dabbrev-ignore-case t
-                company-idle-delay 0)
-  :hook ((text-mode-hook . company-mode)
-         (prog-mode-hook . company-mode)))
+  :custom
+  (company-dabbrev-other-buffers t)
+  (company-dabbrev-code-other-buffers t)
+  (company-show-numbers t)
+  (company-minimum-prefix-length 3)
+  (company-dabbrev-downcase nil)
+  (company-dabbrev-ignore-case t)
+  (company-idle-delay 0)
+  :hook (text-mode prog-mode))
 
 (use-package exec-path-from-shell
   ;; Load path from user shell
@@ -192,8 +196,8 @@
   :preface
   (defun my/flycheck-error-selector ()
     (select-window (get-buffer-window "*Flycheck errors*")))
-  :init
-  (setq-default flycheck-emacs-lisp-load-path 'inherit)
+  :custom
+  (flycheck-emacs-lisp-load-path 'inherit)
   :config
   (global-flycheck-mode)
   ;; Popup flycheck buffer at bottom
@@ -207,11 +211,11 @@
   (advice-add 'flycheck-list-errors :after #'my/flycheck-error-selector))
 
 (use-package doom-modeline
-  :init
-  (setq-default doom-modeline-height 18
-		doom-modeline-buffer-encoding nil
-		doom-modeline-buffer-file-name-style 'relative-to-project
-		doom-modeline-icon (display-graphic-p))
+  :custom
+  (doom-modeline-height 18)
+  (doom-modeline-buffer-encoding nil)
+  (doom-modeline-buffer-file-name-style 'relative-to-project)
+  (doom-modeline-icon (display-graphic-p))
   :config
   (doom-modeline-mode 1))
 
@@ -221,9 +225,10 @@
 
 (use-package prescient
   ;; sorting/filtering manager
+  :custom
+  (prescient-filter-method '(literal regexp fuzzy))
   :config
-  (prescient-persist-mode 1)
-  (setq-default prescient-filter-method '(literal regexp fuzzy)))
+  (prescient-persist-mode 1))
 
 (use-package selectrum-prescient
   ;; make selectrum use prescient filtering
@@ -253,9 +258,10 @@
   :preface
   (defun my/projectile-ignore-project (project-root)
     (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
+  :custom
+  (projectile-ignored-project-function #'my/projectile-ignore-project)
   :config
-  (projectile-mode 1)
-  (setq projectile-ignored-project-function #'my/projectile-ignore-project))
+  (projectile-mode 1))
 
 (use-package rg
   ;; faster grep
@@ -269,21 +275,20 @@
   (defun my/rg-select-and-quit ()
     (interactive)
     (compile-goto-error))
+  :custom
+  (next-error-hook nil)
   :hook (rg-filter . my/rg-buffer-selector)
   :general
   (rg-mode-map
    :states 'motion
    "TAB" 'my/rg-candidate-selector
-   "RET" 'compile-goto-error)
-  :config
-  (setq next-error-hook nil))
+   "RET" 'compile-goto-error))
 
 (use-package marginalia
   ;; adds annotations to consult
   :straight (:branch "main")
-  :init
-  (setq-default marginalia-annotators
-		'(marginalia-annotators-heavy marginalia-annotators-light))
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light))
   :config
   (marginalia-mode))
 
@@ -323,24 +328,22 @@
           json-mode
           mhtml-mode
           yaml-mode) . lsp)
-  :init
-  (setq-default lsp-enable-symbol-highlighting t
-		lsp-enable-snippet nil
-		lsp-modeline-diagnostics-enable nil
-		))
+  :custom
+  (lsp-enable-symbol-highlighting t)
+  (lsp-enable-snippet nil)
+  (lsp-modeline-diagnostics-enable nil))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
-  :init
-  (setq-default lsp-ui-sideline-show-hover nil
-		lsp-ui-doc-enable nil
-		lsp-ui-sideline-show-code-actions nil
-		lsp-ui-sideline-show-symbol nil
-		lsp-headerline-breadcrumb-enable nil))
+  :custom
+  (lsp-ui-sideline-show-hover nil)
+  (lsp-ui-doc-enable nil)
+  (lsp-ui-sideline-show-code-actions nil)
+  (lsp-ui-sideline-show-symbol nil)
+  (lsp-headerline-breadcrumb-enable nil))
 
 (use-package rjsx-mode
   ;; react jsx formatting
-  ;;:init (add-to-list 'auto-mode-alist '("\\/.*\\.js\\'" . rjsx-mode)))
   :mode "\\/.*\\.js\\'")
 
 (use-package inf-ruby
@@ -363,22 +366,14 @@
    "<f11>" 'toggle-frame-fullscreen))
 
 (use-package yaml-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
-
-(use-package sqlformat
-  :hook (sql-mode . sqlformat-on-save-mode)
-  :config
-  (setq-default sqlformat-command 'pgformatter
-                sqlformat-args '("-s2" "-g")))
+  :mode "\\.yml\\'")
 
 (use-package which-key
   ;; shows list of available completions when key sequences begin
   :commands (which-key-mode)
-  :init
-  (setq-default
-   which-key-idle-delay 2 ;; Time before which-key pops up
-   which-key-sort-order 'which-key-key-order-alpha)
+  :custom
+  (which-key-idle-delay 2) ;; Time before which-key pops up
+  (which-key-sort-order 'which-key-key-order-alpha)
   (which-key-setup-side-window-right)
   :config (which-key-mode))
 
@@ -400,7 +395,7 @@
 	   "w" 'save-buffer
 	   "W" #'my/save-all
 	   "q" 'kill-buffer-and-window
-	   "SPC" 'other-window
+	   "SPC" 'ace-window
 	   "f" 'find-file
 	   "g" 'magit-status
 	   "G" 'magit-blame-mode
@@ -475,8 +470,9 @@
   (defun my/no-tab-bar-lines (&rest _)
     "Hide the `tab-bar' ui."
     (dolist (frame (frame-list)) (set-frame-parameter frame 'tab-bar-lines 0)))
+  :custom
+  (tab-bar-new-tab-choice "*scratch*")
   :init
-  (setq-default tab-bar-new-tab-choice "*scratch*")
   (advice-add #'tab-bar-mode :after #'my/no-tab-bar-lines)
   (advice-add #'make-frame :after #'my/no-tab-bar-lines)
   :config
@@ -485,8 +481,8 @@
 (use-package desktop
   ;; Save buffers and windows on exit
   :straight nil
-  :init
-  (setq-default desktop-restore-eager 10)
+  :custom
+  (desktop-restore-eager 10)
   :config
   (desktop-save-mode 1))
 
@@ -501,14 +497,14 @@
   ;; Make backups of files, even when they're in version control
   ;; originial modeline set to vc-parent-buffer-name
   :straight nil
-  :init
-  (setq-default vc-make-backup-files t))
+  :custom
+  (vc-make-backup-files t))
 
 (use-package uniquify
   ;; Add parts of each file's directory to the buffer name if not unique
   :straight nil
-  :init
-  (setq-default uniquify-buffer-name-style 'forward))
+  :custom
+  (uniquify-buffer-name-style 'forward))
 
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
@@ -541,31 +537,31 @@
 
 (use-package sql
   :straight nil
-  :init
-  (setq-default sql-product 'postgres))
+  :custom
+  (sql-product 'postgres))
 
 (use-package files
   ;; General file handling
   :straight nil
-  :init
-  (setq-default backup-by-copying t
-		delete-old-versions t
-		kept-new-versions 6
-		kept-old-versions 2
-		version-control t
-		vc-follow-symlinks t
-		create-lockfiles nil
-		delete-by-moving-to-trash t))
+  :custom
+  (backup-by-copying t)
+  (delete-old-versions t)
+  (kept-new-versions 6)
+  (kept-old-versions 2)
+  (version-control t)
+  (vc-follow-symlinks t)
+  (create-lockfiles nil)
+  (delete-by-moving-to-trash t))
 
 (use-package emacs
   :straight nil
-  :init
-  (setq-default inhibit-startup-message t     ; no splash screen
-                visible-bell t                ; be quiet
-                auto-hscroll-mode nil         ; no horizontal scroll
-                indicate-empty-lines t        ; show lines at the end of buffer
-                sentence-end-double-space nil ; single space after a sentence
-                indent-tabs-mode nil)         ; use spaces instead of tabs
+  :custom
+  (inhibit-startup-message t)     ; no splash screen
+  (visible-bell t)                ; be quiet
+  (auto-hscroll-mode nil)         ; no horizontal scroll
+  (indicate-empty-lines t)        ; show lines at the end of buffer
+  (sentence-end-double-space nil) ; single space after a sentence
+  (indent-tabs-mode nil)         ; use spaces instead of tabs
   :config
   (fset 'yes-or-no-p 'y-or-n-p)               ; use y or n to confirm
   (set-language-environment "UTF-8")
