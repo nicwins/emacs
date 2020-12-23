@@ -117,6 +117,27 @@
 ;; Automatically bisects init file
 (use-package bug-hunter)
 
+(use-package company
+  ;; text completion framework
+  :custom
+  (company-dabbrev-other-buffers t)
+  (company-dabbrev-code-other-buffers t)
+  (company-show-numbers t)
+  (company-minimum-prefix-length 3)
+  (company-dabbrev-downcase nil)
+  (company-dabbrev-ignore-case t)
+  (company-idle-delay 0)
+  :config
+  (global-company-mode t))
+
+(use-package aggressive-indent
+  ;; Indent as you type
+  :ghook ('(prog-mode-hook text-mode-hook)))
+
+(use-package rainbow-delimiters
+  ;; Change color of each inner block delimiter
+  :ghook ('(prog-mode-hook text-mode-hook)))
+
 (use-package evil
   ;; Imports vim motion/states into emacs
   :custom
@@ -151,6 +172,15 @@
   (evil-goggles-mode t)
   (set-face-attribute 'evil-goggles-default-face nil :inherit 'query-replace))
 
+(use-package evil-nerd-commenter
+  ;; adds evilnc comment commands
+  :config
+  (evilnc-default-hotkeys nil t))
+
+(use-package evil-matchit
+  :config
+  (global-evil-matchit-mode 1))
+
 (use-package ace-window)
 
 ;; Install a newer version of Org after removing the old
@@ -158,32 +188,13 @@
 
 (use-package outshine
   ;; Easier navigation for source files, especially this one
-  :hook (emacs-lisp-mode)
   :general
   (outshine-mode-map
    :states '(normal)
    "<tab>" 'outshine-cycle
-   "<backtab>" 'outshine-cycle-buffer))
-
-(use-package rainbow-delimiters
-  ;; Change color of each inner block delimiter
-  :hook prog-mode)
-
-(use-package aggressive-indent
-  ;; Indent as you type
-  :hook prog-mode)
-
-(use-package company
-  ;; text completion framework
-  :custom
-  (company-dabbrev-other-buffers t)
-  (company-dabbrev-code-other-buffers t)
-  (company-show-numbers t)
-  (company-minimum-prefix-length 3)
-  (company-dabbrev-downcase nil)
-  (company-dabbrev-ignore-case t)
-  (company-idle-delay 0)
-  :hook (text-mode prog-mode))
+   "<backtab>" 'outshine-cycle-buffer)
+  ;;:ghook ('emacs-lisp-mode-hook))
+  :hook (emacs-lisp))
 
 (use-package exec-path-from-shell
   ;; Load path from user shell
@@ -380,7 +391,6 @@
 (use-package general
   ;; key binding manager
   :preface
-  (defun my/save-all () "Save all open buffers." (interactive) (save-some-buffers t))
   (defun my/switch-to-last-buffer ()
     "Flip between two buffers."
     (interactive)
@@ -390,10 +400,10 @@
            :prefix "SPC"
            :non-normal-prefix "C-SPC"
            "" '(nil :which-key "Commands")
-	   "c" 'comment-or-uncomment-region
+           "c" 'evilnc-comment-or-uncomment-lines
 	   "r" #'my/switch-to-last-buffer
 	   "w" 'save-buffer
-	   "W" #'my/save-all
+	   "W" 'save-some-buffers
 	   "q" 'kill-buffer-and-window
 	   "SPC" 'ace-window
 	   "f" 'find-file
@@ -405,7 +415,6 @@
 	   "T" 'vterm-other-window
 	   "u" 'undo-tree-visualize
 	   "b" 'consult-buffer
-	   "e" 'consult-flycheck
 	   "i" 'consult-imenu
 	   "o" 'consult-outline
 	   "x" 'execute-extended-command
@@ -426,7 +435,7 @@
 	   "l r" 'lsp-find-references
 	   "l n" 'lsp-rename
 	   "l i" 'lsp-ui-imenu
-	   "l e" 'flycheck-list-errors
+	   "l e" 'consult-flycheck
            "m" '(:ignore t :which-key "Extra Motions")
            "m a" 'beginning-of-defun
            "m e" 'end-of-defun)
@@ -495,7 +504,6 @@
 
 (use-package vc
   ;; Make backups of files, even when they're in version control
-  ;; originial modeline set to vc-parent-buffer-name
   :straight nil
   :custom
   (vc-make-backup-files t))
@@ -561,18 +569,20 @@
   (auto-hscroll-mode nil)         ; no horizontal scroll
   (indicate-empty-lines t)        ; show lines at the end of buffer
   (sentence-end-double-space nil) ; single space after a sentence
-  (indent-tabs-mode nil)         ; use spaces instead of tabs
+  (indent-tabs-mode nil)          ; use spaces instead of tabs
   :config
-  (fset 'yes-or-no-p 'y-or-n-p)               ; use y or n to confirm
+  (fset 'yes-or-no-p 'y-or-n-p)   ; use y or n to confirm
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
-  (show-paren-mode 1)                         ; Show matching parens
+  (show-paren-mode 1)             ; Show matching parens
   (set-face-attribute 'completions-annotations nil
         	      :inherit '(italic magit-sequence-drop))
   (set-face-attribute 'default (selected-frame) :font "Hack" :height 130)
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (global-hl-line-mode 1))
 
+;; Toggle fullscreen at the end
+(set-frame-parameter nil 'fullscreen 'fullboth)
 
 (provide 'init)
 ;;; init.el ends here
