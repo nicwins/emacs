@@ -149,7 +149,6 @@
   (evil-operator-state-cursor '("red" hollow))
   (evil-move-cursor-back nil)
   (evil-want-keybinding nil)
-  (evil-want-integration t)
   :config
   (evil-mode 1))
 
@@ -163,21 +162,26 @@
 
 (use-package evil-surround
   ;; Allow the s key in normal mode to surround text objects
+  :after evil-collection
   :config
   (global-evil-surround-mode 1))
 
 (use-package evil-goggles
   ;; Display visual hints for evil mode
+  :after evil-collection
   :config
   (evil-goggles-mode t)
   (set-face-attribute 'evil-goggles-default-face nil :inherit 'query-replace))
 
 (use-package evil-nerd-commenter
   ;; adds evilnc comment commands
+  :after evil-collection
   :config
   (evilnc-default-hotkeys nil t))
 
 (use-package evil-matchit
+  ;; adds more blocks for jumping with %
+  :after evil-collection
   :config
   (global-evil-matchit-mode 1))
 
@@ -193,7 +197,6 @@
    :states '(normal)
    "<tab>" 'outshine-cycle
    "<backtab>" 'outshine-cycle-buffer)
-  ;;:ghook ('emacs-lisp-mode-hook))
   :hook (emacs-lisp))
 
 (use-package exec-path-from-shell
@@ -254,15 +257,33 @@
 (use-package consult
   ;; enhances navigation with selectrum completions
   :init (fset 'multi-occur #'consult-multi-occur)
-  :config (consult-preview-mode))
+  :after (projectile)
+  :custom
+  (consult-project-root-function #'projectile-project-root)
+  :config
+  (consult-preview-mode))
 
 (use-package consult-selectrum
   ;; make consult use selectrum
-  :after (selectrum))
+  :after (selectrum)
+  :demand t)
 
 (use-package consult-flycheck
   ;; add a consult-flycheck command
   :after (consult flycheck))
+
+(use-package marginalia
+  ;; adds annotations to consult
+  :straight (:branch "main")
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light))
+  :config
+  (marginalia-mode))
+
+(use-package embark
+  ;; provide actions on competion candidates, or text at point
+  :custom
+  (embark-prompt-style 'completion))
 
 (use-package projectile
   ;; project traversal
@@ -294,14 +315,6 @@
    :states 'motion
    "TAB" 'my/rg-candidate-selector
    "RET" 'compile-goto-error))
-
-(use-package marginalia
-  ;; adds annotations to consult
-  :straight (:branch "main")
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light))
-  :config
-  (marginalia-mode))
 
 (use-package magit
   ;; emacs interface for git
@@ -353,6 +366,8 @@
   (lsp-ui-sideline-show-symbol nil)
   (lsp-headerline-breadcrumb-enable nil))
 
+(use-package sml-mode)
+
 (use-package rjsx-mode
   ;; react jsx formatting
   :mode "\\/.*\\.js\\'")
@@ -377,13 +392,14 @@
    "<f11>" 'toggle-frame-fullscreen))
 
 (use-package yaml-mode
+  ;; formatting for yml files
   :mode "\\.yml\\'")
 
 (use-package which-key
   ;; shows list of available completions when key sequences begin
   :commands (which-key-mode)
   :custom
-  (which-key-idle-delay 2) ;; Time before which-key pops up
+  (which-key-idle-delay 1) ;; Time before which-key pops up
   (which-key-sort-order 'which-key-key-order-alpha)
   (which-key-setup-side-window-right)
   :config (which-key-mode))
@@ -400,6 +416,7 @@
            :prefix "SPC"
            :non-normal-prefix "C-SPC"
            "" '(nil :which-key "Commands")
+           "a" 'embark-act
            "c" 'evilnc-comment-or-uncomment-lines
 	   "r" #'my/switch-to-last-buffer
 	   "w" 'save-buffer
@@ -439,22 +456,22 @@
            "m" '(:ignore t :which-key "Extra Motions")
            "m a" 'beginning-of-defun
            "m e" 'end-of-defun)
-
-  (:states '(normal)
+  (:states '(normal visual)
 	   "p" 'consult-yank-pop
-	   "/" 'consult-line)
-  
+	   "/" 'consult-line
+           "H" 'evil-first-non-blank
+           "L" 'evil-end-of-line)
   (:states '(insert replace)
 	   "j" (general-key-dispatch 'self-insert-command
 		 :timeout 0.25
 		 "k" 'evil-normal-state))
-
   ("C-x r q" 'save-buffers-kill-terminal
-   '[f1] 'project-find-file
-   '[f2] 'rg-project
+   '[f1] 'projectile-find-file
+   '[f2] 'consult-ripgrep
    '[f3] 'projectile-switch-project
    '[f4] 'projectile-run-vterm
-   '[f5] 'call-last-kbd-macro))
+   '[f5] 'call-last-kbd-macro
+   '[f6] 'consult-project-imenu))
 
 ;;;; Built-in Package Config
 
@@ -474,17 +491,17 @@
 
 (use-package tab-bar
   ;; save workspaces as groups of windows
-  :straight nil
   :preface
   (defun my/no-tab-bar-lines (&rest _)
-    "Hide the `tab-bar' ui."
+    "Hide the tabs from tab-bar-mode."
     (dolist (frame (frame-list)) (set-frame-parameter frame 'tab-bar-lines 0)))
+  :straight nil
   :custom
   (tab-bar-new-tab-choice "*scratch*")
-  :init
+  (tab-bar-show nil)
+  :config
   (advice-add #'tab-bar-mode :after #'my/no-tab-bar-lines)
   (advice-add #'make-frame :after #'my/no-tab-bar-lines)
-  :config
   (tab-bar-mode 1))
 
 (use-package desktop
@@ -580,9 +597,6 @@
   (set-face-attribute 'default (selected-frame) :font "Hack" :height 130)
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (global-hl-line-mode 1))
-
-;; Toggle fullscreen at the end
-(set-frame-parameter nil 'fullscreen 'fullboth)
 
 (provide 'init)
 ;;; init.el ends here
