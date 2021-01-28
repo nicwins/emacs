@@ -238,16 +238,23 @@
   :config (selectrum-mode 1))
 
 (use-package prescient
-  ;; sorting/filtering manager
-  :custom
-  (prescient-filter-method '(literal regexp fuzzy))
+  ;; sorting manager
   :config
   (prescient-persist-mode 1))
 
 (use-package selectrum-prescient
-  ;; make selectrum use prescient filtering
+  ;; make selectrum use prescient sorting 
   :after (selectrum prescient)
   :config (selectrum-prescient-mode 1))
+
+(use-package orderless
+  ;; candidate filtering package
+  :after (selectrum-prescient)
+  :init (icomplete-mode)
+  :custom
+  (completion-styles '(orderless))
+  (selectrum-refine-candidates-function #'orderless-filter)
+  (selectrum-highlight-candiates-function #'orderless-highlight-matches))
 
 (use-package company-prescient
   ;; make company use prescient filtering
@@ -397,12 +404,12 @@
 
 (use-package which-key
   ;; shows list of available completions when key sequences begin
-  :commands (which-key-mode)
   :custom
   (which-key-idle-delay 1) ;; Time before which-key pops up
   (which-key-sort-order 'which-key-key-order-alpha)
-  (which-key-setup-side-window-right)
-  :config (which-key-mode))
+  :config
+  (which-key-mode)
+  (which-key-setup-side-window-right-bottom))
 
 (use-package general
   ;; key binding manager
@@ -447,6 +454,7 @@
 	   "h b" 'describe-bindings
 	   "h m" 'describe-mode
            "h f" 'describe-function
+           "h w" 'which-key-show-major-mode
 	   "l" '(:ignore t :which-key "LSP Mappings")
 	   "l d" 'lsp-find-definition
 	   "l r" 'lsp-find-references
@@ -583,7 +591,6 @@
   :custom
   (inhibit-startup-message t)     ; no splash screen
   (visible-bell t)                ; be quiet
-  (auto-hscroll-mode nil)         ; no horizontal scroll
   (indicate-empty-lines t)        ; show lines at the end of buffer
   (sentence-end-double-space nil) ; single space after a sentence
   (indent-tabs-mode nil)          ; use spaces instead of tabs
@@ -594,7 +601,7 @@
   (show-paren-mode 1)             ; Show matching parens
   (set-face-attribute 'completions-annotations nil
         	      :inherit '(italic magit-sequence-drop))
-  (set-face-attribute 'default (selected-frame) :font "Hack" :height 130)
+  (set-face-attribute 'default (selected-frame) :font "Hack" :height 160)
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (global-hl-line-mode 1))
 
