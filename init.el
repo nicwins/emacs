@@ -152,17 +152,13 @@
   :config
   (evil-mode 1))
 
-(defun evil-set-cursor-including-terminal (orig-fn specs)
-  (if (display-graphic-p)
-      (funcall orig-fn specs)
-    (when (= (display-color-cells) 256) ; otherwise messes up tmux under xfce4-terminal
-      (pcase specs
-        ((and (or `(,colour) `(,colour . ,shape))
-              (guard (stringp colour)))
-         (send-string-to-terminal (concat "\033]12;" colour "\007")))))))
-(advice-add #'evil-set-cursor :around #'evil-set-cursor-including-terminal)
-
-
+(unless (display-graphic-p)
+  (use-package term-cursor
+    :straight (term-cursor.el :type git :host github :repo "h0d/term-cursor.el")
+    :after evil
+    :config
+    (global-term-cursor-mode)
+    (send-string-to-terminal "\e]12;#FFFFFF\007")))
 
 (use-package evil-collection
   ;; Make evil bindings available in most modes
@@ -488,7 +484,6 @@
    '[f1] 'project-find-file
    '[f2] 'consult-ripgrep
    '[f3] 'project-switch-project
-   '[f4] 'projectile-run-vterm
    '[f5] 'call-last-kbd-macro
    '[f6] 'consult-project-imenu))
 
@@ -615,7 +610,8 @@
   (set-face-attribute 'default (selected-frame) :font "Hack" :height 160)
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
-    (setq visible-bell nil))
+    (setq visible-bell nil)
+    (setq ring-bell-function 'ignore))
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (global-hl-line-mode 1))
 
