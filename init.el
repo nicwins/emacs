@@ -1,4 +1,4 @@
-;;; init --- Initial setup -*- lexical-binding: t -*-
+;; init --- Initial setup -*- lexical-binding: t -*-
 
 ;;; Commentary:
 
@@ -152,6 +152,18 @@
   :config
   (evil-mode 1))
 
+(defun evil-set-cursor-including-terminal (orig-fn specs)
+  (if (display-graphic-p)
+      (funcall orig-fn specs)
+    (when (= (display-color-cells) 256) ; otherwise messes up tmux under xfce4-terminal
+      (pcase specs
+        ((and (or `(,colour) `(,colour . ,shape))
+              (guard (stringp colour)))
+         (send-string-to-terminal (concat "\033]12;" colour "\007")))))))
+(advice-add #'evil-set-cursor :around #'evil-set-cursor-including-terminal)
+
+
+
 (use-package evil-collection
   ;; Make evil bindings available in most modes
   :after evil
@@ -224,14 +236,14 @@
 		 (window-height   . 0.33)))
   (advice-add 'flycheck-list-errors :after #'my/flycheck-error-selector))
 
-(use-package doom-modeline
-  :custom
-  (doom-modeline-height 18)
-  (doom-modeline-buffer-encoding nil)
-  (doom-modeline-buffer-file-name-style 'relative-to-project)
-  (doom-modeline-icon (display-graphic-p))
-  :config
-  (doom-modeline-mode 1))
+;; (use-package doom-modeline
+;;   :custom
+;;   (doom-modeline-height 18)
+;;   (doom-modeline-buffer-encoding nil)
+;;   (doom-modeline-buffer-file-name-style 'relative-to-project)
+;;   (doom-modeline-icon (display-graphic-p))
+;;   :config
+;;   (doom-modeline-mode 1))
 
 (use-package selectrum
   ;; selection/completion manager
@@ -264,16 +276,14 @@
 (use-package consult
   ;; enhances navigation with selectrum completions
   :init (fset 'multi-occur #'consult-multi-occur)
-  :after (projectile)
-  :custom
-  (consult-project-root-function #'projectile-project-root)
+  ;; :custom
+  ;; (consult-project-root-function #'projectile-project-root)
   :config
   (consult-preview-mode))
 
-(use-package consult-selectrum
-  ;; make consult use selectrum
-  :after (selectrum)
-  :demand t)
+;; (use-package consult-selectrum
+;;   ;; make consult use selectrum
+;;   :after (selectrum))
 
 (use-package consult-flycheck
   ;; add a consult-flycheck command
@@ -292,15 +302,15 @@
   :custom
   (embark-prompt-style 'completion))
 
-(use-package projectile
-  ;; project traversal
-  :preface
-  (defun my/projectile-ignore-project (project-root)
-    (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
-  :custom
-  (projectile-ignored-project-function #'my/projectile-ignore-project)
-  :config
-  (projectile-mode 1))
+;; (use-package projectile
+;;   ;; project traversal
+;;   :preface
+;;   (defun my/projectile-ignore-project (project-root)
+;;     (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
+;;   :custom
+;;   (projectile-ignored-project-function #'my/projectile-ignore-project)
+;;   :config
+;;   (projectile-mode 1))
 
 (use-package rg
   ;; faster grep
@@ -389,8 +399,9 @@
   (evil-set-undo-system 'undo-tree))
 
 (use-package gruvbox-theme
-  ;; coding theme
-  :config (load-theme 'gruvbox-dark-hard t))
+  ;; Need to figure out how to get this on terminal.. 
+  :config
+  (load-theme 'gruvbox-dark-hard t))
 
 (use-package vterm
   ;; better terminal
@@ -474,9 +485,9 @@
 		 :timeout 0.25
 		 "k" 'evil-normal-state))
   ("C-x r q" 'save-buffers-kill-terminal
-   '[f1] 'projectile-find-file
+   '[f1] 'project-find-file
    '[f2] 'consult-ripgrep
-   '[f3] 'projectile-switch-project
+   '[f3] 'project-switch-project
    '[f4] 'projectile-run-vterm
    '[f5] 'call-last-kbd-macro
    '[f6] 'consult-project-imenu))
@@ -602,6 +613,9 @@
   (set-face-attribute 'completions-annotations nil
         	      :inherit '(italic magit-sequence-drop))
   (set-face-attribute 'default (selected-frame) :font "Hack" :height 160)
+  (when (eq system-type 'darwin)
+    (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
+    (setq visible-bell nil))
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (global-hl-line-mode 1))
 
