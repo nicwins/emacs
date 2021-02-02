@@ -152,14 +152,6 @@
   :config
   (evil-mode 1))
 
-(unless (display-graphic-p)
-  (use-package term-cursor
-    :straight (term-cursor.el :type git :host github :repo "h0d/term-cursor.el")
-    :after evil
-    :config
-    (global-term-cursor-mode)
-    (send-string-to-terminal "\e]12;#FFFFFF\007")))
-
 (use-package evil-collection
   ;; Make evil bindings available in most modes
   :after evil
@@ -167,6 +159,16 @@
   (evil-collection-setup-minibuffer t)
   :config
   (evil-collection-init))
+
+(unless (display-graphic-p)
+  (use-package term-cursor
+    :straight (term-cursor.el :type git :host github :repo "h0d/term-cursor.el")
+    :after evil
+    :config
+    (global-term-cursor-mode)))
+
+;; Template for changing cursor color on terminal
+;; (send-string-to-terminal "\e]12;#FFFFFF\007")
 
 (use-package evil-surround
   ;; Allow the s key in normal mode to surround text objects
@@ -271,11 +273,7 @@
 
 (use-package consult
   ;; enhances navigation with selectrum completions
-  :init (fset 'multi-occur #'consult-multi-occur)
-  ;; :custom
-  ;; (consult-project-root-function #'projectile-project-root)
-  :config
-  (consult-preview-mode))
+  :init (fset 'multi-occur #'consult-multi-occur))
 
 ;; (use-package consult-selectrum
 ;;   ;; make consult use selectrum
@@ -353,8 +351,12 @@
 	    :host github
 	    :repo "raxod502/apheleia")
   :config
-  (apheleia-global-mode +1)
-  (add-to-list 'apheleia-mode-alist '(ruby-mode . prettier)))
+  (add-to-list 'apheleia-mode-alist '(ruby-mode . prettier))
+  (setf (alist-get 'prettier apheleia-formatters)
+        '(npx "prettier"
+              "--single-quote" "true"
+              file))
+  (apheleia-global-mode +1))
 
 (use-package json-mode)
 
@@ -383,7 +385,9 @@
 
 (use-package rjsx-mode
   ;; react jsx formatting
-  :mode "\\/.*\\.js\\'")
+  :mode "\\/.*\\.js\\'"
+  :custom
+  (js-indent-level 2))
 
 (use-package inf-ruby
   ;; provides a ruby repl
