@@ -596,6 +596,7 @@
   (create-lockfiles nil)
   (delete-by-moving-to-trash t))
 
+
 (use-package emacs
   :straight nil
   :custom
@@ -604,6 +605,7 @@
   (indicate-empty-lines t)        ; show lines at the end of buffer
   (sentence-end-double-space nil) ; single space after a sentence
   (indent-tabs-mode nil)          ; use spaces instead of tabs
+  (reb-re-syntax 'rx)             ; interactive regex builder
   :config
   (fset 'yes-or-no-p 'y-or-n-p)   ; use y or n to confirm
   (set-language-environment "UTF-8")
