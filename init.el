@@ -234,14 +234,14 @@
 		 (window-height   . 0.33)))
   (advice-add 'flycheck-list-errors :after #'my/flycheck-error-selector))
 
-;; (use-package doom-modeline
-;;   :custom
-;;   (doom-modeline-height 18)
-;;   (doom-modeline-buffer-encoding nil)
-;;   (doom-modeline-buffer-file-name-style 'relative-to-project)
-;;   (doom-modeline-icon (display-graphic-p))
-;;   :config
-;;   (doom-modeline-mode 1))
+(use-package doom-modeline
+  :custom
+  (doom-modeline-height 18)
+  (doom-modeline-buffer-encoding nil)
+  (doom-modeline-buffer-file-name-style 'relative-to-project)
+  (doom-modeline-icon (display-graphic-p))
+  :config
+  (doom-modeline-mode 1))
 
 (use-package selectrum
   ;; selection/completion manager
@@ -296,15 +296,15 @@
   :custom
   (embark-prompt-style 'completion))
 
-;; (use-package projectile
-;;   ;; project traversal
-;;   :preface
-;;   (defun my/projectile-ignore-project (project-root)
-;;     (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
-;;   :custom
-;;   (projectile-ignored-project-function #'my/projectile-ignore-project)
-;;   :config
-;;   (projectile-mode 1))
+(use-package projectile
+  ;; project traversal
+  :preface
+  (defun my/projectile-ignore-project (project-root)
+    (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
+  :custom
+  (projectile-ignored-project-function #'my/projectile-ignore-project)
+  :config
+  (projectile-mode 1))
 
 (use-package rg
   ;; faster grep
@@ -485,9 +485,10 @@
 		 :timeout 0.25
 		 "k" 'evil-normal-state))
   ("C-x r q" 'save-buffers-kill-terminal
-   '[f1] 'project-find-file
+   '[f1] 'projectile-find-file
    '[f2] 'consult-ripgrep
-   '[f3] 'project-switch-project
+   '[f3] 'projectile-switch-project
+   '[f4] 'projectile-run-vterm
    '[f5] 'call-last-kbd-macro
    '[f6] 'consult-project-imenu))
 
