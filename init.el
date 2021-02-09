@@ -253,7 +253,7 @@
   (prescient-persist-mode 1))
 
 (use-package selectrum-prescient
-  ;; make selectrum use prescient sorting 
+  ;; make selectrum use prescient sorting
   :after (selectrum prescient)
   :config (selectrum-prescient-mode 1))
 
@@ -355,6 +355,7 @@
   (setf (alist-get 'prettier apheleia-formatters)
         '(npx "prettier"
               "--single-quote" "true"
+              "--trailing-comma" "all"
               file))
   (apheleia-global-mode +1))
 
