@@ -483,9 +483,7 @@
            "m e" 'end-of-defun)
   (:states '(normal visual)
 	   "p" 'consult-yank-pop
-	   "/" 'consult-line
-           "H" 'evil-first-non-blank
-           "L" 'evil-end-of-line)
+	   "/" 'consult-line)
   (:states '(insert replace)
 	   "j" (general-key-dispatch 'self-insert-command
 		 :timeout 0.25
@@ -611,7 +609,6 @@
   (create-lockfiles nil)
   (delete-by-moving-to-trash t))
 
-
 (use-package emacs
   :straight nil
   :custom
@@ -628,7 +625,7 @@
   (show-paren-mode 1)             ; Show matching parens
   (set-face-attribute 'completions-annotations nil
         	      :inherit '(italic magit-sequence-drop))
-  (set-face-attribute 'default (selected-frame) :font "Hack" :height 160)
+  (set-face-attribute 'default (selected-frame) :font "Hack" :height 140)
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
     (setq visible-bell nil)
