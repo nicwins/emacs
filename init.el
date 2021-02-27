@@ -200,6 +200,9 @@
 ;; Install a newer version of Org after removing the old
 (use-package org)
 
+;; Line wrap at the fill column, not buffer end
+(use-package visual-fill-column)
+
 (use-package outshine
   ;; Easier navigation for source files, especially this one
   :general
@@ -371,7 +374,9 @@
   :custom
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-snippet nil)
-  (lsp-modeline-diagnostics-enable nil))
+  (lsp-modeline-diagnostics-enable nil)
+  :config
+  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "/lsp/tsserver.log")))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -487,7 +492,7 @@
 		 "k" 'evil-normal-state))
   ("C-x r q" 'save-buffers-kill-terminal
    '[f1] 'projectile-find-file
-   '[f2] 'consult-ripgrep
+   '[f2] 'project-find-regexp
    '[f3] 'projectile-switch-project
    '[f4] 'projectile-run-vterm
    '[f5] 'call-last-kbd-macro
@@ -501,7 +506,15 @@
   :general
   (xref--xref-buffer-mode-map
    :states 'motion
-   "TAB" 'xref-quit-and-goto-xref))
+   "TAB" 'xref-quit-and-goto-xref)
+  :custom
+  (xref-search-program 'ripgrep))
+
+(with-eval-after-load 'xref
+  (setq xref-search-program 'ripgrep) ;project-find-regexp
+  (when (functionp 'xref--show-defs-minibuffer)
+    (setq xref-show-definitions-function 'xref--show-defs-minibuffer)
+    (setq xref-show-xrefs-function 'xref--show-defs-minibuffer)))
 
 (use-package elec-pair
   ;; automatically match pairs
@@ -524,13 +537,13 @@
   (advice-add #'make-frame :after #'my/no-tab-bar-lines)
   (tab-bar-mode 1))
 
-(use-package desktop
-  ;; Save buffers and windows on exit
-  :straight nil
-  :custom
-  (desktop-restore-eager 10)
-  :config
-  (desktop-save-mode 1))
+;; (use-package desktop
+;;   ;; Save buffers and windows on exit
+;;   :straight nil
+;;   :custom
+;;   (desktop-restore-eager 1)
+;;   :config
+;;   (desktop-save-mode 1))
 
 (use-package server
   ;; The emacs server
