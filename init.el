@@ -138,63 +138,6 @@
   ;; Change color of each inner block delimiter
   :ghook ('(prog-mode-hook text-mode-hook)))
 
-(use-package evil
-  ;; Imports vim motion/states into emacs
-  :custom
-  (evil-emacs-state-cursor '("yellow" box))
-  (evil-normal-state-cursor '("green" box))
-  (evil-visual-state-cursor '("orange" box))
-  (evil-insert-state-cursor '("red" bar))
-  (evil-replace-state-cursor '("red" bar))
-  (evil-operator-state-cursor '("red" hollow))
-  (evil-move-cursor-back nil)
-  (evil-want-keybinding nil)
-  :config
-  (evil-mode 1))
-
-(use-package evil-collection
-  ;; Make evil bindings available in most modes
-  :after evil
-  :custom
-  (evil-collection-setup-minibuffer t)
-  :config
-  (evil-collection-init))
-
-(unless (display-graphic-p)
-  (use-package term-cursor
-    :straight (term-cursor.el :type git :host github :repo "h0d/term-cursor.el")
-    :after evil
-    :config
-    (global-term-cursor-mode)))
-
-;; Template for changing cursor color on terminal
-;; (send-string-to-terminal "\e]12;#FFFFFF\007")
-
-(use-package evil-surround
-  ;; Allow the s key in normal mode to surround text objects
-  :after evil-collection
-  :config
-  (global-evil-surround-mode 1))
-
-(use-package evil-goggles
-  ;; Display visual hints for evil mode
-  :after evil-collection
-  :config
-  (evil-goggles-mode t)
-  (set-face-attribute 'evil-goggles-default-face nil :inherit 'query-replace))
-
-(use-package evil-nerd-commenter
-  ;; adds evilnc comment commands
-  :after evil-collection
-  :config
-  (evilnc-default-hotkeys nil t))
-
-(use-package evil-matchit
-  ;; adds more blocks for jumping with %
-  :after evil-collection
-  :config
-  (global-evil-matchit-mode 1))
-
 (use-package ace-window)
 
 ;; Install a newer version of Org after removing the old
@@ -241,7 +184,7 @@
   :custom
   (doom-modeline-height 18)
   (doom-modeline-buffer-encoding nil)
-  (doom-modeline-buffer-file-name-style 'relative-to-project)
+  (doom-modeline-buffer-file-name-style 'truncate-upto-root)
   (doom-modeline-icon (display-graphic-p))
   :config
   (doom-modeline-mode 1))
@@ -277,10 +220,6 @@
 (use-package consult
   ;; enhances navigation with selectrum completions
   :init (fset 'multi-occur #'consult-multi-occur))
-
-;; (use-package consult-selectrum
-;;   ;; make consult use selectrum
-;;   :after (selectrum))
 
 (use-package consult-flycheck
   ;; add a consult-flycheck command
@@ -376,7 +315,7 @@
   (lsp-enable-snippet nil)
   (lsp-modeline-diagnostics-enable nil)
   :config
-  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "/lsp/tsserver.log")))
+  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -401,19 +340,18 @@
 
 (use-package undo-tree
   ;; make undo a tree rather than line
-  :config (global-undo-tree-mode)
-  (evil-set-undo-system 'undo-tree))
+  :config (global-undo-tree-mode))
 
 (use-package gruvbox-theme
-  ;; Need to figure out how to get this on terminal.. 
+  ;; Groovy
   :config
   (load-theme 'gruvbox-dark-hard t))
 
-(use-package vterm
-  ;; better terminal
-  :general
-  (vterm-mode-map
-   "<f11>" 'toggle-frame-fullscreen))
+;; (use-package vterm
+;;   ;; better terminal
+;;   :general
+;;   (vterm-mode-map
+;;    "<f11>" 'toggle-frame-fullscreen))
 
 (use-package yaml-mode
   ;; formatting for yml files
@@ -436,65 +374,65 @@
     (interactive)
     (switch-to-buffer nil))
   :general
-  (:states '(normal visual insert emacs)
-           :prefix "SPC"
-           :non-normal-prefix "C-SPC"
-           "" '(nil :which-key "Commands")
-           "a" 'embark-act
-           "c" 'evilnc-comment-or-uncomment-lines
-	   "r" #'my/switch-to-last-buffer
-	   "w" 'save-buffer
-	   "W" 'save-some-buffers
-	   "q" 'kill-buffer-and-window
-	   "SPC" 'ace-window
-	   "f" 'find-file
-	   "g" 'magit-status
-	   "G" 'magit-blame-mode
-	   "k" 'kill-this-buffer
-	   "K" 'kill-buffer
-	   "t" 'tab-bar-switch-to-tab
-	   "T" 'vterm-other-window
-	   "u" 'undo-tree-visualize
-	   "b" 'consult-buffer
-	   "i" 'consult-imenu
-	   "o" 'consult-outline
-	   "x" 'execute-extended-command
-	   "0" 'delete-window
-	   "1" 'delete-other-windows
-	   "2" 'split-window-below
-	   "3" 'split-window-right
-	   "h" '(:ignore t :which-key "Help Functions")
-	   "h a" 'consult-apropos
-	   "h h" 'help-for-help
-	   "h k" 'describe-key
-	   "h v" 'describe-variable
-	   "h b" 'describe-bindings
-	   "h m" 'describe-mode
-           "h f" 'describe-function
-           "h w" 'which-key-show-major-mode
-	   "l" '(:ignore t :which-key "LSP Mappings")
-	   "l d" 'lsp-find-definition
-	   "l r" 'lsp-find-references
-	   "l n" 'lsp-rename
-	   "l i" 'lsp-ui-imenu
-	   "l e" 'consult-flycheck
-           "m" '(:ignore t :which-key "Extra Motions")
-           "m a" 'beginning-of-defun
-           "m e" 'end-of-defun)
-  (:states '(normal visual)
-	   "p" 'consult-yank-pop
-	   "/" 'consult-line)
-  (:states '(insert replace)
-	   "j" (general-key-dispatch 'self-insert-command
-		 :timeout 0.25
-		 "k" 'evil-normal-state))
-  ("C-x r q" 'save-buffers-kill-terminal
+  ("C-x b" 'consult-buffer
+   "C-." 'consult-line
+   "C-," 'comment-or-uncomment-region
+   "C-c C-g" 'magit
+   "C-x r q" 'save-buffers-kill-terminal
    '[f1] 'projectile-find-file
    '[f2] 'project-find-regexp
    '[f3] 'projectile-switch-project
-   '[f4] 'projectile-run-vterm
    '[f5] 'call-last-kbd-macro
    '[f6] 'consult-project-imenu))
+
+;; (:states '(normal visual insert emacs)
+;;          :prefix "SPC"
+;;          :non-normal-prefix "C-SPC"
+;;          "" '(nil :which-key "Commands")
+;;          "a" 'embark-act
+;;          "c" 'evilnc-comment-or-uncomment-lines
+;;          "r" #'my/switch-to-last-buffer
+;;          "w" 'save-buffer
+;;          "W" 'save-some-buffers
+;;          "q" 'kill-buffer-and-window
+;;          "SPC" 'ace-window
+;;          "f" 'find-file
+;;          "g" 'magit-status
+;;          "G" 'magit-blame-mode
+;;          "k" 'kill-this-buffer
+;;          "K" 'kill-buffer
+;;          "t" 'tab-bar-switch-to-tab
+;;          "T" 'vterm-other-window
+;;          "u" 'undo-tree-visualize
+;;          "b" 'consult-buffer
+;;          "i" 'consult-imenu
+;;          "o" 'consult-outline
+;;          "x" 'execute-extended-command
+;;          "0" 'delete-window
+;;          "1" 'delete-other-windows
+;;          "2" 'split-window-below
+;;          "3" 'split-window-right
+;;          "h" '(:ignore t :which-key "Help Functions")
+;;          "h a" 'consult-apropos
+;;          "h h" 'help-for-help
+;;          "h k" 'describe-key
+;;          "h v" 'describe-variable
+;;          "h b" 'describe-bindings
+;;          "h m" 'describe-mode
+;;          "h f" 'describe-function
+;;          "h w" 'which-key-show-major-mode
+;;          "l" '(:ignore t :which-key "LSP Mappings")
+;;          "l d" 'lsp-find-definition
+;;          "l r" 'lsp-find-references
+;;          "l n" 'lsp-rename
+;;          "l i" 'lsp-ui-imenu
+;;          "l e" 'consult-flycheck
+;;          "m" '(:ignore t :which-key "Extra Motions")
+;;          "m a" 'beginning-of-defun
+;;          "m e" 'end-of-defun)
+;; (:states '(normal visual)
+;;          "p" 'consult-yank-pop
+;;          "/" 'consult-line
 
 ;;;; Built-in Package Config
 
@@ -535,13 +473,13 @@
   (advice-add #'make-frame :after #'my/no-tab-bar-lines)
   (tab-bar-mode 1))
 
-;; (use-package desktop
-;;   ;; Save buffers and windows on exit
-;;   :straight nil
-;;   :custom
-;;   (desktop-restore-eager 1)
-;;   :config
-;;   (desktop-save-mode 1))
+(use-package desktop
+  ;; Save buffers and windows on exit
+  :straight nil
+  :custom
+  (desktop-restore-eager 1)
+  :config
+  (desktop-save-mode 1))
 
 (use-package server
   ;; The emacs server
@@ -631,7 +569,8 @@
     (setq visible-bell nil)
     (setq ring-bell-function 'ignore))
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
-  (global-hl-line-mode 1))
+  (global-hl-line-mode 1)
+  (global-display-line-numbers-mode))
 
 (provide 'init)
 ;;; init.el ends here
