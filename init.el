@@ -93,13 +93,6 @@
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
-(defun my/ruby-rubocop-header ()
-  "Add headers demanded by rubocop to head of file."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (insert "# frozen_string_literal: true\n\n# :nodoc:\n")))
-
 ;;;; Package Configuration
 
 (use-package gcmh
@@ -293,7 +286,6 @@
 	    :host github
 	    :repo "raxod502/apheleia")
   :config
-  (add-to-list 'apheleia-mode-alist '(ruby-mode . prettier))
   (setf (alist-get 'prettier apheleia-formatters)
         '(npx "prettier"
               "--single-quote" "true"
@@ -306,7 +298,6 @@
 (use-package lsp-mode
   :commands lsp
   :hook ((rjsx-mode
-          ruby-mode
           json-mode
           mhtml-mode
           yaml-mode) . lsp)
@@ -333,10 +324,6 @@
   :mode "\\/.*\\.js\\'"
   :custom
   (js-indent-level 2))
-
-(use-package inf-ruby
-  ;; provides a ruby repl
-  :hook (ruby-mode . inf-ruby-minor-mode))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
