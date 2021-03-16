@@ -93,6 +93,27 @@
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
+;; (source: https://github.com/bbatsov/projectile/issues/364#issuecomment-61296248)
+(defun my/projectile-root-child-of (dir &optional list)
+  "Let projectile find project root by LIST regexp of DIR."
+  (projectile-locate-dominating-file
+   dir
+   (lambda (dir)
+     (--first
+      (if (and
+           (s-equals? (file-remote-p it) (file-remote-p dir))
+           (string-match-p (expand-file-name it) (expand-file-name dir)))
+          dir)
+      (or list project-root-regexps (list))))))
+
+(defvar project-root-regexps ()
+  "List of regexps to match against when projectile is searching for project root directories.")
+(add-to-list 'project-root-regexps "/Users/nicolas.winslow/interpreta/hca-ui/$")
+;;(add-to-list 'project-root-regexps "/path/to/another/project/$")
+;;(add-to-list 'project-root-regexps "/path/to/one/more/project/$")
+
+(nconc projectile-project-root-files-functions '(my/projectile-root-child-of))
+
 ;;;; Package Configuration
 
 (use-package gcmh
@@ -172,6 +193,12 @@
 		 (reusable-frames . visible)
 		 (window-height   . 0.33)))
   (advice-add 'flycheck-list-errors :after #'my/flycheck-error-selector))
+
+(use-package flycheck-pos-tip
+  ;; popup flycheck messages
+  :config
+  (with-eval-after-load 'flycheck
+    (flycheck-pos-tip-mode)))
 
 (use-package doom-modeline
   :custom
@@ -289,7 +316,9 @@
   (setf (alist-get 'prettier apheleia-formatters)
         '(npx "prettier"
               "--single-quote" "true"
-              "--trailing-comma" "all"
+              "--trailing-comma" "es5"
+              "--jsx-single-quote" "true"
+              "--arrow-parens" "avoid"
               file))
   (apheleia-global-mode +1))
 
@@ -305,6 +334,9 @@
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-snippet nil)
   (lsp-modeline-diagnostics-enable nil)
+  (lsp-enable-indentation nil)
+  ;; (lsp-eldoc-enable-hover nil)
+  (lsp-signature-render-documentation nil)
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
@@ -312,7 +344,7 @@
   :commands lsp-ui-mode
   :custom
   (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-doc-enable nil)
+  ;; (lsp-ui-doc-enable nil)
   (lsp-ui-sideline-show-code-actions nil)
   (lsp-ui-sideline-show-symbol nil)
   (lsp-headerline-breadcrumb-enable nil))
@@ -323,7 +355,8 @@
   ;; react jsx formatting
   :mode "\\/.*\\.js\\'"
   :custom
-  (js-indent-level 2))
+  (js-indent-level 2)
+  (js-switch-indent-offset 2))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -365,7 +398,10 @@
    "C-." 'consult-line
    "C-," 'comment-or-uncomment-region
    "C-c C-g" 'magit
+   "C-c i" 'consult-imenu
+   "C-c t" 'tab-bar-switch-to-tab
    "C-x r q" 'save-buffers-kill-terminal
+   "C-c f" 'consult-flycheck
    '[f1] 'projectile-find-file
    '[f2] 'project-find-regexp
    '[f3] 'projectile-switch-project
@@ -464,7 +500,7 @@
   ;; Save buffers and windows on exit
   :straight nil
   :custom
-  (desktop-restore-eager 1)
+  (desktop-restore-eager 5)
   :config
   (desktop-save-mode 1))
 
@@ -543,7 +579,9 @@
   (sentence-end-double-space nil) ; single space after a sentence
   (indent-tabs-mode nil)          ; use spaces instead of tabs
   (reb-re-syntax 'rx)             ; interactive regex builder
+  (cursor-type '(bar . 2))
   :config
+  (delete-selection-mode)
   (fset 'yes-or-no-p 'y-or-n-p)   ; use y or n to confirm
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
@@ -554,10 +592,11 @@
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
     (setq visible-bell nil)
-    (setq ring-bell-function 'ignore))
+    (setq ring-bell-function 'ignore)
+    (setq auto-save-default nil))
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (global-hl-line-mode 1)
-  (global-display-line-numbers-mode))
+  (set-face-background 'cursor "red"))
 
 (provide 'init)
 ;;; init.el ends here

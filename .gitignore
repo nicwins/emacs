@@ -19,3 +19,10 @@ Thumbs.db
 
 # Folder config file
 Desktop.ini
+
+############
+## Mac
+############
+
+# Some mac litter
+.DS_Store
