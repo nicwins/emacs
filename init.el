@@ -93,26 +93,7 @@
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
-;; (source: https://github.com/bbatsov/projectile/issues/364#issuecomment-61296248)
-(defun my/projectile-root-child-of (dir &optional list)
-  "Let projectile find project root by LIST regexp of DIR."
-  (projectile-locate-dominating-file
-   dir
-   (lambda (dir)
-     (--first
-      (if (and
-           (s-equals? (file-remote-p it) (file-remote-p dir))
-           (string-match-p (expand-file-name it) (expand-file-name dir)))
-          dir)
-      (or list project-root-regexps (list))))))
 
-(defvar project-root-regexps ()
-  "List of regexps to match against when projectile is searching for project root directories.")
-(add-to-list 'project-root-regexps "/Users/nicolas.winslow/interpreta/hca-ui/$")
-;;(add-to-list 'project-root-regexps "/path/to/another/project/$")
-;;(add-to-list 'project-root-regexps "/path/to/one/more/project/$")
-
-(nconc projectile-project-root-files-functions '(my/projectile-root-child-of))
 
 ;;;; Package Configuration
 
@@ -263,9 +244,25 @@
   :preface
   (defun my/projectile-ignore-project (project-root)
     (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
+  ;; (source: https://github.com/bbatsov/projectile/issues/364#issuecomment-61296248)
+  (defvar project-root-regexps ()
+    "List of regexps to match against when projectile is searching for project root directories.")
+  (defun my/projectile-root-child-of (dir &optional list)
+    "Let projectile find project root by LIST regexp of DIR."
+    (projectile-locate-dominating-file
+     dir
+     (lambda (dir)
+       (--first
+        (if (and
+             (s-equals? (file-remote-p it) (file-remote-p dir))
+             (string-match-p (expand-file-name it) (expand-file-name dir)))
+            dir)
+        (or list project-root-regexps (list))))))
   :custom
   (projectile-ignored-project-function #'my/projectile-ignore-project)
   :config
+  (add-to-list 'project-root-regexps "/Users/nicolas.winslow/interpreta/hca-ui/$")
+  (nconc projectile-project-root-functions '(my/projectile-root-child-of))
   (projectile-mode 1))
 
 (use-package rg
@@ -330,15 +327,20 @@
           json-mode
           mhtml-mode
           yaml-mode) . lsp)
+  (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-snippet nil)
   (lsp-modeline-diagnostics-enable nil)
   (lsp-enable-indentation nil)
   ;; (lsp-eldoc-enable-hover nil)
+  (lsp-prefer-capf t)
   (lsp-signature-render-documentation nil)
+  :init
+  (setq lsp-keymap-prefix "C-c C-l")
   :config
-  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
+  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
+  (define-key lsp-mode-map (kbd "C-c C-l") lsp-command-map))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -569,6 +571,10 @@
   (vc-follow-symlinks t)
   (create-lockfiles nil)
   (delete-by-moving-to-trash t))
+
+(use-package midnight
+  :config
+  (midnight-delay-set 'midnight-delay "2:00am"))
 
 (use-package emacs
   :straight nil
