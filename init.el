@@ -220,7 +220,13 @@
 
 (use-package consult
   ;; enhances navigation with selectrum completions
-  :init (fset 'multi-occur #'consult-multi-occur))
+  :after (selectrum projectile)
+  :commands (projectile-project-root)
+  :custom
+  (consult-project-root-function #'projectile-project-root)
+  (xref-show-xrefs-finction #'consult-xref)
+  (xref-show-definitions-function #'consult-xref)
+  (consult-narrow-key "<"))
 
 (use-package consult-flycheck
   ;; add a consult-flycheck command
@@ -244,25 +250,7 @@
   :preface
   (defun my/projectile-ignore-project (project-root)
     (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
-  ;; (source: https://github.com/bbatsov/projectile/issues/364#issuecomment-61296248)
-  (defvar project-root-regexps ()
-    "List of regexps to match against when projectile is searching for project root directories.")
-  (defun my/projectile-root-child-of (dir &optional list)
-    "Let projectile find project root by LIST regexp of DIR."
-    (projectile-locate-dominating-file
-     dir
-     (lambda (dir)
-       (--first
-        (if (and
-             (s-equals? (file-remote-p it) (file-remote-p dir))
-             (string-match-p (expand-file-name it) (expand-file-name dir)))
-            dir)
-        (or list project-root-regexps (list))))))
-  :custom
-  (projectile-ignored-project-function #'my/projectile-ignore-project)
   :config
-  (add-to-list 'project-root-regexps "/Users/nicolas.winslow/interpreta/hca-ui/$")
-  (nconc projectile-project-root-functions '(my/projectile-root-child-of))
   (projectile-mode 1))
 
 (use-package rg
@@ -322,24 +310,32 @@
 (use-package json-mode)
 
 (use-package lsp-mode
-  :commands lsp
+  :commands (lsp lsp-deferred)
   :hook ((rjsx-mode
           json-mode
           mhtml-mode
-          yaml-mode) . lsp)
+          yaml-mode) . lsp-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-snippet nil)
   (lsp-modeline-diagnostics-enable nil)
   (lsp-enable-indentation nil)
+  (lsp-enable-folding nil)
+  (lsp-enable-links nil)
   ;; (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
   (lsp-signature-render-documentation nil)
+  ;; Config specific to tsserver/theia ide
+  (lsp-clients-typescript-log-verbosity "off")
   :init
   (setq lsp-keymap-prefix "C-c C-l")
   :config
+  (push "[/\\\\]node_modules$" lsp-file-watch-ignored)
+  (push "[/\\\\]build$" lsp-file-watch-ignored)
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
+  (advice-add 'lsp :before (lambda (&rest _args)
+                             (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
   (define-key lsp-mode-map (kbd "C-c C-l") lsp-command-map))
 
 (use-package lsp-ui
@@ -396,19 +392,34 @@
     (interactive)
     (switch-to-buffer nil))
   :general
-  ("C-x b" 'consult-buffer
+  (;; Basic Overrides
    "C-." 'consult-line
    "C-," 'comment-or-uncomment-region
-   "C-c C-g" 'magit
-   "C-c i" 'consult-imenu
-   "C-c t" 'tab-bar-switch-to-tab
+   "M-y" 'consult-yank-pop
+   "<help> a" 'consult-apropos
+   "M-g g" 'consult-goto-line
+   "M-g M-g" 'consult-goto-line
+   "M-g m" 'consult-mark
+   ;; C-x bindings
+   "C-x b" 'consult-buffer
+   "C-x 4 b" 'consult-buffer-other-window
+   "C-x f" 'consult-find
    "C-x r q" 'save-buffers-kill-terminal
+   ;; C-c bindings (user-map)
+   "C-c i" 'consult-imenu
+   "C-c I" 'consult-project-imenu
+   "C-c t" 'tab-bar-switch-to-tab
    "C-c f" 'consult-flycheck
+   "C-c C-g" 'magit
+   "C-c h" 'consult-history
+   "C-c m" 'consult-mode-command
+   "C-c r" 'my/switch-to-last-buffer
    '[f1] 'projectile-find-file
-   '[f2] 'project-find-regexp
-   '[f3] 'projectile-switch-project
-   '[f5] 'call-last-kbd-macro
-   '[f6] 'consult-project-imenu))
+   '[f2] 'consult-ripgrep
+   '[f3] 'projectile-switch-project)
+  (:keymaps 'isearch-mode-map
+            "M-e" 'consult-isearch
+            "M-s l" 'consult-line))
 
 ;; (:states '(normal visual insert emacs)
 ;;          :prefix "SPC"
@@ -464,18 +475,8 @@
 (use-package xref
   ;; find identifier in prog modes
   :straight nil
-  :general
-  (xref--xref-buffer-mode-map
-   :states 'motion
-   "TAB" 'xref-quit-and-goto-xref)
   :custom
   (xref-search-program 'ripgrep))
-
-(with-eval-after-load 'xref
-  (setq xref-search-program 'ripgrep) ;project-find-regexp
-  (when (functionp 'xref--show-defs-minibuffer)
-    (setq xref-show-definitions-function 'xref--show-defs-minibuffer)
-    (setq xref-show-xrefs-function 'xref--show-defs-minibuffer)))
 
 (use-package elec-pair
   ;; automatically match pairs

@@ -1,0 +1,4 @@
+# Apply with git config --global core.excludesfile ~/.config/emacs/global.gitignore
+
+.DS_Store
+.projectile
