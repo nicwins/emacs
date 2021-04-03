@@ -312,9 +312,10 @@
   (lsp-enable-indentation nil)
   (lsp-enable-folding nil)
   (lsp-enable-links nil)
-  ;; (lsp-eldoc-enable-hover nil)
+  (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
   (lsp-signature-render-documentation nil)
+  (lsp-enable-completion-at-point nil)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
   :init
