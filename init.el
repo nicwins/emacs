@@ -93,8 +93,6 @@
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
-
-
 ;;;; Package Configuration
 
 (use-package gcmh
@@ -141,15 +139,6 @@
 ;; Line wrap at the fill column, not buffer end
 (use-package visual-fill-column)
 
-(use-package outshine
-  ;; Easier navigation for source files, especially this one
-  :general
-  (outshine-mode-map
-   :states '(normal)
-   "<tab>" 'outshine-cycle
-   "<backtab>" 'outshine-cycle-buffer)
-  :hook (emacs-lisp))
-
 (use-package exec-path-from-shell
   ;; Load path from user shell
   :config
@@ -192,22 +181,22 @@
 
 (use-package selectrum
   ;; selection/completion manager
-  :config (selectrum-mode 1))
+  :config (selectrum-mode +1))
 
 (use-package prescient
   ;; sorting manager
   :config
-  (prescient-persist-mode 1))
+  (prescient-persist-mode +1))
 
 (use-package selectrum-prescient
   ;; make selectrum use prescient sorting
   :after (selectrum prescient)
-  :config (selectrum-prescient-mode 1))
+  :init (setq selectrum-prescient-enable-filtering nil)
+  :config (selectrum-prescient-mode +1))
 
 (use-package orderless
   ;; candidate filtering package
   :after (selectrum-prescient)
-  :init (icomplete-mode)
   :custom
   (completion-styles '(orderless))
   (selectrum-refine-candidates-function #'orderless-filter)
@@ -216,7 +205,7 @@
 (use-package company-prescient
   ;; make company use prescient filtering
   :after (company prescient)
-  :config (company-prescient-mode 1))
+  :config (company-prescient-mode +1))
 
 (use-package consult
   ;; enhances navigation with selectrum completions
@@ -421,55 +410,6 @@
             "M-e" 'consult-isearch
             "M-s l" 'consult-line))
 
-;; (:states '(normal visual insert emacs)
-;;          :prefix "SPC"
-;;          :non-normal-prefix "C-SPC"
-;;          "" '(nil :which-key "Commands")
-;;          "a" 'embark-act
-;;          "c" 'evilnc-comment-or-uncomment-lines
-;;          "r" #'my/switch-to-last-buffer
-;;          "w" 'save-buffer
-;;          "W" 'save-some-buffers
-;;          "q" 'kill-buffer-and-window
-;;          "SPC" 'ace-window
-;;          "f" 'find-file
-;;          "g" 'magit-status
-;;          "G" 'magit-blame-mode
-;;          "k" 'kill-this-buffer
-;;          "K" 'kill-buffer
-;;          "t" 'tab-bar-switch-to-tab
-;;          "T" 'vterm-other-window
-;;          "u" 'undo-tree-visualize
-;;          "b" 'consult-buffer
-;;          "i" 'consult-imenu
-;;          "o" 'consult-outline
-;;          "x" 'execute-extended-command
-;;          "0" 'delete-window
-;;          "1" 'delete-other-windows
-;;          "2" 'split-window-below
-;;          "3" 'split-window-right
-;;          "h" '(:ignore t :which-key "Help Functions")
-;;          "h a" 'consult-apropos
-;;          "h h" 'help-for-help
-;;          "h k" 'describe-key
-;;          "h v" 'describe-variable
-;;          "h b" 'describe-bindings
-;;          "h m" 'describe-mode
-;;          "h f" 'describe-function
-;;          "h w" 'which-key-show-major-mode
-;;          "l" '(:ignore t :which-key "LSP Mappings")
-;;          "l d" 'lsp-find-definition
-;;          "l r" 'lsp-find-references
-;;          "l n" 'lsp-rename
-;;          "l i" 'lsp-ui-imenu
-;;          "l e" 'consult-flycheck
-;;          "m" '(:ignore t :which-key "Extra Motions")
-;;          "m a" 'beginning-of-defun
-;;          "m e" 'end-of-defun)
-;; (:states '(normal visual)
-;;          "p" 'consult-yank-pop
-;;          "/" 'consult-line
-
 ;;;; Built-in Package Config
 
 (use-package xref
@@ -601,7 +541,7 @@
     (setq visible-bell nil)
     (setq ring-bell-function 'ignore)
     (setq auto-save-default nil))
-  (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
+  ;;(set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red"))
 
