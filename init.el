@@ -43,23 +43,11 @@
 
 (straight-use-package 'use-package)
 (straight-use-package 'general)
+
 (eval-when-compile (require 'use-package)
                    (require 'general))
 
 ;;;; Global Helper Functions
-
-(defun my/rails-server()
-  "Start rails."
-  (interactive)
-  (shell "**RAILS**")
-  (comint-send-string "**RAILS**" "cd ~/projects/evms-dashboard/; rails s")
-  (comint-send-input))
-
-(defun my/startup-evms-dashboard ()
-  "Start rails server and grunt watcher."
-  (interactive)
-  (grunt-server)
-  (rails-server))
 
 (defun my/eval-and-replace ()
   "Replace the preceding sexp with its value."
@@ -119,7 +107,7 @@
   (company-minimum-prefix-length 3)
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case t)
-  (company-idle-delay 0)
+  (company-idle-delay 2)
   :config
   (global-company-mode t))
 
@@ -130,6 +118,11 @@
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
   :ghook ('(prog-mode-hook text-mode-hook)))
+
+(if (eq system-type 'gnu/linux)
+    (progn
+      (use-package guix)
+      (use-package vterm)))
 
 (use-package ace-window)
 
@@ -147,28 +140,7 @@
 
 (use-package flycheck
   ;; code linter
-  :preface
-  (defun my/flycheck-error-selector ()
-    (select-window (get-buffer-window "*Flycheck errors*")))
-  :custom
-  (flycheck-emacs-lisp-load-path 'inherit)
-  :config
-  (global-flycheck-mode)
-  ;; Popup flycheck buffer at bottom
-  (add-to-list 'display-buffer-alist
-	       `(,(rx bos "*Flycheck errors*" eos)
-		 (display-buffer-reuse-window
-		  display-buffer-in-side-window)
-		 (side            . bottom)
-		 (reusable-frames . visible)
-		 (window-height   . 0.33)))
-  (advice-add 'flycheck-list-errors :after #'my/flycheck-error-selector))
-
-(use-package flycheck-pos-tip
-  ;; popup flycheck messages
-  :config
-  (with-eval-after-load 'flycheck
-    (flycheck-pos-tip-mode)))
+  :init (global-flycheck-mode))
 
 (use-package doom-modeline
   :custom
@@ -354,12 +326,6 @@
   ;; Groovy
   :config
   (load-theme 'gruvbox-dark-hard t))
-
-;; (use-package vterm
-;;   ;; better terminal
-;;   :general
-;;   (vterm-mode-map
-;;    "<f11>" 'toggle-frame-fullscreen))
 
 (use-package yaml-mode
   ;; formatting for yml files

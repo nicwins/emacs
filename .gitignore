@@ -8,7 +8,9 @@ straight/*
 !straight/versions/
 elpa/
 eln-cache/
+flycheck_init.el
 TODO.org
+
 
 ############
 ## Windows
