@@ -48,7 +48,6 @@
                    (require 'general))
 
 ;;;; Global Helper Functions
-
 (defun my/eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)
@@ -98,6 +97,11 @@
 ;; Automatically bisects init file
 (use-package bug-hunter)
 
+(use-package good-scroll
+  ;; Pixel Scrolling
+  :config
+  (good-scroll-mode +1))
+
 (use-package company
   ;; text completion framework
   :custom
@@ -120,14 +124,9 @@
   :ghook ('(prog-mode-hook text-mode-hook)))
 
 (if (eq system-type 'gnu/linux)
-    (progn
-      (use-package guix)
-      (use-package vterm)))
+    (progn (use-package guix)))
 
 (use-package ace-window)
-
-;; Install a newer version of Org after removing the old
-(use-package org)
 
 ;; Line wrap at the fill column, not buffer end
 (use-package visual-fill-column)
