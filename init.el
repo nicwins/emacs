@@ -97,11 +97,6 @@
 ;; Automatically bisects init file
 (use-package bug-hunter)
 
-(use-package good-scroll
-  ;; Pixel Scrolling
-  :config
-  (good-scroll-mode +1))
-
 (use-package company
   ;; text completion framework
   :custom
@@ -145,7 +140,7 @@
   :custom
   (doom-modeline-height 18)
   (doom-modeline-buffer-encoding nil)
-  (doom-modeline-buffer-file-name-style 'truncate-upto-root)
+  (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-icon (display-graphic-p))
   :config
   (doom-modeline-mode 1))
@@ -316,6 +311,30 @@
   :custom
   (js-indent-level 2)
   (js-switch-indent-offset 2))
+
+;; Core APIs.
+(straight-register-package
+ '(tsc :host github
+       :repo "ubolonton/emacs-tree-sitter"
+       :files ("core/*.el")))
+
+(use-package tree-sitter
+  :straight
+  (tree-sitter :type git
+               :host github
+               :repo "ubolonton/emacs-tree-sitter"
+               :files ("lisp/*.el"))
+  :hook
+  (rjsx-mode . tree-sitter-mode)
+  (rjsx-mode . tree-sitter-hl-mode))
+
+(use-package tree-sitter-langs
+  :straight
+  (tree-sitter-langs :type git
+                     :host github
+                     :repo "ubolonton/emacs-tree-sitter"
+                     :files ("langs/*.el" "langs/queries"))
+  :after tree-sitter)
 
 (use-package undo-tree
   ;; make undo a tree rather than line
