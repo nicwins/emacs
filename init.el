@@ -106,7 +106,7 @@
   (company-minimum-prefix-length 3)
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case t)
-  (company-idle-delay 2)
+  (company-idle-delay 0)
   :config
   (global-company-mode t))
 
@@ -273,15 +273,9 @@
   (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (lsp-enable-symbol-highlighting t)
-  (lsp-enable-snippet nil)
-  (lsp-modeline-diagnostics-enable nil)
   (lsp-enable-indentation nil)
-  (lsp-enable-folding nil)
-  (lsp-enable-links nil)
   (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
-  (lsp-signature-render-documentation nil)
-  (lsp-enable-completion-at-point nil)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
   :init
@@ -297,43 +291,19 @@
 (use-package lsp-ui
   :commands lsp-ui-mode
   :custom
-  (lsp-ui-sideline-show-hover nil)
-  ;; (lsp-ui-doc-enable nil)
   (lsp-ui-sideline-show-code-actions nil)
   (lsp-ui-sideline-show-symbol nil)
   (lsp-headerline-breadcrumb-enable nil))
 
 (use-package sml-mode)
 
-;; (use-package rjsx-mode
-;;   ;; react jsx formatting
-;;   :mode "\\/.*\\.js\\'"
-;;   :custom
-;;   (js-indent-level 2)
-;;   (js-switch-indent-offset 2))
-
-;; Core APIs.
-(straight-register-package
- '(tsc :host github
-       :repo "ubolonton/emacs-tree-sitter"
-       :files ("core/*.el")))
-
 (use-package tree-sitter
-  :straight
-  (tree-sitter :type git
-               :host github
-               :repo "ubolonton/emacs-tree-sitter"
-               :files ("lisp/*.el"))
   :hook
-  (js-mode . tree-sitter-mode)
-  (js-mode . tree-sitter-hl-mode))
+  (tree-sitter-after-on . tree-sitter-hl-mode)
+  :config
+  (global-tree-sitter-mode))
 
 (use-package tree-sitter-langs
-  :straight
-  (tree-sitter-langs :type git
-                     :host github
-                     :repo "ubolonton/emacs-tree-sitter"
-                     :files ("langs/*.el" "langs/queries"))
   :after tree-sitter)
 
 (use-package undo-tree
