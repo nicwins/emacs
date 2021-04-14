@@ -266,7 +266,7 @@
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
-  :hook ((rjsx-mode
+  :hook ((js-mode
           json-mode
           mhtml-mode
           yaml-mode) . lsp-deferred)
@@ -305,12 +305,12 @@
 
 (use-package sml-mode)
 
-(use-package rjsx-mode
-  ;; react jsx formatting
-  :mode "\\/.*\\.js\\'"
-  :custom
-  (js-indent-level 2)
-  (js-switch-indent-offset 2))
+;; (use-package rjsx-mode
+;;   ;; react jsx formatting
+;;   :mode "\\/.*\\.js\\'"
+;;   :custom
+;;   (js-indent-level 2)
+;;   (js-switch-indent-offset 2))
 
 ;; Core APIs.
 (straight-register-package
@@ -325,8 +325,8 @@
                :repo "ubolonton/emacs-tree-sitter"
                :files ("lisp/*.el"))
   :hook
-  (rjsx-mode . tree-sitter-mode)
-  (rjsx-mode . tree-sitter-hl-mode))
+  (js-mode . tree-sitter-mode)
+  (js-mode . tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs
   :straight
@@ -512,6 +512,8 @@
   (indent-tabs-mode nil)          ; use spaces instead of tabs
   (reb-re-syntax 'rx)             ; interactive regex builder
   (cursor-type '(bar . 2))
+  (js-indent-level 2)
+  (js-switch-indent-offset 2)
   :config
   (delete-selection-mode)
   (fset 'yes-or-no-p 'y-or-n-p)   ; use y or n to confirm
