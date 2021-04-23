@@ -43,9 +43,7 @@
 
 (straight-use-package 'use-package)
 (straight-use-package 'general)
-
-(eval-when-compile (require 'use-package)
-                   (require 'general))
+(require 'general)
 
 ;;;; Global Helper Functions
 (defun my/eval-and-replace ()
@@ -112,16 +110,23 @@
 
 (use-package aggressive-indent
   ;; Indent as you type
-  :ghook ('(prog-mode-hook text-mode-hook)))
+  :hook ((prog-mode text-mode) . aggressive-indent-mode)
+  :config (add-to-list 'aggressive-indent-excluded-modes 'org-mode))
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
-  :ghook ('(prog-mode-hook text-mode-hook)))
+  :hook ((prog-mode text-mode) . rainbow-delimiters-mode))
 
-(if (eq system-type 'gnu/linux)
-    (progn (use-package guix)))
+(use-package guix
+  :if (memq system-type '(gnu/linux))
+  :hook (scheme-mode . guix-devel-mode))
 
-(use-package ace-window)
+(use-package geiser-guile
+  :if (memq system-type '(gnu/linux))
+  :custom
+  (geiser-mode-start-repl-p t)
+  :config
+  (add-to-list 'geiser-guile-load-path "~/src/guix"))
 
 ;; Line wrap at the fill column, not buffer end
 (use-package visual-fill-column)
@@ -129,7 +134,7 @@
 (use-package exec-path-from-shell
   ;; Load path from user shell
   :config
-  (when (memq window-system '(mac ns x))
+  (when (memq window-system '(mac ns x pgtk))
     (exec-path-from-shell-initialize)))
 
 (use-package flycheck
@@ -153,6 +158,8 @@
   ;; sorting manager
   :config
   (prescient-persist-mode +1))
+
+(use-package org)
 
 (use-package selectrum-prescient
   ;; make selectrum use prescient sorting
@@ -208,26 +215,8 @@
   :config
   (projectile-mode 1))
 
-(use-package rg
-  ;; faster grep
-  :preface
-  (defun my/rg-buffer-selector()
-    (select-window (get-buffer-window "*rg*")))
-  (defun my/rg-candidate-selector ()
-    (interactive)
-    (compilation-next-error 1)
-    (compilation-display-error))
-  (defun my/rg-select-and-quit ()
-    (interactive)
-    (compile-goto-error))
-  :custom
-  (next-error-hook nil)
-  :hook (rg-filter . my/rg-buffer-selector)
-  :general
-  (rg-mode-map
-   :states 'motion
-   "TAB" 'my/rg-candidate-selector
-   "RET" 'compile-goto-error))
+;; faster grep
+(use-package rg)
 
 (use-package magit
   ;; emacs interface for git
@@ -296,6 +285,8 @@
   (lsp-headerline-breadcrumb-enable nil))
 
 (use-package sml-mode)
+
+(use-package paredit)
 
 (use-package tree-sitter
   :hook
@@ -402,6 +393,11 @@
   :config
   (desktop-save-mode 1))
 
+(use-package dired
+  ;; directory management
+  :straight (:type built-in)
+  :hook (dired-mode . dired-hide-details-mode))
+
 (use-package server
   ;; The emacs server
   :straight nil
@@ -498,9 +494,9 @@
     (setq visible-bell nil)
     (setq ring-bell-function 'ignore)
     (setq auto-save-default nil))
-  ;;(set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (global-hl-line-mode 1)
-  (set-face-background 'cursor "red"))
+  (set-face-background 'cursor "red")
+  (windmove-default-keybindings))
 
 (provide 'init)
 ;;; init.el ends here
