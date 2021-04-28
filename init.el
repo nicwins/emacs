@@ -388,6 +388,7 @@
 (use-package desktop
   ;; Save buffers and windows on exit
   :straight nil
+  :if (memq system-type '(gnu/linux))
   :custom
   (desktop-restore-eager 5)
   :config
@@ -486,9 +487,7 @@
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
   (show-paren-mode 1)             ; Show matching parens
-  (set-face-attribute 'completions-annotations nil
-        	      :inherit '(italic magit-sequence-drop))
-  (set-face-attribute 'default (selected-frame) :font "Hack" :height 140)
+  (set-frame-font "Hack-14")
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
     (setq visible-bell nil)
