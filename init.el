@@ -104,7 +104,6 @@
   (company-minimum-prefix-length 3)
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case t)
-  (company-idle-delay 2)
   :config
   (global-company-mode t))
 
