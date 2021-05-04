@@ -164,16 +164,7 @@
 (use-package selectrum-prescient
   ;; make selectrum use prescient sorting
   :after (selectrum prescient)
-  :init (setq selectrum-prescient-enable-filtering nil)
   :config (selectrum-prescient-mode +1))
-
-(use-package orderless
-  ;; candidate filtering package
-  :after (selectrum-prescient)
-  :custom
-  (completion-styles '(orderless))
-  (selectrum-refine-candidates-function #'orderless-filter)
-  (selectrum-highlight-candiates-function #'orderless-highlight-matches))
 
 (use-package company-prescient
   ;; make company use prescient filtering
@@ -313,11 +304,10 @@
 (use-package which-key
   ;; shows list of available completions when key sequences begin
   :custom
-  (which-key-idle-delay 1) ;; Time before which-key pops up
+  (which-key-popup-type 'minibuffer)
   (which-key-sort-order 'which-key-key-order-alpha)
   :config
-  (which-key-mode)
-  (which-key-setup-side-window-right-bottom))
+  (which-key-mode))
 
 (use-package general
   ;; key binding manager
@@ -345,7 +335,7 @@
    "C-c I" 'consult-project-imenu
    "C-c t" 'tab-bar-switch-to-tab
    "C-c f" 'consult-flycheck
-   "C-c C-g" 'magit
+   "C-c v" 'magit
    "C-c h" 'consult-history
    "C-c m" 'consult-mode-command
    "C-c r" 'my/switch-to-last-buffer
@@ -495,6 +485,7 @@
     (setq auto-save-default nil))
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
+  (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (windmove-default-keybindings))
 
 (provide 'init)
