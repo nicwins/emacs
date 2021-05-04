@@ -104,7 +104,7 @@
   (company-minimum-prefix-length 3)
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case t)
-  (company-idle-delay 0)
+  (company-idle-delay 2)
   :config
   (global-company-mode t))
 
@@ -256,13 +256,14 @@
   (lsp-enable-indentation nil)
   (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
+  (lsp-signature-render-documentation nil)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
   :init
   (setq lsp-keymap-prefix "C-c C-l")
   :config
-  (push "[/\\\\]node_modules$" lsp-file-watch-ignored)
-  (push "[/\\\\]build$" lsp-file-watch-ignored)
+  (push "[/\\\\]\\node_modules\\'" lsp-file-watch-ignored-directories)
+  (push "[/\\\\]\\build\\'" lsp-file-watch-ignored-directories)
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
   (advice-add 'lsp :before (lambda (&rest _args)
                              (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
