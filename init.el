@@ -176,8 +176,6 @@
   :config
   (prescient-persist-mode +1))
 
-(use-package org)
-
 (use-package selectrum-prescient
   ;; make selectrum use prescient sorting
   :after (selectrum prescient)
@@ -231,11 +229,10 @@
   :config
   (projectile-mode 1))
 
-(use-package ripgrep
-  ;; needed for projectile-ripgrep
-  )
+;; needed for projectile-ripgrep
+(use-package ripgrep)
 
-;; faster grep
+;; ripgrep for consult
 (use-package rg)
 
 (use-package magit
@@ -340,6 +337,8 @@
   :config
   (which-key-mode))
 
+(use-package org)
+
 (use-package general
   ;; key binding manager
   :general
@@ -416,9 +415,6 @@
   :straight (:type built-in)
   :hook (dired-mode . dired-hide-details-mode)
   :custom
-  ;; On macOS must install gnu coreutils
-  (when (eq system-type 'darwin)
-    (insert-directory-program "gls" dired-use-ls-dired t))
   (dired-dwim-target t)
   ;; Dired listing switches - see man ls
   (dired-listing-switches "-alhF --group-directories-first")
@@ -426,12 +422,18 @@
   (dired-guess-shell-alist-user
    '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
       "vlc")
-     ("\\.html?\\'" "firefox"))))
+     ("\\.html?\\'" "firefox")))
+  :config
+  ;; On macOS must install gnu coreutils
+  (when (eq system-type 'darwin)
+    (setq insert-directory-program "gls" dired-use-ls-dired t)))
 
 (use-package dired-x
   ;; extension for dired
   :straight (:type built-in)
   :hook (dired-mode . dired-omit-mode)
+  :custom
+  (dired-omit-verbose nil)
   :config
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$")))
 
