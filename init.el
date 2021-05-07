@@ -78,6 +78,24 @@
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
+(defun my/switch-to-last-buffer ()
+  "Flip between two buffers."
+  (interactive)
+  (switch-to-buffer nil))
+
+(defun my/newline-below ()
+  "Insert newline below and indent."
+  (interactive)
+  (end-of-line)
+  (newline-and-indent))
+
+(defun my/newline-above ()
+  "Insert newline above and indent."
+  (interactive)
+  (previous-line)
+  (end-of-line)
+  (newline-and-indent))
+
 ;;;; Package Configuration
 
 (use-package gcmh
@@ -197,6 +215,14 @@
   :custom
   (embark-prompt-style 'completion))
 
+(use-package embark-consult
+  :after (embark consult)
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
+  :hook
+  (embark-collect-mode . embark-consult-preview-minor-mode))
+
 (use-package projectile
   ;; project traversal
   :preface
@@ -204,6 +230,10 @@
     (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
   :config
   (projectile-mode 1))
+
+(use-package ripgrep
+  ;; needed for projectile-ripgrep
+  )
 
 ;; faster grep
 (use-package rg)
@@ -256,6 +286,7 @@
   (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
   (lsp-signature-render-documentation nil)
+  (lsp-completion-enable nil)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
   :init
@@ -311,15 +342,12 @@
 
 (use-package general
   ;; key binding manager
-  :preface
-  (defun my/switch-to-last-buffer ()
-    "Flip between two buffers."
-    (interactive)
-    (switch-to-buffer nil))
   :general
   (;; Basic Overrides
    "C-." 'consult-line
    "C-," 'comment-or-uncomment-region
+   "C-o" 'my/newline-below
+   "C-S-o" 'my/newline-above
    "M-y" 'consult-yank-pop
    "<help> a" 'consult-apropos
    "M-g g" 'consult-goto-line
@@ -331,6 +359,7 @@
    "C-x f" 'consult-find
    "C-x r q" 'save-buffers-kill-terminal
    ;; C-c bindings (user-map)
+   "C-c a" 'embark-act
    "C-c i" 'consult-imenu
    "C-c I" 'consult-project-imenu
    "C-c t" 'tab-bar-switch-to-tab
@@ -379,15 +408,36 @@
   ;; Save buffers and windows on exit
   :straight nil
   :if (memq system-type '(gnu/linux))
-  :custom
-  (desktop-restore-eager 5)
-  :config
-  (desktop-save-mode 1))
+  :custom (desktop-restore-eager 5)
+  :config (desktop-save-mode 1))
 
 (use-package dired
   ;; directory management
   :straight (:type built-in)
-  :hook (dired-mode . dired-hide-details-mode))
+  :hook (dired-mode . dired-hide-details-mode)
+  :custom
+  ;; On macOS must install gnu coreutils
+  (when (eq system-type 'darwin)
+    (insert-directory-program "gls" dired-use-ls-dired t))
+  (dired-dwim-target t)
+  ;; Dired listing switches - see man ls
+  (dired-listing-switches "-alhF --group-directories-first")
+  (dired-auto-revert-buffer t)
+  (dired-guess-shell-alist-user
+   '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
+      "vlc")
+     ("\\.html?\\'" "firefox"))))
+
+(use-package dired-x
+  ;; extension for dired
+  :straight (:type built-in)
+  :hook (dired-mode . dired-omit-mode)
+  :config
+  (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$")))
+
+(use-package diredfl
+  ;; dired font-lock
+  :custom (diredfl-global-mode t))
 
 (use-package server
   ;; The emacs server
