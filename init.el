@@ -127,8 +127,7 @@
 
 (use-package aggressive-indent
   ;; Indent as you type
-  :hook ((prog-mode text-mode) . aggressive-indent-mode)
-  :config (add-to-list 'aggressive-indent-excluded-modes 'org-mode))
+  :hook (prog-mode . aggressive-indent-mode))
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
@@ -144,9 +143,6 @@
   (geiser-mode-start-repl-p t)
   :config
   (add-to-list 'geiser-guile-load-path "~/src/guix"))
-
-;; Line wrap at the fill column, not buffer end
-(use-package visual-fill-column)
 
 (use-package exec-path-from-shell
   ;; Load path from user shell
@@ -310,8 +306,8 @@
 (use-package tree-sitter
   :hook
   (tree-sitter-after-on . tree-sitter-hl-mode)
-  :config
-  (global-tree-sitter-mode))
+  :custom
+  (global-tree-sitter-mode t))
 
 (use-package tree-sitter-langs
   :after tree-sitter)
@@ -337,7 +333,21 @@
   :config
   (which-key-mode))
 
-(use-package org)
+(use-package org
+  :custom
+  (org-directory "~/notes")
+  (org-default-notes-file "~/notes/index.org")
+  (org-agenda-files (list "~/notes/index.org"))
+  (org-hide-emphasis-markers t)
+  :config
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right))
+
+;; Line wrap at the fill column, not buffer end
+(use-package visual-fill-column
+  :hook (visual-line-mode . visual-fill-column-mode))
 
 (use-package general
   ;; key binding manager
@@ -359,6 +369,7 @@
    "C-x r q" 'save-buffers-kill-terminal
    ;; C-c bindings (user-map)
    "C-c a" 'embark-act
+   "C-c c" 'org-capture
    "C-c i" 'consult-imenu
    "C-c I" 'consult-project-imenu
    "C-c t" 'tab-bar-switch-to-tab
@@ -513,6 +524,8 @@
 
 (use-package emacs
   :straight nil
+  :hook
+  (text-mode . visual-line-mode)
   :custom
   (inhibit-startup-message t)     ; no splash screen
   (visible-bell t)                ; be quiet
@@ -520,9 +533,10 @@
   (sentence-end-double-space nil) ; single space after a sentence
   (indent-tabs-mode nil)          ; use spaces instead of tabs
   (reb-re-syntax 'rx)             ; interactive regex builder
-  (cursor-type '(bar . 2))
+  (cursor-type '(bar . 2))        ; no fat cursor
   (js-indent-level 2)
   (js-switch-indent-offset 2)
+  (fill-column 80)                ; default fill column
   :config
   (delete-selection-mode)
   (fset 'yes-or-no-p 'y-or-n-p)   ; use y or n to confirm
