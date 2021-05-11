@@ -96,6 +96,14 @@
   (end-of-line)
   (newline-and-indent))
 
+(defun my/three-column-layout ()
+  "Set the frame to three columns."
+  (interactive)
+  (delete-other-windows)
+  (split-window-horizontally)
+  (split-window-horizontally)
+  (balance-windows))
+
 ;;;; Package Configuration
 
 (use-package gcmh
