@@ -295,7 +295,6 @@
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
   ;; (advice-add 'lsp :before (lambda (&rest _args)
   ;;                            (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
-  (define-key lsp-mode-map (kbd "C-c C-l") lsp-command-map))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -422,7 +421,6 @@
 (use-package desktop
   ;; Save buffers and windows on exit
   :straight nil
-  :if (memq system-type '(gnu/linux))
   :custom (desktop-restore-eager 5)
   :config (desktop-save-mode 1))
 
