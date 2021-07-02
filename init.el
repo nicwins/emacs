@@ -9,14 +9,6 @@
 ;; Set all packages to compile async
 (setq-default comp-deferred-compilation t)
 
-;; Remove built-in version of Org from the load-path
-(require 'cl-seq)
-(setq-default load-path
-	      (cl-remove-if
-	       (lambda (x)
-		 (string-match-p "org$" x))
-	       load-path))
-
 ;;;; Initialize Package
 
 ;; This is only needed once, near the top of the file
@@ -105,6 +97,9 @@
   (balance-windows))
 
 ;;;; Package Configuration
+(use-package
+    ;; ensure global binaries are installed
+    use-package-ensure-system-package)
 
 (use-package gcmh
   ;; Minimizes GC interference with user activity.
@@ -237,7 +232,9 @@
 (use-package ripgrep)
 
 ;; ripgrep for consult
-(use-package rg)
+(use-package rg
+  :ensure-system-package
+  (rg . ripgrep))
 
 (use-package magit
   ;; emacs interface for git
@@ -265,10 +262,10 @@
   :config
   (setf (alist-get 'prettier apheleia-formatters)
         '(npx "prettier"
-              "--single-quote" "true"
-              "--trailing-comma" "es5"
-              "--jsx-single-quote" "true"
-              "--arrow-parens" "avoid"
+              ;; "--single-quote" "true"
+              ;; "--trailing-comma" "es5"
+              ;; "--jsx-single-quote" "true"
+              ;; "--arrow-parens" "avoid"
               file))
   (apheleia-global-mode +1))
 
@@ -279,7 +276,7 @@
   :hook ((js-mode
           json-mode
           mhtml-mode
-          yaml-mode) . lsp-deferred)
+          yaml-mode) . lsp)
   (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (lsp-enable-symbol-highlighting t)
@@ -287,17 +284,17 @@
   (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
   (lsp-signature-render-documentation nil)
-  (lsp-completion-enable nil)
+  (lsp-completion-enable t)
+  (lsp-file-watch-threshold 2000)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
   :init
-  (setq lsp-keymap-prefix "C-c C-l")
+  (setq lsp-keymap-prefix "C-c l")
   :config
-  (push "[/\\\\]\\node_modules\\'" lsp-file-watch-ignored-directories)
-  (push "[/\\\\]\\build\\'" lsp-file-watch-ignored-directories)
+  (push "[/\\]\build\'" lsp-file-watch-ignored-directories)
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
-  (advice-add 'lsp :before (lambda (&rest _args)
-                             (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
+  ;; (advice-add 'lsp :before (lambda (&rest _args)
+  ;;                            (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
   (define-key lsp-mode-map (kbd "C-c C-l") lsp-command-map))
 
 (use-package lsp-ui
