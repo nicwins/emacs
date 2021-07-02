@@ -86,6 +86,17 @@
   (end-of-line)
   (newline-and-indent))
 
+(defun my/comment-or-uncomment-region-or-line ()
+  "Comments or uncomments the region or the current line if there's no active region."
+  (interactive)
+  (let (beg end)
+    (if (region-active-p)
+        (setq beg (region-beginning) end (region-end))
+      (setq beg (line-beginning-position) end (line-end-position)))
+    (comment-or-uncomment-region beg end)
+    (next-logical-line)
+    (back-to-indentation)))
+
 (defun my/smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
@@ -509,13 +520,21 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (midnight-delay-set 'midnight-delay "2:00am"))
 
+(use-package recentf
+  :straight (:type built-in)
+  :custom
+  (recentf-max-menu-items 25)
+  (recentf-max-saved-items 25)
+  :config
+  (recentf-mode 1))
+
 (use-package emacs
   :straight nil
   :bind
   (;; Basic Overrides
    ("C-a" . my/smarter-move-beginning-of-line)
    ("C-." . consult-line)
-   ("C-," . comment-or-uncomment-region)
+   ("C-," . my/comment-or-uncomment-region-or-line)
    ("C-o" . my/newline-below)
    ("C-S-o" . my/newline-above)
    ("M-y" . consult-yank-pop)
