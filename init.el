@@ -191,8 +191,8 @@
   :commands (projectile-project-root)
   :custom
   (consult-project-root-function #'projectile-project-root)
-  (xref-show-xrefs-finction #'consult-xref)
-  (xref-show-definitions-function #'consult-xref)
+  ;; (xref-show-xrefs-function #'consult-xref)
+  ;; (xref-show-definitions-function #'consult-xref)
   (consult-narrow-key "<"))
 
 (use-package consult-flycheck
@@ -291,11 +291,7 @@
   :init
   (setq lsp-keymap-prefix "C-c l")
   :config
-  (push "[/\\]\build\'" lsp-file-watch-ignored-directories)
-  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
-  ;; (advice-add 'lsp :before (lambda (&rest _args)
-  ;;                            (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
-  )
+  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
