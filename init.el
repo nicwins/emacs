@@ -118,9 +118,15 @@ point reaches the beginning or end of the buffer, stop there."
   (balance-windows))
 
 ;;;; Package Configuration
-(use-package
-    ;; ensure global binaries are installed
-    use-package-ensure-system-package)
+(use-package use-package-ensure-system-package
+  ;; ensure global binaries are installed
+  :ensure t)
+
+(use-package exec-path-from-shell
+  ;; Load path from user shell
+  :config
+  (when (memq window-system '(mac ns x pgtk))
+    (exec-path-from-shell-initialize)))
 
 (use-package gcmh
   ;; Minimizes GC interference with user activity.
@@ -167,12 +173,6 @@ point reaches the beginning or end of the buffer, stop there."
   (geiser-mode-start-repl-p t)
   :config
   (add-to-list 'geiser-guile-load-path "~/src/guix"))
-
-(use-package exec-path-from-shell
-  ;; Load path from user shell
-  :config
-  (when (memq window-system '(mac ns x pgtk))
-    (exec-path-from-shell-initialize)))
 
 (use-package flycheck
   ;; code linter
