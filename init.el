@@ -304,6 +304,8 @@
   (lsp-ui-sideline-show-symbol nil)
   (lsp-headerline-breadcrumb-enable nil))
 
+(use-package consult-lsp)
+
 (use-package sml-mode)
 
 (use-package paredit)
