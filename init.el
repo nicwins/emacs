@@ -295,6 +295,7 @@
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
   ;; (advice-add 'lsp :before (lambda (&rest _args)
   ;;                            (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
+  )
 
 (use-package lsp-ui
   :commands lsp-ui-mode
