@@ -34,8 +34,6 @@
               use-package-expand-minimally t) ; minimize expanded code
 
 (straight-use-package 'use-package)
-(straight-use-package 'general)
-(require 'general)
 
 ;;;; Global Helper Functions
 (defun my/eval-and-replace ()
@@ -84,9 +82,32 @@
 (defun my/newline-above ()
   "Insert newline above and indent."
   (interactive)
-  (previous-line)
+  (forward-line -1)
   (end-of-line)
   (newline-and-indent))
+
+(defun my/smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
 
 (defun my/three-column-layout ()
   "Set the frame to three columns."
@@ -352,42 +373,6 @@
 (use-package visual-fill-column
   :hook (visual-line-mode . visual-fill-column-mode))
 
-(use-package general
-  ;; key binding manager
-  :general
-  (;; Basic Overrides
-   "C-." 'consult-line
-   "C-," 'comment-or-uncomment-region
-   "C-o" 'my/newline-below
-   "C-S-o" 'my/newline-above
-   "M-y" 'consult-yank-pop
-   "<help> a" 'consult-apropos
-   "M-g g" 'consult-goto-line
-   "M-g M-g" 'consult-goto-line
-   "M-g m" 'consult-mark
-   ;; C-x bindings
-   "C-x b" 'consult-buffer
-   "C-x 4 b" 'consult-buffer-other-window
-   "C-x f" 'consult-find
-   "C-x r q" 'save-buffers-kill-terminal
-   ;; C-c bindings (user-map)
-   "C-c a" 'embark-act
-   "C-c c" 'org-capture
-   "C-c i" 'consult-imenu
-   "C-c I" 'consult-project-imenu
-   "C-c t" 'tab-bar-switch-to-tab
-   "C-c f" 'consult-flycheck
-   "C-c v" 'magit
-   "C-c h" 'consult-history
-   "C-c m" 'consult-mode-command
-   "C-c r" 'my/switch-to-last-buffer
-   '[f1] 'projectile-find-file
-   '[f2] 'consult-ripgrep
-   '[f3] 'projectile-switch-project)
-  (:keymaps 'isearch-mode-map
-            "M-e" 'consult-isearch
-            "M-s l" 'consult-line))
-
 ;;;; Built-in Package Config
 
 (use-package xref
@@ -526,6 +511,40 @@
 
 (use-package emacs
   :straight nil
+  :bind
+  (;; Basic Overrides
+   ("C-a" . my/smarter-move-beginning-of-line)
+   ("C-." . consult-line)
+   ("C-," . comment-or-uncomment-region)
+   ("C-o" . my/newline-below)
+   ("C-S-o" . my/newline-above)
+   ("M-y" . consult-yank-pop)
+   ("<help> a" . consult-apropos)
+   ("M-g g" . consult-goto-line)
+   ("M-g M-g" . consult-goto-line)
+   ("M-g m" . consult-mark)
+   ;; C-x bindings
+   ("C-x b" . consult-buffer)
+   ("C-x 4 b" . consult-buffer-other-window)
+   ("C-x f" . consult-find)
+   ("C-x r q" . save-buffers-kill-terminal)
+   ;; C-c bindings (user-map)
+   ("C-c a" . embark-act)
+   ("C-c c" . org-capture)
+   ("C-c i" . consult-imenu)
+   ("C-c I" . consult-project-imenu)
+   ("C-c t" . tab-bar-switch-to-tab)
+   ("C-c f" . consult-flycheck)
+   ("C-c v" . magit)
+   ("C-c h" . consult-history)
+   ("C-c m" . consult-mode-command)
+   ("C-c r" . my/switch-to-last-buffer)
+   ([f1] . projectile-find-file)
+   ([f2] . consult-ripgrep)
+   ([f3] . projectile-switch-project)
+   :map isearch-mode-map
+   ("M-e" . consult-isearch)
+   ("M-s l" . consult-line))
   :hook
   (text-mode . visual-line-mode)
   :custom
