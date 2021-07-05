@@ -131,7 +131,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;;;; Package Configuration
 (use-package use-package-ensure-system-package
   ;; ensure global binaries are installed
-  :ensure t)
+  )
 
 (use-package exec-path-from-shell
   ;; Load path from user shell
@@ -254,6 +254,8 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package projectile
   ;; project traversal
+  :bind (:map projectile-mode-map
+              ("C-c p" . projectile-command-map))
   :preface
   (defun my/projectile-ignore-project (project-root)
     (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
@@ -336,7 +338,15 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package sml-mode)
 
-(use-package paredit)
+(use-package lispy
+  ;; Paredit-like command map for lisp editing
+  :preface
+  (defun conditionally-enable-lispy ()
+    (when (eq this-command 'eval-expression)
+      (lispy-mode 1)))
+  :hook
+  (emacs-lisp-mode-hook . lispy-mode)
+  (minibuffer-setup-hook . conditionally-enable-lispy))
 
 (use-package tree-sitter
   :hook
