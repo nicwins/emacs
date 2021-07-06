@@ -378,9 +378,22 @@ surrounded by word boundaries."
 
 (use-package json-mode)
 
+(use-package rjsx-mode)
+
+(use-package tree-sitter
+  :hook
+  (tree-sitter-after-on . tree-sitter-hl-mode)
+  :custom
+  (global-tree-sitter-mode t))
+
+(use-package tree-sitter-langs
+  :after tree-sitter)
+
 (use-package lsp-mode
+  :after (tree-sitter tree-sitter-langs)
   :commands (lsp lsp-deferred)
   :hook ((js-mode
+          rjsx-mode
           json-mode
           mhtml-mode
           yaml-mode) . lsp)
@@ -420,15 +433,6 @@ surrounded by word boundaries."
   :hook
   (emacs-lisp-mode-hook . lispy-mode)
   (minibuffer-setup-hook . conditionally-enable-lispy))
-
-(use-package tree-sitter
-  :hook
-  (tree-sitter-after-on . tree-sitter-hl-mode)
-  :custom
-  (global-tree-sitter-mode t))
-
-(use-package tree-sitter-langs
-  :after tree-sitter)
 
 (use-package undo-tree
   ;; make undo a tree rather than line
