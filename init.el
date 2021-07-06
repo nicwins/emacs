@@ -128,6 +128,26 @@ point reaches the beginning or end of the buffer, stop there."
   (split-window-horizontally)
   (balance-windows))
 
+(defun push-mark-no-activate ()
+  "Pushes `point' to `mark-ring' and does not activate the region.
+Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
+  (interactive)
+  (push-mark (point) t nil)
+  (message "Pushed mark to ring"))
+
+(defun jump-to-mark ()
+  "Jumps to the local mark, respecting the `mark-ring' order.
+This is the same as using \\[set-mark-command] with the prefix argument."
+  (interactive)
+  (set-mark-command 1))
+
+(defun exchange-point-and-mark-no-activate ()
+  "Identical to \\[exchange-point-and-mark] but will not activate the region."
+  (interactive)
+  (exchange-point-and-mark)
+  (deactivate-mark nil))
+(define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+
 (defvar my/re-builder-positions nil
   "Store point and region bounds before calling `re-builder'.")
 (advice-add 're-builder
@@ -607,6 +627,8 @@ surrounded by word boundaries."
    ("M-g g" . consult-goto-line)
    ("M-g M-g" . consult-goto-line)
    ("M-g m" . consult-mark)
+   ("C-<tab>" . push-mark-no-activate)
+   ("M-<tab>" . jump-to-mark)
    ;; C-x bindings
    ("C-x b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
