@@ -128,6 +128,46 @@ point reaches the beginning or end of the buffer, stop there."
   (split-window-horizontally)
   (balance-windows))
 
+(defvar my/re-builder-positions nil
+  "Store point and region bounds before calling `re-builder'.")
+(advice-add 're-builder
+            :before
+            (defun my/re-builder-save-state (&rest _)
+              "Save into `my/re-builder-positions' the point and region
+positions before calling `re-builder'."
+              (setq my/re-builder-positions
+                    (cons (point)
+                          (when (region-active-p)
+                            (list (region-beginning)
+                                  (region-end)))))))
+(defun reb-replace-regexp (&optional delimited)
+  "Run `query-replace-regexp' with the contents of `re-builder'.
+With non-nil optional argument DELIMITED, only replace matches
+surrounded by word boundaries."
+  (interactive "P")
+  (reb-update-regexp)
+  (let* ((re (reb-target-binding reb-regexp))
+         (replacement (query-replace-read-to
+                       re
+                       (concat "Query replace"
+                               (if current-prefix-arg
+                                   (if (eq current-prefix-arg '-) " backward" " word")
+                                 "")
+                               " regexp"
+                               (if (with-selected-window reb-target-window
+                                     (region-active-p)) " in region" ""))
+                       t))
+         (pnt (car my/re-builder-positions))
+         (beg (cadr my/re-builder-positions))
+         (end (caddr my/re-builder-positions)))
+    (with-selected-window reb-target-window
+      (goto-char pnt) ; replace with (goto-char (match-beginning 0)) if you want
+                                        ; to control where in the buffer the replacement starts
+                                        ; with re-builder
+      (setq my/re-builder-positions nil)
+      (reb-quit)
+      (query-replace-regexp re replacement delimited beg end))))
+
 ;;;; Package Configuration
 (use-package use-package-ensure-system-package
   ;; ensure global binaries are installed
@@ -527,10 +567,12 @@ point reaches the beginning or end of the buffer, stop there."
   (delete-by-moving-to-trash t))
 
 (use-package midnight
+  ;; Automatically close buffers not in open windows at time
   :config
   (midnight-delay-set 'midnight-delay "2:00am"))
 
 (use-package recentf
+  ;; Recent file list
   :straight (:type built-in)
   :custom
   (recentf-max-menu-items 25)
@@ -538,7 +580,20 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (recentf-mode 1))
 
+(use-package re-builder
+  ;; interactive regex builder
+  :straight (:type built-in)
+  :bind
+  (("C-M-%" . re-builder)
+   :map reb-mode-map
+   ("RET" . reb-replace-regexp)
+   :map reb-lisp-mode-map
+   ("RET" . reb-replace-regexp))
+  :custom
+  (reb-re-syntax 'rx))
+
 (use-package emacs
+  ;; Stuff that doesn't seem to belong anywhere else
   :straight nil
   :bind
   (;; Basic Overrides
@@ -582,11 +637,11 @@ point reaches the beginning or end of the buffer, stop there."
   (indicate-empty-lines t)        ; show lines at the end of buffer
   (sentence-end-double-space nil) ; single space after a sentence
   (indent-tabs-mode nil)          ; use spaces instead of tabs
-  (reb-re-syntax 'rx)             ; interactive regex builder
   (cursor-type '(bar . 2))        ; no fat cursor
   (js-indent-level 2)
   (js-switch-indent-offset 2)
   (fill-column 80)                ; default fill column
+  (next-line-add-newlines t)      ; add lines with C-n if at end of buffer
   :config
   (delete-selection-mode)
   (fset 'yes-or-no-p 'y-or-n-p)   ; use y or n to confirm
