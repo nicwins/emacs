@@ -226,6 +226,19 @@ surrounded by word boundaries."
   :config
   (global-company-mode t))
 
+(use-package visible-mark
+  ;; Makes the mark visible
+  :custom
+  (visible-mark-max 1)
+  (visible-mark-faces `(visible-mark-face1 visible-mark-face2))
+  :config
+  (global-visible-mark-mode 1))
+
+(use-package smartscan
+  ;; jump to symbol at point
+  :config
+  (smartscan-mode 1))
+
 (use-package aggressive-indent
   ;; Indent as you type
   :hook (prog-mode . aggressive-indent-mode))
