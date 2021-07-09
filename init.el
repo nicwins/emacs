@@ -226,6 +226,12 @@ surrounded by word boundaries."
   :config
   (global-company-mode t))
 
+(use-package expand-region
+  ;; Expand the region by step
+  :bind
+  ("C-=" . er/expand-region)
+  ("C-\\" . er/contract-region))
+
 (use-package visible-mark
   ;; Makes the mark visible
   :custom
@@ -404,7 +410,7 @@ surrounded by word boundaries."
   (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
   (lsp-signature-render-documentation nil)
-  (lsp-completion-enable t)
+  (lsp-completion-enable nil)
   (lsp-file-watch-threshold 2000)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
@@ -665,6 +671,7 @@ surrounded by word boundaries."
    ([f1] . projectile-find-file)
    ([f2] . consult-ripgrep)
    ([f3] . projectile-switch-project)
+   ([f5] . kmacro-call-macro)
    :map isearch-mode-map
    ("M-e" . consult-isearch)
    ("M-s l" . consult-line))
