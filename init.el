@@ -217,8 +217,7 @@ surrounded by word boundaries."
 (use-package company
   ;; text completion framework
   :custom
-  (company-dabbrev-other-buffers t)
-  (company-dabbrev-code-other-buffers t)
+  (company-frontends '(company-preview-frontend))
   (company-show-numbers t)
   (company-minimum-prefix-length 3)
   (company-dabbrev-downcase nil)
@@ -239,11 +238,6 @@ surrounded by word boundaries."
   (visible-mark-faces `(visible-mark-face1 visible-mark-face2))
   :config
   (global-visible-mark-mode 1))
-
-(use-package smartscan
-  ;; jump to symbol at point
-  :config
-  (smartscan-mode 1))
 
 (use-package aggressive-indent
   ;; Indent as you type
@@ -302,8 +296,8 @@ surrounded by word boundaries."
   :commands (projectile-project-root)
   :custom
   (consult-project-root-function #'projectile-project-root)
-  ;; (xref-show-xrefs-function #'consult-xref)
-  ;; (xref-show-definitions-function #'consult-xref)
+  (xref-show-xrefs-function #'consult-xref)
+  (xref-show-definitions-function #'consult-xref)
   (consult-narrow-key "<"))
 
 (use-package consult-flycheck
@@ -312,10 +306,8 @@ surrounded by word boundaries."
 
 (use-package marginalia
   ;; adds annotations to consult
-  :straight (:branch "main")
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light))
-  :config
+  :after (selectrum consult)
+  :init
   (marginalia-mode))
 
 (use-package embark
@@ -376,9 +368,6 @@ surrounded by word boundaries."
   (setf (alist-get 'prettier apheleia-formatters)
         '(npx "prettier"
               ;; "--single-quote" "true"
-              ;; "--trailing-comma" "es5"
-              ;; "--jsx-single-quote" "true"
-              ;; "--arrow-parens" "avoid"
               file))
   (apheleia-global-mode +1))
 
@@ -426,7 +415,9 @@ surrounded by word boundaries."
   (lsp-ui-sideline-show-symbol nil)
   (lsp-headerline-breadcrumb-enable nil))
 
-(use-package consult-lsp)
+(use-package consult-lsp
+  :after (consult lsp)
+  :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
 
 (use-package sml-mode)
 
