@@ -228,8 +228,8 @@ surrounded by word boundaries."
 (use-package expand-region
   ;; Expand the region by step
   :bind
-  ("C-=" . er/expand-region)
-  ("C-\\" . er/contract-region))
+  (("C-=" . er/expand-region)
+   ("C-\\" . er/contract-region)))
 
 (use-package visible-mark
   ;; Makes the mark visible
@@ -428,7 +428,7 @@ surrounded by word boundaries."
     (when (eq this-command 'eval-expression)
       (lispy-mode 1)))
   :hook
-  (emacs-lisp-mode-hook . lispy-mode)
+  (emacs-lisp-mode-hook . (lambda () (lispy-mode 1)))
   (minibuffer-setup-hook . conditionally-enable-lispy))
 
 (use-package undo-tree
@@ -514,7 +514,7 @@ surrounded by word boundaries."
   (dired-auto-revert-buffer t)
   (dired-guess-shell-alist-user
    '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
-      "vlc")
+      "mpv")
      ("\\.html?\\'" "firefox")))
   :config
   ;; On macOS must install gnu coreutils
@@ -669,22 +669,23 @@ surrounded by word boundaries."
   :hook
   (text-mode . visual-line-mode)
   :custom
-  (inhibit-startup-message t)     ; no splash screen
-  (visible-bell t)                ; be quiet
-  (indicate-empty-lines t)        ; show lines at the end of buffer
-  (sentence-end-double-space nil) ; single space after a sentence
-  (indent-tabs-mode nil)          ; use spaces instead of tabs
-  (cursor-type '(bar . 2))        ; no fat cursor
-  (js-indent-level 2)
-  (js-switch-indent-offset 2)
-  (fill-column 80)                ; default fill column
-  (next-line-add-newlines t)      ; add lines with C-n if at end of buffer
+  (inhibit-startup-message t)                   ; no splash screen
+  (visible-bell t)                              ; be quiet
+  (indicate-empty-lines t)                      ; show lines at the end of buffer
+  (sentence-end-double-space nil)               ; single space after a sentence
+  (indent-tabs-mode nil)                        ; use spaces instead of tabs
+  (cursor-type '(bar . 2))                      ; no fat cursor
+  (js-indent-level 2)                           ; js settings needed for rjsx
+  (js-switch-indent-offset 2)                   ; more js settings
+  (fill-column 80)                              ; default fill column
+  (next-line-add-newlines t)                    ; add lines with C-n if at end of buffer
+  (completion-ignored-extensions (".DS_STORE")) ; ignore mac garbage
   :config
   (delete-selection-mode)
-  (fset 'yes-or-no-p 'y-or-n-p)   ; use y or n to confirm
+  (fset 'yes-or-no-p 'y-or-n-p)                 ; use y or n to confirm
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
-  (show-paren-mode 1)             ; Show matching parens
+  (show-paren-mode 1)                           ; Show matching parens
   (set-frame-font "Hack-14")
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
