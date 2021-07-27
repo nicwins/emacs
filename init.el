@@ -375,17 +375,17 @@ surrounded by word boundaries."
 
 (use-package rjsx-mode)
 
-(use-package tree-sitter
-  :hook
-  (tree-sitter-after-on . tree-sitter-hl-mode)
-  :custom
-  (global-tree-sitter-mode t))
+;; (use-package tree-sitter
+;;   :hook
+;;   (tree-sitter-after-on . tree-sitter-hl-mode)
+;;   :custom
+;;   (global-tree-sitter-mode t))
 
-(use-package tree-sitter-langs
-  :after tree-sitter)
+;; (use-package tree-sitter-langs
+;;   :after tree-sitter)
 
 (use-package lsp-mode
-  :after (tree-sitter tree-sitter-langs)
+  ;;:after (tree-sitter tree-sitter-langs)
   :commands (lsp lsp-deferred)
   :hook ((js-mode
           rjsx-mode
@@ -396,10 +396,10 @@ surrounded by word boundaries."
   :custom
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-indentation nil)
-  (lsp-eldoc-enable-hover nil)
+  ;;(lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
-  (lsp-signature-render-documentation nil)
-  (lsp-completion-enable nil)
+  ;;(lsp-signature-render-documentation nil)
+  ;;(lsp-completion-enable nil)
   (lsp-file-watch-threshold 2000)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
