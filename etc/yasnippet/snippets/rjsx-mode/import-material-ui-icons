@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Import Material-UI icons
+# key: >imi
+# --
+
+import { $0 } from '@material-ui/icons';

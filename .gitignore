@@ -2,7 +2,6 @@
 ## Emacs
 #################
 
-etc/
 var/
 straight/*
 !straight/versions/

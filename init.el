@@ -464,9 +464,13 @@ surrounded by word boundaries."
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right))
 
-;; Line wrap at the fill column, not buffer end
 (use-package visual-fill-column
+  ;; Line wrap at the fill column, not buffer end
   :hook (visual-line-mode . visual-fill-column-mode))
+
+(use-package yasnippet
+  ;; template system for emacs
+  :hook (prog-mode . yas-minor-mode))
 
 ;;;; Built-in Package Config
 
@@ -612,6 +616,8 @@ surrounded by word boundaries."
   (recentf-max-menu-items 25)
   (recentf-max-saved-items 25)
   :config
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
   (recentf-mode 1))
 
 (use-package re-builder
