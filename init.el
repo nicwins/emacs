@@ -218,10 +218,8 @@ surrounded by word boundaries."
   ;; text completion framework
   :custom
   (company-frontends '(company-preview-frontend))
-  (company-show-numbers t)
   (company-minimum-prefix-length 3)
   (company-dabbrev-downcase nil)
-  (company-dabbrev-ignore-case t)
   :config
   (global-company-mode t))
 
@@ -343,6 +341,8 @@ surrounded by word boundaries."
 
 (use-package magit
   ;; emacs interface for git
+  :hook
+  (magit-credential-hook . magit-process-buffer)
   :config
   (defadvice magit-status (around magit-fullscreen activate)
     "Set magit status to full-screen."
@@ -357,7 +357,17 @@ surrounded by word boundaries."
           ad-do-it
           (jump-to-register :magit-fullscreen))
       ad-do-it
-      (delete-other-windows))))
+      (delete-other-windows)))
+
+  (define-advice magit-push-current-to-upstream (:before (args) query-yes-or-no)
+    "Prompt for confirmation before permitting a push to upstream."
+    (when-let ((branch (magit-get-current-branch)))
+      (unless (yes-or-no-p (format "Push %s branch upstream to %s? "
+                                   branch
+                                   (or (magit-get-upstream-branch branch)
+                                       (magit-get "branch" branch "remote"))))
+        (user-error "Push to upstream aborted by user"))))
+  )
 
 (use-package apheleia
   :straight
@@ -396,10 +406,10 @@ surrounded by word boundaries."
   :custom
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-indentation nil)
-  ;;(lsp-eldoc-enable-hover nil)
+  (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
-  ;;(lsp-signature-render-documentation nil)
-  ;;(lsp-completion-enable nil)
+  (lsp-signature-render-documentation nil)
+  (lsp-completion-enable nil)
   (lsp-file-watch-threshold 2000)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
