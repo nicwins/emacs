@@ -311,7 +311,8 @@ surrounded by word boundaries."
 (use-package embark
   ;; provide actions on competion candidates, or text at point
   :custom
-  (embark-prompt-style 'completion))
+  (embark-prompt-style 'completion)
+  (prefix-help-command #'embark-prefix-help-command))
 
 (use-package embark-consult
   :after (embark consult)
@@ -366,8 +367,7 @@ surrounded by word boundaries."
                                    branch
                                    (or (magit-get-upstream-branch branch)
                                        (magit-get "branch" branch "remote"))))
-        (user-error "Push to upstream aborted by user"))))
-  )
+        (user-error "Push to upstream aborted by user")))))
 
 (use-package apheleia
   :straight
@@ -385,17 +385,7 @@ surrounded by word boundaries."
 
 (use-package rjsx-mode)
 
-;; (use-package tree-sitter
-;;   :hook
-;;   (tree-sitter-after-on . tree-sitter-hl-mode)
-;;   :custom
-;;   (global-tree-sitter-mode t))
-
-;; (use-package tree-sitter-langs
-;;   :after tree-sitter)
-
 (use-package lsp-mode
-  ;;:after (tree-sitter tree-sitter-langs)
   :commands (lsp lsp-deferred)
   :hook ((js-mode
           rjsx-mode
@@ -482,6 +472,18 @@ surrounded by word boundaries."
   ;; template system for emacs
   :hook (prog-mode . yas-minor-mode))
 
+(use-package perspective
+  :hook
+  (kill-emacs . persp-state-save)
+  :bind
+  (("C-c t" . persp-switch)
+   ("C-x b" . persp-switch-to-buffer*)
+   ("C-x k" . persp-kill-buffer*))
+  :custom
+  (persp-state-default-file (no-littering-expand-var-file-name "perspective/perspectives.el"))
+  :config
+  (persp-mode))
+
 ;;;; Built-in Package Config
 
 (use-package xref
@@ -495,27 +497,6 @@ surrounded by word boundaries."
   :straight nil
   :config
   (electric-pair-mode 1))
-
-(use-package tab-bar
-  ;; save workspaces as groups of windows
-  :preface
-  (defun my/no-tab-bar-lines (&rest _)
-    "Hide the tabs from tab-bar-mode."
-    (dolist (frame (frame-list)) (set-frame-parameter frame 'tab-bar-lines 0)))
-  :straight nil
-  :custom
-  (tab-bar-new-tab-choice "*scratch*")
-  (tab-bar-show nil)
-  :config
-  (advice-add #'tab-bar-mode :after #'my/no-tab-bar-lines)
-  (advice-add #'make-frame :after #'my/no-tab-bar-lines)
-  (tab-bar-mode 1))
-
-(use-package desktop
-  ;; Save buffers and windows on exit
-  :straight nil
-  :custom (desktop-restore-eager 5)
-  :config (desktop-save-mode 1))
 
 (use-package dired
   ;; directory management
@@ -660,7 +641,6 @@ surrounded by word boundaries."
    ("C-<tab>" . push-mark-no-activate)
    ("M-<tab>" . jump-to-mark)
    ;; C-x bindings
-   ("C-x b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
    ("C-x f" . consult-find)
    ("C-x r q" . save-buffers-kill-terminal)
@@ -669,7 +649,6 @@ surrounded by word boundaries."
    ("C-c c" . org-capture)
    ("C-c i" . consult-imenu)
    ("C-c I" . consult-project-imenu)
-   ("C-c t" . tab-bar-switch-to-tab)
    ("C-c f" . consult-flycheck)
    ("C-c v" . magit)
    ("C-c h" . consult-history)
