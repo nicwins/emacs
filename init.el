@@ -399,6 +399,7 @@ surrounded by word boundaries."
   (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
   (lsp-signature-render-documentation nil)
+  (lsp-enable-text-document-color nil)
   (lsp-completion-enable nil)
   (lsp-file-watch-threshold 2000)
   ;; Config specific to tsserver/theia ide
@@ -407,13 +408,6 @@ surrounded by word boundaries."
   (setq lsp-keymap-prefix "C-c l")
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
-
-(use-package lsp-ui
-  :commands lsp-ui-mode
-  :custom
-  (lsp-ui-sideline-show-code-actions nil)
-  (lsp-ui-sideline-show-symbol nil)
-  (lsp-headerline-breadcrumb-enable nil))
 
 (use-package consult-lsp
   :after (consult lsp)
