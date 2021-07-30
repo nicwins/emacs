@@ -343,7 +343,7 @@ surrounded by word boundaries."
 (use-package magit
   ;; emacs interface for git
   :hook
-  (magit-credential-hook . magit-process-buffer)
+  (magit-credential . magit-process-buffer)
   :config
   (defadvice magit-status (around magit-fullscreen activate)
     "Set magit status to full-screen."
@@ -535,12 +535,6 @@ surrounded by word boundaries."
   :config
   (unless (server-running-p)
     (server-start)))
-
-(use-package vc
-  ;; Make backups of files, even when they're in version control
-  :straight nil
-  :custom
-  (vc-make-backup-files t))
 
 (use-package uniquify
   ;; Add parts of each file's directory to the buffer name if not unique
