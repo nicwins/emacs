@@ -402,6 +402,7 @@ surrounded by word boundaries."
   (lsp-enable-text-document-color nil)
   (lsp-completion-enable nil)
   (lsp-file-watch-threshold 2000)
+  (lsp-headerline-breadcrumb-enable nil)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
   :init
