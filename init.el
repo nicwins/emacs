@@ -27,9 +27,11 @@
   (load bootstrap-file nil 'nomessage))
 
 (setq-default straight-use-package-by-default t)
+(defvar straight-fix-flycheck)
+(setq straight-fix-flycheck t)
 
 ;; Bootstrap `use-package'
-(setq-default use-package-verbose nil ; Don't report loading details
+(setq-default use-package-verbose nil            ; Don't report loading details
               use-package-enable-imenu-support t ; Let imenu find use-package defs
               use-package-expand-minimally t) ; minimize expanded code
 
@@ -273,25 +275,21 @@ surrounded by word boundaries."
   ;; selection/completion manager
   :config (selectrum-mode +1))
 
-(use-package prescient
-  ;; sorting manager
-  :config
-  (prescient-persist-mode +1))
-
-(use-package selectrum-prescient
-  ;; make selectrum use prescient sorting
-  :after (selectrum prescient)
-  :config (selectrum-prescient-mode +1))
-
-(use-package company-prescient
-  ;; make company use prescient filtering
-  :after (company prescient)
-  :config (company-prescient-mode +1))
+(use-package orderless
+  :custom
+  (completion-styles '(orderless)))
 
 (use-package consult
   ;; enhances navigation with selectrum completions
   :after (selectrum projectile)
   :commands (projectile-project-root)
+  :init
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Optionally replace `completing-read-multiple' with an enhanced version.
+  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
   :custom
   (consult-project-root-function #'projectile-project-root)
   (xref-show-xrefs-function #'consult-xref)
@@ -304,7 +302,6 @@ surrounded by word boundaries."
 
 (use-package marginalia
   ;; adds annotations to consult
-  :after (selectrum consult)
   :init
   (marginalia-mode))
 
@@ -477,6 +474,7 @@ surrounded by word boundaries."
    ("C-x k" . persp-kill-buffer*))
   :custom
   (persp-state-default-file (no-littering-expand-var-file-name "perspective/perspectives.el"))
+  (persp-modestring-short t)
   :config
   (persp-mode))
 
@@ -585,11 +583,6 @@ surrounded by word boundaries."
   (create-lockfiles nil)
   (delete-by-moving-to-trash t))
 
-(use-package midnight
-  ;; Automatically close buffers not in open windows at time
-  :config
-  (midnight-delay-set 'midnight-delay "2:00am"))
-
 (use-package recentf
   ;; Recent file list
   :straight (:type built-in)
@@ -654,23 +647,23 @@ surrounded by word boundaries."
   :hook
   (text-mode . visual-line-mode)
   :custom
-  (inhibit-startup-message t)                   ; no splash screen
-  (visible-bell t)                              ; be quiet
-  (indicate-empty-lines t)                      ; show lines at the end of buffer
-  (sentence-end-double-space nil)               ; single space after a sentence
-  (indent-tabs-mode nil)                        ; use spaces instead of tabs
-  (cursor-type '(bar . 2))                      ; no fat cursor
-  (js-indent-level 2)                           ; js settings needed for rjsx
-  (js-switch-indent-offset 2)                   ; more js settings
-  (fill-column 80)                              ; default fill column
-  (next-line-add-newlines t)                    ; add lines with C-n if at end of buffer
+  (inhibit-startup-message t)           ; no splash screen
+  (visible-bell t)                      ; be quiet
+  (indicate-empty-lines t)              ; show lines at the end of buffer
+  (sentence-end-double-space nil)       ; single space after a sentence
+  (indent-tabs-mode nil)                ; use spaces instead of tabs
+  (cursor-type '(bar . 2))              ; no fat cursor
+  (js-indent-level 2)                   ; js settings needed for rjsx
+  (js-switch-indent-offset 2)           ; more js settings
+  (fill-column 80)                      ; default fill column
+  (next-line-add-newlines t)            ; add lines with C-n if at end of buffer
   (completion-ignored-extensions (".DS_STORE")) ; ignore mac garbage
   :config
   (delete-selection-mode)
-  (fset 'yes-or-no-p 'y-or-n-p)                 ; use y or n to confirm
+  (fset 'yes-or-no-p 'y-or-n-p)         ; use y or n to confirm
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
-  (show-paren-mode 1)                           ; Show matching parens
+  (show-paren-mode 1)                   ; Show matching parens
   (set-frame-font "Hack-14")
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
@@ -681,7 +674,7 @@ surrounded by word boundaries."
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (windmove-default-keybindings)
-  (persp-state-load))
+  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el")))
 
 (provide 'init)
 ;;; init.el ends here
