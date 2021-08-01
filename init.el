@@ -423,8 +423,9 @@ surrounded by word boundaries."
     (when (eq this-command 'eval-expression)
       (lispy-mode 1)))
   :hook
-  (emacs-lisp-mode-hook . (lambda () (lispy-mode 1)))
-  (minibuffer-setup-hook . conditionally-enable-lispy))
+  (emacs-lisp-mode . (lambda () (lispy-mode 1)))
+  (scheme-mode . (lambda () (lispy-mode 1)))
+  (minibuffer-setup . conditionally-enable-lispy))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -679,7 +680,8 @@ surrounded by word boundaries."
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
-  (windmove-default-keybindings))
+  (windmove-default-keybindings)
+  (persp-state-load))
 
 (provide 'init)
 ;;; init.el ends here
