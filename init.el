@@ -57,7 +57,7 @@
         (set-visited-file-name new-name t t)))))
 
 (defun my/delete-file-and-buffer ()
-  "Kill the current buffer and deletes the file it is visiting."
+  "Kill the current buffer and delete the file it is visiting."
   (interactive)
   (let ((filename (buffer-file-name)))
     (when filename
@@ -328,15 +328,15 @@ surrounded by word boundaries."
               ("C-c p" . projectile-command-map))
   :preface
   (defun my/projectile-ignore-project (project-root)
-    (f-descendant-of? project-root (expand-file-name "~/.emacs.d/straight/")))
+    (f-descendant-of? project-root (expand-file-name "~/.config/emacs/straight/")))
   :config
   (projectile-mode 1))
 
 ;; needed for projectile-ripgrep
 (use-package ripgrep)
 
-;; ripgrep for consult
 (use-package rg
+  ;; ripgrep for consult
   :ensure-system-package
   (rg . ripgrep))
 
@@ -391,7 +391,7 @@ surrounded by word boundaries."
           rjsx-mode
           json-mode
           mhtml-mode
-          yaml-mode) . lsp)
+          yaml-mode) . lsp-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (lsp-enable-symbol-highlighting t)
