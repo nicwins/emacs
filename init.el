@@ -478,6 +478,13 @@ surrounded by word boundaries."
   :config
   (persp-mode))
 
+(use-package disable-mouse
+  ;; Globally disable the mouse
+  :init
+  (setq disable-mouse-wheel-events nil)
+  :config
+  (global-disable-mouse-mode))
+
 ;;;; Built-in Package Config
 
 (use-package xref
