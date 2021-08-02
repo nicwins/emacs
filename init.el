@@ -197,6 +197,8 @@ surrounded by word boundaries."
 
 (use-package exec-path-from-shell
   ;; Load path from user shell
+  :custom
+  (exec-path-from-shell-arguments nil)
   :config
   (when (memq window-system '(mac ns x pgtk))
     (exec-path-from-shell-initialize)))
@@ -338,8 +340,9 @@ surrounded by word boundaries."
 
 (use-package rg
   ;; ripgrep for consult
-  :ensure-system-package
-  (rg . ripgrep))
+  ;;:ensure-system-package
+  ;;(rg . ripgrep)
+  )
 
 (use-package magit
   ;; emacs interface for git
@@ -470,6 +473,7 @@ surrounded by word boundaries."
   :hook (prog-mode . yas-minor-mode))
 
 (use-package perspective
+  ;; window and buffer manager
   :hook
   (kill-emacs . persp-state-save)
   :bind
@@ -668,8 +672,8 @@ surrounded by word boundaries."
   (js-switch-indent-offset 2)           ; more js settings
   (fill-column 80)                      ; default fill column
   (next-line-add-newlines t)            ; add lines with C-n if at end of buffer
-  (completion-ignored-extensions (".DS_STORE")) ; ignore mac garbage
   :config
+  (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (delete-selection-mode)
   (fset 'yes-or-no-p 'y-or-n-p)         ; use y or n to confirm
   (set-language-environment "UTF-8")
