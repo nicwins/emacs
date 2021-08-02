@@ -277,7 +277,11 @@ surrounded by word boundaries."
 
 (use-package orderless
   :custom
-  (completion-styles '(orderless)))
+  (completion-styles '(orderless))
+  (orderless-skip-highlighting (lambda () selectrum-is-active))
+  (selectrum-highlight-candidates-function #'orderless-highlight-matches)
+  :config
+  (savehist-mode))
 
 (use-package consult
   ;; enhances navigation with selectrum completions
