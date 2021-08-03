@@ -43,7 +43,7 @@ cmd - t : yabai -m space --focus 6
 cmd - w : yabai -m space --focus 7
 cmd - f : yabai -m space --focus 8
 cmd - p : yabai -m space --focus 9
-cmd - b : yabai -m space --focus recent
+cmd - g : yabai -m space --focus recent
 
 # Move container to workspace
 shift+cmd - x : yabai -m window --space 1; yabai -m space --focus 1
