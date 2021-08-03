@@ -7,7 +7,7 @@
 ;;;; Pre-Package Initialization
 
 ;; Set all packages to compile async
-(setq-default comp-deferred-compilation t)
+;; (setq-default comp-deferred-compilation t)
 
 ;;;; Initialize Package
 
@@ -520,10 +520,16 @@ surrounded by word boundaries."
    '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
       "mpv")
      ("\\.html?\\'" "firefox")))
-  :config
+  ;; :config
   ;; On macOS must install gnu coreutils
-  (when (eq system-type 'darwin)
-    (setq insert-directory-program "gls" dired-use-ls-dired t)))
+  ;; (when (eq system-type 'darwin)
+  ;;   (let ((gls (executable-find "gls")))
+  ;;     (when gls
+  ;;       (setq dired-use-ls-dired t
+  ;;             insert-directory-program gls
+  ;;             dired-listing-switches "-aBhl"))))
+  ;;(setq insert-directory-program "gls" dired-use-ls-dired t))
+  )
 
 (use-package dired-x
   ;; extension for dired
