@@ -644,7 +644,10 @@ surrounded by word boundaries."
    ("M-g m" . consult-mark)
    ("C-<tab>" . push-mark-no-activate)
    ("M-<tab>" . jump-to-mark)
+   ("M-'" . consult-register-store)
+   ("M-#" . consult-register-load)
    ;; C-x bindings
+   ("C-x C-b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
    ("C-x f" . consult-find)
    ("C-x r q" . save-buffers-kill-terminal)
