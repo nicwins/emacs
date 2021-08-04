@@ -40,7 +40,12 @@ yabai -m space 1 --label web
 yabai -m space 2 --label comms
 
 # window rules
-# check authors config...
-# yabai -m rule --add app="^Mail$" space=mail
+yabai -m rule --add app="^Emacs$" space=emacs
+yabai -m rule --add app="^Zoom$" space=scratch
+yabai -m rule --add app="^Chrome$" space=web
+yabai -m rule --add app="^Teams$" space=comms
+yabai -m rule --add app="^Outlook$" space=comms
+yabai -m rule --add label="System Preferences" app="^System Preferences$" title=".*" manage=off
+yabai -m rule --add label="Software Update" title="Software Update" manage=off
 
 echo "yabai configuration loaded.."

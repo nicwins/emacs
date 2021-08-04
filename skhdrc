@@ -1,8 +1,5 @@
 # set app launcher to cmd-space
 
-# use fake fullscreen
-cmd+ctrl+alt - z : yabai -m window --toggle zoom-fullscreen
-
 # Start a drop term
 #cmd - return : iterm2 --dropdown
 
@@ -27,7 +24,7 @@ swap < i : yabai -m window --swap north
 swap < o : yabai -m window --swap east
 
 :: move
-cmd+ctrl+alt - m ; move
+cmd+ctrl+alt - u ; move
 move < q ; default
 move < n : yabai -m window --warp west
 move < e : yabai -m window --warp south
@@ -40,7 +37,7 @@ cmd+ctrl+alt - x : yabai -m space --focus term
 cmd+ctrl+alt - c : yabai -m space --focus emacs
 cmd+ctrl+alt - d : yabai -m space --focus mongo
 cmd+ctrl+alt - r : yabai -m space --focus postman
-cmd+ctrl+alt - s : yabai -m space --focus 7
+cmd+ctrl+alt - s : yabai -m space --focus scratch
 cmd+ctrl+alt - t : yabai -m space --focus 8
 cmd+ctrl+alt - w : yabai -m space --focus 9
 cmd+ctrl+alt - f : yabai -m space --focus web
@@ -66,4 +63,13 @@ shift+cmd+ctrl+alt - e : yabai -m window --toggle float;\
                 yabai -m window --grid 4:4:1:1:2:2
 
 # rotate tree
-cmd+ctrl+alt - a : yabai -m space --rotate 90
+shift+cmd+ctrl+alt - i : yabai -m space --rotate 90
+
+# use fake fullscreen
+cmd+ctrl+alt - a : yabai -m window --toggle zoom-fullscreen
+
+# Enable / Disable gaps in workspace
+shift+cmd+ctrl+alt - a : yabai -m space --toggle padding; yabai -m space --toggle gap
+
+# Reload yabai
+shift+cmd+ctrl+alt - g : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
