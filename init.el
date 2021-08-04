@@ -677,7 +677,6 @@ surrounded by word boundaries."
   (js-indent-level 2)                   ; js settings needed for rjsx
   (js-switch-indent-offset 2)           ; more js settings
   (fill-column 80)                      ; default fill column
-  (next-line-add-newlines t)            ; add lines with C-n if at end of buffer
   :config
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (delete-selection-mode)
