@@ -1,5 +1,7 @@
 # set app launcher to cmd-space
-# cmd z for fullscreen
+
+# use fake fullscreen
+cmd+ctrl+alt - z : yabai -m window --toggle zoom-fullscreen
 
 # Start a drop term
 #cmd - return : iterm2 --dropdown

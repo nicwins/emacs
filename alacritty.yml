@@ -5,6 +5,7 @@ window:
 
   # Allow terminal applications to change Alacritty's window title.
   dynamic_title: true
+  decorations: false
 
   # Window padding (changes require restart)
   #
@@ -67,31 +68,13 @@ font:
 # Colors (Gruvbox dark)
 colors:
   primary:
-    # hard contrast background - '#1d2021'
     background: &gruvbox_dark_bg "#282828"
-    # soft contrast background - '#32302f'
     foreground: "#fbf1c7"
     bright_foreground: "#f9f5d7"
     dim_foreground: "#f2e5bc"
   cursor:
     text: CellBackground
     cursor: CellForeground
-  vi_mode_cursor:
-    text: CellBackground
-    cursor: CellForeground
-  # search:
-  #   matches:
-  #     foreground: '#000000'
-  #     background: '#ffffff'
-  #   focused_match:
-  #    foreground: CellBackground
-  #    background: CellForeground
-  #   bar:
-  #     background: ''
-  #     foreground: ''
-  # line_indicator:
-  #   foreground: None
-  #   background: None
   selection:
     text: CellBackground
     background: CellForeground
@@ -122,7 +105,6 @@ colors:
     magenta: "#8f3f71"
     cyan: "#427b58"
     white: "#928374"
-  # indexed_colors: []
 key_bindings:
   - { key: N, mods: Control, action: SpawnNewInstance }
   - { key: W, mods: Alt, action: Copy }
