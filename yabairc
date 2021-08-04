@@ -9,7 +9,7 @@ yabai -m config window_shadow                off
 yabai -m config window_opacity               on
 yabai -m config window_opacity_duration      0.0
 yabai -m config active_window_opacity        1.0
-yabai -m config normal_window_opacity        0.80
+yabai -m config normal_window_opacity        0.95
 yabai -m config window_border                off
 yabai -m config window_border_width          6
 yabai -m config active_window_border_color   0xff775759
@@ -24,20 +24,20 @@ yabai -m config mouse_drop_action            swap
 
 # general space settings
 yabai -m config layout                       bsp
-yabai -m config top_padding                  20
-yabai -m config bottom_padding               20
-yabai -m config left_padding                 20
-yabai -m config right_padding                20
+yabai -m config top_padding                  10
+yabai -m config bottom_padding               10
+yabai -m config left_padding                 10
+yabai -m config right_padding                10
 yabai -m config window_gap                   10
 
 # mission-control desktop labels
-yabai -m space 1 --label term
-yabai -m space 2 --label emacs
-yabai -m space 3 --label mongo
-yabai -m space 4 --label postman
-yabai -m space 5 --label notes
-yabai -m space 6 --label web
-yabai -m space 7 --label comms
+yabai -m space 3 --label term
+yabai -m space 4 --label emacs
+yabai -m space 5 --label mongo
+yabai -m space 6 --label postman
+yabai -m space 7 --label scratch
+yabai -m space 1 --label web
+yabai -m space 2 --label comms
 
 # window rules
 # check authors config...
