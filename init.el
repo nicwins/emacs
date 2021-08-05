@@ -218,16 +218,6 @@ surrounded by word boundaries."
 ;; Automatically bisects init file
 (use-package bug-hunter)
 
-(use-package company
-  ;; text completion framework
-  :custom
-  (company-frontends '(company-preview-frontend))
-  (company-minimum-prefix-length 3)
-  (company-dabbrev-downcase nil)
-  :config
-  ;; (global-company-mode t)
-  )
-
 (use-package expand-region
   ;; Expand the region by step
   :bind
@@ -274,15 +264,18 @@ surrounded by word boundaries."
   :config
   (doom-modeline-mode 1))
 
-(use-package selectrum
-  ;; selection/completion manager
-  :config (selectrum-mode +1))
+(use-package vertico
+  :init
+  (vertico-mode)
+  :bind
+  (:map vertico-map
+        ("?" . minibuffer-completion-help)))
 
 (use-package orderless
   :custom
   (completion-styles '(orderless))
-  (orderless-skip-highlighting (lambda () selectrum-is-active))
-  (selectrum-highlight-candidates-function #'orderless-highlight-matches)
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion))))
   :config
   (savehist-mode))
 
@@ -314,6 +307,9 @@ surrounded by word boundaries."
 
 (use-package embark
   ;; provide actions on competion candidates, or text at point
+  :bind
+  ("M-." . embark-dwim)
+  ("C-." . embark-act)
   :custom
   (embark-prompt-style 'completion)
   (prefix-help-command #'embark-prefix-help-command))
@@ -403,9 +399,11 @@ surrounded by word boundaries."
   (lsp-enable-indentation nil)
   (lsp-eldoc-enable-hover nil)
   (lsp-prefer-capf t)
+  (lsp-signature-auto-activate nil)
   (lsp-signature-render-documentation nil)
   (lsp-enable-text-document-color nil)
   (lsp-completion-enable nil)
+  (lsp-completion-show-kind nil)
   (lsp-file-watch-threshold 2000)
   (lsp-headerline-breadcrumb-enable nil)
   ;; Need to toggle this to get eslint alongside
@@ -418,22 +416,26 @@ surrounded by word boundaries."
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
+(use-package lsp-ui
+  :custom
+  (lsp-ui-sideline-show-code-actions nil)
+  (lsp-ui-sideline-update-mode "line")
+  (lsp-ui-peek-enable nil)
+  (lsp-ui-doc-enable nil))
+
 (use-package consult-lsp
   :after (consult lsp)
   :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
 
 (use-package sml-mode)
 
-(use-package lispy
-  ;; Paredit-like command map for lisp editing
-  :preface
-  (defun conditionally-enable-lispy ()
-    (when (eq this-command 'eval-expression)
-      (lispy-mode 1)))
+(use-package paredit
   :hook
-  (emacs-lisp-mode . (lambda () (lispy-mode 1)))
-  (scheme-mode . (lambda () (lispy-mode 1)))
-  (minibuffer-setup . conditionally-enable-lispy))
+  ((emacs-lisp-mode
+    eval-expression-minibuffer-setup
+    lisp-mode
+    lisp-interaction-mode
+    scheme-mode) . enable-paredit-mode))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -523,17 +525,7 @@ surrounded by word boundaries."
   (dired-guess-shell-alist-user
    '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
       "mpv")
-     ("\\.html?\\'" "firefox")))
-  ;; :config
-  ;; On macOS must install gnu coreutils
-  ;; (when (eq system-type 'darwin)
-  ;;   (let ((gls (executable-find "gls")))
-  ;;     (when gls
-  ;;       (setq dired-use-ls-dired t
-  ;;             insert-directory-program gls
-  ;;             dired-listing-switches "-aBhl"))))
-  ;;(setq insert-directory-program "gls" dired-use-ls-dired t))
-  )
+     ("\\.html?\\'" "firefox"))))
 
 (use-package dired-x
   ;; extension for dired
@@ -634,11 +626,14 @@ surrounded by word boundaries."
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
   :straight nil
+  :init
+  (advice-add #'completing-read-multiple
+              :override #'consult-completing-read-multiple)
   :bind
   (;; Basic Overrides
    ("C-a" . my/smarter-move-beginning-of-line)
-   ("C-." . consult-line)
    ("C-," . my/comment-or-uncomment-region-or-line)
+   ("M-s" . consult-line)
    ("C-o" . my/newline-below)
    ("C-S-o" . my/newline-above)
    ("M-y" . consult-yank-pop)
@@ -656,11 +651,12 @@ surrounded by word boundaries."
    ("C-x f" . consult-find)
    ("C-x r q" . save-buffers-kill-terminal)
    ;; C-c bindings (user-map)
-   ("C-c a" . embark-act)
    ("C-c c" . org-capture)
    ("C-c i" . consult-imenu)
    ("C-c I" . consult-project-imenu)
    ("C-c f" . consult-flycheck)
+   ("C-c F" . consult-lsp-diagnostics)
+   ("C-c s" . consult-lsp-symbols)
    ("C-c v" . magit)
    ("C-c h" . consult-history)
    ("C-c m" . consult-mode-command)
@@ -673,7 +669,8 @@ surrounded by word boundaries."
    ("M-e" . consult-isearch)
    ("M-s l" . consult-line))
   :hook
-  (text-mode . visual-line-mode)
+  ((text-mode . visual-line-mode)
+   (minibuffer-setup . cursor-intangible-mode))
   :custom
   (inhibit-startup-message t)           ; no splash screen
   (visible-bell t)                      ; be quiet
@@ -684,6 +681,9 @@ surrounded by word boundaries."
   (js-indent-level 2)                   ; js settings needed for rjsx
   (js-switch-indent-offset 2)           ; more js settings
   (fill-column 80)                      ; default fill column
+  (minibuffer-prompt-properties
+   '(read-only t cursor-intangible t face minibuffer-prompt)) ; no cursor in minibuffer
+  (enable-recursive-minibuffer t)
   :config
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (delete-selection-mode)
