@@ -225,7 +225,8 @@ surrounded by word boundaries."
   (company-minimum-prefix-length 3)
   (company-dabbrev-downcase nil)
   :config
-  (global-company-mode t))
+  ;; (global-company-mode t)
+  )
 
 (use-package expand-region
   ;; Expand the region by step
@@ -407,6 +408,9 @@ surrounded by word boundaries."
   (lsp-completion-enable nil)
   (lsp-file-watch-threshold 2000)
   (lsp-headerline-breadcrumb-enable nil)
+  ;; Need to toggle this to get eslint alongside
+  ;; (lsp-disabled-clients '(ts-ls))
+  (lsp-disabled-clients nil)
   ;; Config specific to tsserver/theia ide
   (lsp-clients-typescript-log-verbosity "off")
   :init
