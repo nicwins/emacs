@@ -236,9 +236,9 @@ surrounded by word boundaries."
   ;; Indent as you type
   :hook (prog-mode . aggressive-indent-mode))
 
-;; (use-package rainbow-delimiters
-;;   ;; Change color of each inner block delimiter
-;;   :hook ((prog-mode text-mode) . rainbow-delimiters-mode))
+(use-package rainbow-delimiters
+  ;; Change color of each inner block delimiter
+  :hook ((prog-mode text-mode) . rainbow-delimiters-mode))
 
 (use-package guix
   :if (memq system-type '(gnu/linux))
@@ -407,7 +407,6 @@ surrounded by word boundaries."
   (lsp-completion-show-kind nil)
   (lsp-file-watch-threshold 2000)
   (lsp-headerline-breadcrumb-enable nil)
-  
   ;; Need to toggle this to get eslint alongside
   ;; (lsp-disabled-clients '(ts-ls))
   (lsp-disabled-clients nil)

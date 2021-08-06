@@ -44,10 +44,11 @@ yabai -m space 3 --label extra
 
 # window rules
 yabai -m rule --add app="^Emacs$" space=emacs
-yabai -m rule --add app="^Zoom$" space=scratch
-yabai -m rule --add app="^Chrome$" space=web
-yabai -m rule --add app="^Teams$" space=comms
-yabai -m rule --add app="^Outlook$" space=comms
+yabai -m rule --add app="^zoom.us$" space=scratch
+yabai -m rule --add app="^Google Chrome$" space=web
+yabai -m rule --add app="^Microsoft Teams$" space=comms
+yabai -m rule --add app="^Microsoft Outlook$" space=comms
+yabai -m rule --add app="^Studio 3T"
 yabai -m rule --add label="System Preferences" app="^System Preferences$" title=".*" manage=off
 yabai -m rule --add label="Software Update" title="Software Update" manage=off
 
