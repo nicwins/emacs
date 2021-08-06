@@ -482,8 +482,6 @@ surrounded by word boundaries."
 
 (use-package perspective
   ;; window and buffer manager
-  :hook
-  (kill-emacs . persp-state-save)
   :bind
   (("C-c t" . persp-switch)
    ("C-x b" . persp-switch-to-buffer*)
@@ -500,6 +498,10 @@ surrounded by word boundaries."
   (setq disable-mouse-wheel-events nil)
   :config
   (global-disable-mouse-mode))
+
+(use-package prism
+  :custom
+  (prism-parens t))
 
 ;;;; Built-in Package Config
 
