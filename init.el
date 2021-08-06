@@ -236,9 +236,9 @@ surrounded by word boundaries."
   ;; Indent as you type
   :hook (prog-mode . aggressive-indent-mode))
 
-(use-package rainbow-delimiters
-  ;; Change color of each inner block delimiter
-  :hook ((prog-mode text-mode) . rainbow-delimiters-mode))
+;; (use-package rainbow-delimiters
+;;   ;; Change color of each inner block delimiter
+;;   :hook ((prog-mode text-mode) . rainbow-delimiters-mode))
 
 (use-package guix
   :if (memq system-type '(gnu/linux))
@@ -500,6 +500,8 @@ surrounded by word boundaries."
   (global-disable-mouse-mode))
 
 (use-package prism
+  :hook
+  ((emacs-lisp-mode) . prism-mode)
   :custom
   (prism-parens t))
 
@@ -705,7 +707,7 @@ surrounded by word boundaries."
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (windmove-default-keybindings)
-  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el")))
-
+  ;;  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
+  )
 (provide 'init)
 ;;; init.el ends here

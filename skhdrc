@@ -38,10 +38,10 @@ cmd+ctrl+alt - c : yabai -m space --focus emacs
 cmd+ctrl+alt - d : yabai -m space --focus mongo
 cmd+ctrl+alt - r : yabai -m space --focus postman
 cmd+ctrl+alt - s : yabai -m space --focus scratch
-cmd+ctrl+alt - t : yabai -m space --focus 8
-cmd+ctrl+alt - w : yabai -m space --focus 9
-cmd+ctrl+alt - f : yabai -m space --focus web
-cmd+ctrl+alt - p : yabai -m space --focus comms
+cmd+ctrl+alt - t : yabai -m space --focus last
+cmd+ctrl+alt - w : yabai -m space --focus web
+cmd+ctrl+alt - f : yabai -m space --focus comms
+cmd+ctrl+alt - p : yabai -m space --focus extra
 cmd+ctrl+alt - g : yabai -m space --focus recent
 
 # Move container to workspace
