@@ -280,8 +280,8 @@ surrounded by word boundaries."
   (savehist-mode))
 
 (use-package consult
-  ;; enhances navigation with selectrum completions
-  :after (selectrum projectile)
+  ;; enhanced selection ui
+  :after (projectile)
   :commands (projectile-project-root)
   :init
   ;; Optionally tweak the register preview window.
@@ -295,6 +295,7 @@ surrounded by word boundaries."
   (xref-show-xrefs-function #'consult-xref)
   (xref-show-definitions-function #'consult-xref)
   (consult-narrow-key "<"))
+
 
 (use-package consult-flycheck
   ;; add a consult-flycheck command
@@ -406,6 +407,7 @@ surrounded by word boundaries."
   (lsp-completion-show-kind nil)
   (lsp-file-watch-threshold 2000)
   (lsp-headerline-breadcrumb-enable nil)
+  
   ;; Need to toggle this to get eslint alongside
   ;; (lsp-disabled-clients '(ts-ls))
   (lsp-disabled-clients nil)
