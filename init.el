@@ -405,7 +405,9 @@ surrounded by word boundaries."
   (lsp-enable-text-document-color nil)
   (lsp-completion-enable nil)
   (lsp-completion-show-kind nil)
-  (lsp-file-watch-threshold 2000)
+  (lsp-enable-file-watchers nil)
+  (lsp-keep-workspace-alive nil)
+  ;;  (lsp-file-watch-threshold 2000)
   (lsp-headerline-breadcrumb-enable nil)
   ;; Need to toggle this to get eslint alongside
   ;; (lsp-disabled-clients '(ts-ls))
@@ -500,9 +502,17 @@ surrounded by word boundaries."
 
 (use-package prism
   :hook
-  ((emacs-lisp-mode) . prism-mode)
+  ((emacs-lisp-mode
+    scheme-mode) . prism-mode)
   :custom
   (prism-parens t))
+
+(use-package outshine
+  :hook
+  ((emacs-lisp-mode
+    conf-mode) . outshine-mode)
+  :custom
+  (outline-minor-mode-prefix "\C-c o"))
 
 ;;;; Built-in Package Config
 
@@ -627,6 +637,27 @@ surrounded by word boundaries."
    ("RET" . reb-replace-regexp))
   :custom
   (reb-re-syntax 'rx))
+
+(use-package ediff
+  :custom
+  (ediff-window-setup-function 'ediff-setup-windows-plain)
+  (ediff-split-window-function 'split-window-horizontally)
+  (ediff-diff-options "-w")
+  :config
+  (defvar ediff-last-windows nil
+    "Last ediff window configuration.")
+
+  (defun ediff-restore-windows ()
+    "Restore window configuration to `ediff-last-windows'."
+    (set-window-configuration ediff-last-windows)
+    (remove-hook 'ediff-after-quit-hook-internal
+                 'ediff-restore-windows))
+
+  (defadvice ediff-buffers (around ediff-restore-windows activate)
+    (setq ediff-last-windows (current-window-configuration))
+    (add-hook 'ediff-after-quit-hook-internal 'ediff-restore-windows)
+    ad-do-it))
+
 
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
