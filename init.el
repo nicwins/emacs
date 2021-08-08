@@ -267,9 +267,20 @@ surrounded by word boundaries."
 (use-package vertico
   :init
   (vertico-mode)
+  :load-path "~/src/emacs/straight/repos/vertico/extensions/"
   :bind
   (:map vertico-map
         ("?" . minibuffer-completion-help)))
+
+(use-package vertico-directory
+  :straight nil
+  :after (vertico)
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 (use-package orderless
   :custom
@@ -424,7 +435,10 @@ surrounded by word boundaries."
   (lsp-ui-sideline-show-code-actions nil)
   (lsp-ui-sideline-update-mode "line")
   (lsp-ui-peek-enable nil)
-  (lsp-ui-doc-enable nil))
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-delay 9000)
+  (lsp-ui-doc-show-with-cursor nil)
+  (lsp-ui-doc-show-with-mouse nil))
 
 (use-package consult-lsp
   :after (consult lsp)
@@ -433,6 +447,7 @@ surrounded by word boundaries."
 (use-package sml-mode)
 
 (use-package paredit
+  :bind (:map paredit-mode-map ("M-s" . consult-line))
   :hook
   ((emacs-lisp-mode
     eval-expression-minibuffer-setup
@@ -501,6 +516,7 @@ surrounded by word boundaries."
   (global-disable-mouse-mode))
 
 (use-package prism
+  ;; colorize lisp by block
   :hook
   ((emacs-lisp-mode
     scheme-mode) . prism-mode)
@@ -508,17 +524,45 @@ surrounded by word boundaries."
   (prism-parens t))
 
 (use-package outshine
+  ;; code folding for lisp files
+  :init
+  (defvar outline-minor-mode-prefix "C-c o")
   :hook
   ((emacs-lisp-mode
     conf-mode) . outshine-mode)
+  :bind
+  ("C-c o" . outshine-cycle)
   :custom
-  (outline-minor-mode-prefix "\C-c o"))
+  (outshine-use-speed-commands t))
+
+(use-package password-store
+  ;; front end for `pass'
+  :if (memq system-type '(gnu/linux)))
+
+(use-package pass
+  ;; use the unix `pass' store
+  :if (memq system-type '(gnu/linux)))
+
+(use-package diredfl
+  ;; dired font-lock
+  :custom (diredfl-global-mode t))
+
+(use-package dired-git-info
+  ;; show latest commit message in dired
+  :bind (:map dired-mode-map
+              (")" . dired-git-info-mode)))
+
+(use-package async
+  ;; use dired functions async
+  :config
+  (autoload 'dired-async-mode "dired-async.el" nil t)
+  (dired-async-mode 1))
 
 ;;;; Built-in Package Config
 
 (use-package xref
   ;; find identifier in prog modes
-  :straight nil
+  :straight (:type built-in)
   :custom
   (xref-search-program 'ripgrep))
 
@@ -550,10 +594,6 @@ surrounded by word boundaries."
   (dired-omit-verbose nil)
   :config
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$")))
-
-(use-package diredfl
-  ;; dired font-lock
-  :custom (diredfl-global-mode t))
 
 (use-package server
   ;; The emacs server
@@ -658,6 +698,15 @@ surrounded by word boundaries."
     (add-hook 'ediff-after-quit-hook-internal 'ediff-restore-windows)
     ad-do-it))
 
+(use-package erc
+  :straight nil
+  :hook
+  (erc-insert-post . erc-save-buffer-in-logs)
+  :custom
+  (erc-hide-timestamps t)
+  (erc-generate-log-file-name-function (quote erc-generate-log-file-name-with-date))
+  :config
+  (erc-log-mode))
 
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
