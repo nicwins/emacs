@@ -215,8 +215,10 @@ surrounded by word boundaries."
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (custom-file (no-littering-expand-etc-file-name "custom.el")))
 
-;; Automatically bisects init file
-(use-package bug-hunter)
+
+(use-package bug-hunter
+  ;; Automatically bisects init file
+  )
 
 (use-package expand-region
   ;; Expand the region by step
@@ -241,10 +243,12 @@ surrounded by word boundaries."
   :hook ((prog-mode text-mode) . rainbow-delimiters-mode))
 
 (use-package guix
+  ;; front end for guix commands
   :if (memq system-type '(gnu/linux))
   :hook (scheme-mode . guix-devel-mode))
 
 (use-package geiser-guile
+  ;; major mode for guile with repl
   :if (memq system-type '(gnu/linux))
   :custom
   (geiser-mode-start-repl-p t)
@@ -256,6 +260,7 @@ surrounded by word boundaries."
   :init (global-flycheck-mode))
 
 (use-package doom-modeline
+  ;; fancy modeline
   :custom
   (doom-modeline-height 18)
   (doom-modeline-buffer-encoding nil)
@@ -265,6 +270,7 @@ surrounded by word boundaries."
   (doom-modeline-mode 1))
 
 (use-package vertico
+  ;; displays lists using completing-read
   :init
   (vertico-mode)
   :load-path "~/src/emacs/straight/repos/vertico/extensions/"
@@ -273,6 +279,7 @@ surrounded by word boundaries."
         ("?" . minibuffer-completion-help)))
 
 (use-package vertico-directory
+  ;; easy bindings for navigating dirs
   :straight nil
   :after (vertico)
   :bind (:map vertico-map
@@ -283,6 +290,7 @@ surrounded by word boundaries."
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 (use-package orderless
+  ;; narrowing and filtering for selections
   :custom
   (completion-styles '(orderless))
   (completion-category-defaults nil)
@@ -327,6 +335,7 @@ surrounded by word boundaries."
   (prefix-help-command #'embark-prefix-help-command))
 
 (use-package embark-consult
+  ;; embark integration for consult
   :after (embark consult)
   :demand t ; only necessary if you have the hook below
   ;; if you want to have consult previews as you move around an
@@ -345,7 +354,9 @@ surrounded by word boundaries."
   (projectile-mode 1))
 
 ;; needed for projectile-ripgrep
-(use-package ripgrep)
+(use-package ripgrep
+  ;; faster grep
+  )
 
 (use-package rg
   ;; ripgrep for consult
@@ -383,6 +394,7 @@ surrounded by word boundaries."
         (user-error "Push to upstream aborted by user")))))
 
 (use-package apheleia
+  ;; run code formatters, saving point
   :straight
   (apheleia :type git
 	    :host github
@@ -394,11 +406,16 @@ surrounded by word boundaries."
               file))
   (apheleia-global-mode +1))
 
-(use-package json-mode)
+(use-package json-mode
+  ;; major mode for json
+  )
 
-(use-package rjsx-mode)
+(use-package rjsx-mode
+  ;; jsx-aware major mode
+  )
 
 (use-package lsp-mode
+  ;; language server protocol support
   :commands (lsp lsp-deferred)
   :hook ((js-mode
           rjsx-mode
@@ -431,6 +448,7 @@ surrounded by word boundaries."
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
 (use-package lsp-ui
+  ;; lsp-ui visual extras
   :custom
   (lsp-ui-sideline-show-code-actions nil)
   (lsp-ui-sideline-update-mode "line")
@@ -441,12 +459,16 @@ surrounded by word boundaries."
   (lsp-ui-doc-show-with-mouse nil))
 
 (use-package consult-lsp
+  ;; provide a consult front end for lsp
   :after (consult lsp)
   :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
 
-(use-package sml-mode)
+(use-package sml-mode
+  ;; temporary for coursera
+  )
 
 (use-package paredit
+  ;; auto manage paren pairs
   :bind (:map paredit-mode-map ("M-s" . consult-line))
   :hook
   ((emacs-lisp-mode
@@ -638,6 +660,7 @@ surrounded by word boundaries."
   (save-place-mode 1))
 
 (use-package sql
+  ;; major mode for sql, with repl
   :straight nil
   :custom
   (sql-product 'postgres))
@@ -679,6 +702,7 @@ surrounded by word boundaries."
   (reb-re-syntax 'rx))
 
 (use-package ediff
+  ;; better merge conflict management
   :custom
   (ediff-window-setup-function 'ediff-setup-windows-plain)
   (ediff-split-window-function 'split-window-horizontally)
@@ -699,6 +723,7 @@ surrounded by word boundaries."
     ad-do-it))
 
 (use-package erc
+  ;; emacs irc interface
   :straight nil
   :hook
   (erc-insert-post . erc-save-buffer-in-logs)
