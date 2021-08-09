@@ -730,6 +730,8 @@ surrounded by word boundaries."
    ("M-<tab>" . jump-to-mark)
    ("M-'" . consult-register-store)
    ("M-#" . consult-register-load)
+   ("C-c C-c" . server-edit)
+   ("C-c C-k" . server-edit-abort)
    ;; C-x bindings
    ("C-x C-b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
