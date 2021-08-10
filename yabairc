@@ -40,7 +40,7 @@ yabai -m space 9 --label last
 yabai -m space 1 --label web
 yabai -m space 2 --label comms
 yabai -m space 3 --label extra
-
+yabai -m config external_bar all:26:0
 
 # window rules
 yabai -m rule --add app="^Emacs$" space=emacs
