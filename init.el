@@ -435,7 +435,6 @@ surrounded by word boundaries."
   (lsp-completion-show-kind nil)
   (lsp-enable-file-watchers nil)
   (lsp-keep-workspace-alive nil)
-  ;;  (lsp-file-watch-threshold 2000)
   (lsp-headerline-breadcrumb-enable nil)
   ;; Need to toggle this to get eslint alongside
   ;; (lsp-disabled-clients '(ts-ls))
@@ -755,8 +754,6 @@ surrounded by word boundaries."
    ("M-<tab>" . jump-to-mark)
    ("M-'" . consult-register-store)
    ("M-#" . consult-register-load)
-   ("C-c C-c" . server-edit)
-   ("C-c C-k" . server-edit-abort)
    ;; C-x bindings
    ("C-x C-b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
@@ -773,6 +770,8 @@ surrounded by word boundaries."
    ("C-c h" . consult-history)
    ("C-c m" . consult-mode-command)
    ("C-c r" . my/switch-to-last-buffer)
+   ("C-c C-c" . server-edit)
+   ("C-c C-k" . server-edit-abort)
    ([f1] . projectile-find-file)
    ([f2] . consult-ripgrep)
    ([f3] . projectile-switch-project)
@@ -813,7 +812,6 @@ surrounded by word boundaries."
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (windmove-default-keybindings)
-  ;;  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
-  )
+  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el")))
 (provide 'init)
 ;;; init.el ends here
