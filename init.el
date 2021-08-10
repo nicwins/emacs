@@ -273,7 +273,7 @@ surrounded by word boundaries."
   ;; displays lists using completing-read
   :init
   (vertico-mode)
-  :load-path "~/src/emacs/straight/repos/vertico/extensions/"
+  :load-path "~/.config/emacs/straight/repos/vertico/extensions/"
   :bind
   (:map vertico-map
         ("?" . minibuffer-completion-help)))
@@ -807,8 +807,7 @@ surrounded by word boundaries."
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
     (setq visible-bell nil)
     (setq ring-bell-function 'ignore)
-    (setq auto-save-default nil)
-    (ns-use-native-fullscreen nil))
+    (setq auto-save-default nil))
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)

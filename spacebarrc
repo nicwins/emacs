@@ -20,7 +20,7 @@ spacebar -m config padding_right        20
 spacebar -m config spacing_left         25
 spacebar -m config spacing_right        15
 spacebar -m config text_font            "MesloLGS NF:Regular:13.0"
-spacebar -m config icon_font            "MesloLGS NF:Regular:13.0"
+spacebar -m config icon_font            "Font Awesome Free:Solid:13.0"
 spacebar -m config right_shell          on
 spacebar -m config right_shell_command  "whoami"
 spacebar -m config right_shell_icon     
