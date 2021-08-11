@@ -758,6 +758,7 @@ surrounded by word boundaries."
   :custom
   (erc-hide-timestamps t)
   (erc-generate-log-file-name-function (quote erc-generate-log-file-name-with-date))
+  (erc-hide-list '("JOIN" "PART" "QUIT"))
   :config
   (erc-log-mode))
 
