@@ -409,15 +409,30 @@ surrounded by word boundaries."
   ;; major mode for json
   )
 
-(use-package rjsx-mode
-  ;; jsx-aware major mode
-  )
+;; (use-package rjsx-mode
+;;   ;; jsx-aware major mode
+;;   )
+
+(use-package web-mode
+  :ensure t
+  :mode
+  ("\\.ejs\\'" "\\.hbs\\'" "\\.html\\'" "\\.php\\'" "\\.[jt]sx?\\'")
+  :custom
+  (web-mode-content-types-alist '(("jsx" . "\\.[jt]sx?\\'")))
+  (web-mode-markup-indent-offset 2)
+  (web-mode-css-indent-offset 2)
+  (web-mode-code-indent-offset 2)
+  (web-mode-script-padding 2)
+  (web-mode-block-padding 2)
+  (web-mode-style-padding 2)
+  (web-mode-enable-auto-pairing t)
+  (web-mode-enable-auto-closing t)
+  (web-mode-enable-current-element-highlight t))
 
 (use-package lsp-mode
   ;; language server protocol support
   :commands (lsp lsp-deferred)
-  :hook ((js-mode
-          rjsx-mode
+  :hook ((web-mode
           json-mode
           mhtml-mode
           yaml-mode) . lsp-deferred)
@@ -537,11 +552,26 @@ surrounded by word boundaries."
 
 (use-package prism
   ;; colorize lisp by block
+  :preface
+  (defun my/prism-set ()
+    "Customize prism coloring."
+    (prism-set-colors
+      :strings-fn
+      (lambda (color)
+        (prism-blend color "white" 0.65))
+      :comments-fn
+      (lambda (color)
+        (prism-blend color (face-attribute 'font-lock-comment-face :foreground) 0.01))
+      :parens-fn
+      (lambda (color)
+        (prism-blend color (face-attribute 'default :background) 0.3))))
   :hook
   ((emacs-lisp-mode
     scheme-mode) . prism-mode)
   :custom
-  (prism-parens t))
+  (prism-parens t)
+  :config
+  (my/prism-set))
 
 (use-package outshine
   ;; code folding for lisp files
@@ -790,6 +820,7 @@ surrounded by word boundaries."
   (cursor-type '(bar . 2))              ; no fat cursor
   (js-indent-level 2)                   ; js settings needed for rjsx
   (js-switch-indent-offset 2)           ; more js settings
+  (css-indent-offset 2)
   (fill-column 80)                      ; default fill column
   (minibuffer-prompt-properties
    '(read-only t cursor-intangible t face minibuffer-prompt)) ; no cursor in minibuffer
