@@ -55,20 +55,19 @@ cmd+ctrl+alt - l : yabai -m window --toggle split
 cmd+ctrl+alt - y : yabai -m window --toggle-float;\
                    yabai -m window --grid 4:4:1:1:2:2
 
-# toggle layout split
-cmd+ctrl+alt - . : yabai -m space --rotate 90
+# toggle layout split S-.
+cmd+ctrl+alt - 0x2F : yabai -m space --rotate 90
 
-# fullscreen
-cmd+ctrl+alt - / : yabai -m space --zoom-parent;
+# fullscreen S-/
+cmd+ctrl+alt - 0x2C : yabai -m space --toggle padding;\
+                      yabai -m space --toggle gap
 
 # Kill focused window
 cmd+ctrl+alt - k : chunkc tiling::window --close
 
 :: swap
-cmd+ctrl+alt - , ; swap
+cmd+ctrl+alt - 0x2B ; swap
 swap < q ; default
-swap < ctrl+g ; default
-swap < esc ; default
 swap < n : yabai -m window --swap west
 swap < e : yabai -m window --swap south
 swap < i : yabai -m window --swap north

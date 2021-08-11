@@ -240,7 +240,7 @@ surrounded by word boundaries."
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
-  :hook ((prog-mode text-mode) . rainbow-delimiters-mode))
+  :hook ((rjsx-mode json-mode text-mode) . rainbow-delimiters-mode))
 
 (use-package guix
   ;; front end for guix commands
@@ -314,7 +314,6 @@ surrounded by word boundaries."
   (xref-show-xrefs-function #'consult-xref)
   (xref-show-definitions-function #'consult-xref)
   (consult-narrow-key "<"))
-
 
 (use-package consult-flycheck
   ;; add a consult-flycheck command
@@ -807,7 +806,8 @@ surrounded by word boundaries."
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
     (setq visible-bell nil)
     (setq ring-bell-function 'ignore)
-    (setq auto-save-default nil))
+    (setq auto-save-default nil)
+    (setq ns-use-native-fullscreen nil))
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
