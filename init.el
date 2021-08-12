@@ -427,6 +427,7 @@ surrounded by word boundaries."
   (web-mode-style-padding 2)
   (web-mode-enable-auto-pairing t)
   (web-mode-enable-auto-closing t)
+  (web-mode-enable-auto-quoting nil)
   (web-mode-enable-current-element-highlight t))
 
 (use-package lsp-mode
@@ -624,6 +625,22 @@ surrounded by word boundaries."
 
 (use-package filetags
   :if (memq system-type '(gnu/linux)))
+
+;; (use-package tree-sitter
+;;   :commands
+;;   (tree-sitter-langs)
+;;   :custom
+;;   (tree-sitter-hl-use-font-lock-keywords nil)
+;;   :hook
+;;   (tree-sitter-after-on . tree-sitter-hl-mode)
+;;   :config
+;;   (global-tree-sitter-mode))
+
+;; (use-package tree-sitter-langs
+;;   :after tree-sitter
+;;   :config
+;;   (tree-sitter-require 'javascript)
+;;   (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . javascript)))
 
 ;;;; Built-in Package Config
 
@@ -858,11 +875,14 @@ surrounded by word boundaries."
     (setq visible-bell nil)
     (setq ring-bell-function 'ignore)
     (setq auto-save-default nil)
+    (setq frame-resize-pixelwise t)
+    (set-frame-size (selected-frame) 2542 1412 t)
     (setq ns-use-native-fullscreen nil))
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (windmove-default-keybindings)
-  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el")))
+  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
+  )
 (provide 'init)
 ;;; init.el ends here
