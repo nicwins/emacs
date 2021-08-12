@@ -525,12 +525,25 @@ surrounded by word boundaries."
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right)
-  (add-hook 'org-mode-hook 'variable-pitch-mode)
+  (add-hook 'org-mode-hook
+            '(lambda ()
+               (variable-pitch-mode 1)
+               (mapc
+                (lambda (face)
+                  (set-face-attribute face nil :inherit 'fixed-pitch))
+                (list 'org-code
+                      'org-link
+                      'org-block
+                      'org-table
+                      'org-block-begin-line
+                      'org-block-end-line
+                      'org-meta-line
+                      'org-document-info-keyword))))
   (add-hook 'org-mode-hook 'visual-line-mode))
 
 (use-package visual-fill-column
   ;; Line wrap at the fill column, not buffer end
-  :hook visual-line-mode)
+  :hook (visual-line-mode . visual-fill-column-mode))
 
 (use-package yasnippet
   ;; template system for emacs
@@ -568,8 +581,7 @@ surrounded by word boundaries."
       (lambda (color)
         (prism-blend color (face-attribute 'default :background) 0.3))))
   :hook
-  ((emacs-lisp-mode
-    scheme-mode) . prism-mode)
+  ((emacs-lisp-mode scheme-mode) . prism-mode)
   :custom
   (prism-parens t)
   (prism-comments nil)
@@ -581,8 +593,7 @@ surrounded by word boundaries."
   :init
   (defvar outline-minor-mode-prefix "C-c o")
   :hook
-  ((emacs-lisp-mode
-    conf-mode) . outshine-mode)
+  ((emacs-lisp-mode conf-mode) . outshine-mode)
   :bind
   ("C-c o" . outshine-cycle)
   :custom
@@ -841,7 +852,7 @@ surrounded by word boundaries."
   (show-paren-mode 1)                   ; Show matching parens
   (set-face-attribute 'default nil :family "Hack" :height 140)
   (set-face-attribute 'fixed-pitch nil :family "Hack")
-  (set-face-attribute 'variable-pitch nil :family "DejaVu Serif")
+  (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 140)
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
     (setq visible-bell nil)
