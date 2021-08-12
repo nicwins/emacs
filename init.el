@@ -517,15 +517,20 @@ surrounded by word boundaries."
   (org-default-notes-file "~/notes/index.org")
   (org-agenda-files (list "~/notes/index.org"))
   (org-hide-emphasis-markers t)
+  (org-hide-leading-stars t)
+  (org-pretty-entities t)
+  (org-startup-indented t)
   :config
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right))
+  (add-hook 'org-shiftright-final-hook 'windmove-right)
+  (add-hook 'org-mode-hook 'variable-pitch-mode)
+  (add-hook 'org-mode-hook 'visual-line-mode))
 
 (use-package visual-fill-column
   ;; Line wrap at the fill column, not buffer end
-  :hook (visual-line-mode . visual-fill-column-mode))
+  :hook visual-line-mode)
 
 (use-package yasnippet
   ;; template system for emacs
@@ -558,10 +563,7 @@ surrounded by word boundaries."
     (prism-set-colors
       :strings-fn
       (lambda (color)
-        (prism-blend color "white" 0.65))
-      :comments-fn
-      (lambda (color)
-        (prism-blend color (face-attribute 'font-lock-comment-face :foreground) 0.01))
+        (prism-blend color "white" 0.70))
       :parens-fn
       (lambda (color)
         (prism-blend color (face-attribute 'default :background) 0.3))))
@@ -570,6 +572,7 @@ surrounded by word boundaries."
     scheme-mode) . prism-mode)
   :custom
   (prism-parens t)
+  (prism-comments nil)
   :config
   (my/prism-set))
 
@@ -836,7 +839,9 @@ surrounded by word boundaries."
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
   (show-paren-mode 1)                   ; Show matching parens
-  (set-frame-font "Hack-14")
+  (set-face-attribute 'default nil :family "Hack" :height 140)
+  (set-face-attribute 'fixed-pitch nil :family "Hack")
+  (set-face-attribute 'variable-pitch nil :family "DejaVu Serif")
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
     (setq visible-bell nil)
