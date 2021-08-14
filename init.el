@@ -405,13 +405,19 @@ surrounded by word boundaries."
               file))
   (apheleia-global-mode +1))
 
-(use-package json-mode
-  ;; major mode for json
-  )
+(use-package json-mode)     ; major mode for json
+(use-package rjsx-mode)     ; jsx-aware major mode
+(use-package js-import)     ; auto add imports from project
+(use-package js2-refactor
+  ;; add refactoring commands
+  :config
+  (js2r-add-keybindings-with-prefix "C-c C-r"))
 
-(use-package rjsx-mode
-  ;; jsx-aware major mode
-  )
+(use-package xref-js2
+  :config
+  (add-hook 'rjsx-mode-hook
+            (lambda ()
+              (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 
 (use-package lsp-mode
   ;; language server protocol support
@@ -531,7 +537,20 @@ surrounded by word boundaries."
 
 (use-package yasnippet
   ;; template system for emacs
-  :hook (prog-mode . yas-minor-mode))
+  :hook (prog-mode . yas-minor-mode)
+  :bind (("C-c y d" . yas-load-directory)
+         ("C-c y i" . yas-insert-snippet)
+         ("C-c y f" . yas-visit-snippet-file)
+         ("C-c y n" . yas-new-snippet)
+         ("C-c y t" . yas-tryout-snippet)
+         ("C-c y l" . yas-describe-tables)
+         ("C-c y g" . yas/global-mode)
+         ("C-c y m" . yas/minor-mode)
+         ("C-c y r" . yas-reload-all)
+         ("C-c y x" . yas-expand)
+         :map yas-keymap
+         ("C-i" . yas-next-field-or-maybe-expand))
+  :mode ("/\\.emacs\\.d/snippets/" . snippet-mode))
 
 (use-package perspective
   ;; window and buffer manager
@@ -771,7 +790,8 @@ surrounded by word boundaries."
   ;; emacs irc interface
   :straight nil
   :hook
-  (erc-insert-post . erc-save-buffer-in-logs)
+  ((erc-insert-post . erc-save-buffer-in-logs)
+   (erc-mode . (lambda () (variable-pitch-mode 1))))
   :custom
   (erc-hide-timestamps t)
   (erc-generate-log-file-name-function (quote erc-generate-log-file-name-with-date))
@@ -805,7 +825,6 @@ surrounded by word boundaries."
    ("C-x C-b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
    ("C-x f" . consult-find)
-   ("C-x r q" . save-buffers-kill-terminal)
    ;; C-c bindings (user-map)
    ("C-c c" . org-capture)
    ("C-c i" . consult-imenu)
