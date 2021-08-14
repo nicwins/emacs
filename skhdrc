@@ -19,10 +19,10 @@ cmd+ctrl+alt - i : yabai -m window --focus north
 cmd+ctrl+alt - o : yabai -m window --focus east
 
 # Moving Windows
-cmd+ctrl+alt - n : yabai -m window --warp west
-cmd+ctrl+alt - e : yabai -m window --warp south
-cmd+ctrl+alt - i : yabai -m window --warp north
-cmd+ctrl+alt - o : yabai -m window --warp east
+shift+cmd+ctrl+alt - n : yabai -m window --warp west
+shift+cmd+ctrl+alt - e : yabai -m window --warp south
+shift+cmd+ctrl+alt - i : yabai -m window --warp north
+shift+cmd+ctrl+alt - o : yabai -m window --warp east
 
 ## workspaces
 # switch to workspace

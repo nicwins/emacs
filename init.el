@@ -409,31 +409,14 @@ surrounded by word boundaries."
   ;; major mode for json
   )
 
-;; (use-package rjsx-mode
-;;   ;; jsx-aware major mode
-;;   )
-
-(use-package web-mode
-  :ensure t
-  :mode
-  ("\\.ejs\\'" "\\.hbs\\'" "\\.html\\'" "\\.php\\'" "\\.[jt]sx?\\'")
-  :custom
-  (web-mode-content-types-alist '(("jsx" . "\\.[jt]sx?\\'")))
-  (web-mode-markup-indent-offset 2)
-  (web-mode-css-indent-offset 2)
-  (web-mode-code-indent-offset 2)
-  (web-mode-script-padding 2)
-  (web-mode-block-padding 2)
-  (web-mode-style-padding 2)
-  (web-mode-enable-auto-pairing t)
-  (web-mode-enable-auto-closing t)
-  (web-mode-enable-auto-quoting nil)
-  (web-mode-enable-current-element-highlight t))
+(use-package rjsx-mode
+  ;; jsx-aware major mode
+  )
 
 (use-package lsp-mode
   ;; language server protocol support
   :commands (lsp lsp-deferred)
-  :hook ((web-mode
+  :hook ((rjsx-mode
           json-mode
           mhtml-mode
           yaml-mode) . lsp-deferred)
@@ -871,7 +854,8 @@ surrounded by word boundaries."
   (set-face-attribute 'fixed-pitch nil :family "Hack")
   (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 140)
   (when (eq system-type 'darwin)
-    (set-face-attribute 'default (selected-frame) :font "Hack" :height 180)
+    (set-face-attribute 'default (selected-frame) :family "Hack" :height 190)
+    (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 190)
     (setq visible-bell nil)
     (setq ring-bell-function 'ignore)
     (setq auto-save-default nil)
@@ -882,7 +866,6 @@ surrounded by word boundaries."
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (windmove-default-keybindings)
-  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
-  )
+  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el")))
 (provide 'init)
 ;;; init.el ends here
