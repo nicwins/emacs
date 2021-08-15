@@ -644,6 +644,10 @@ surrounded by word boundaries."
 ;;   (tree-sitter-require 'javascript)
 ;;   (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . javascript)))
 
+(use-package highlight-parentheses
+  ;; highlight all parens surrounding point
+  :hook proeg-mode)
+
 ;;;; Built-in Package Config
 
 (use-package xref
@@ -666,6 +670,7 @@ surrounded by word boundaries."
   (dired-dwim-target t)
   ;; Dired listing switches - see man ls
   (dired-listing-switches "-alhF --group-directories-first")
+  (dired-hide-details-hide-symlink-targets nil)
   (dired-auto-revert-buffer t)
   (dired-guess-shell-alist-user
    '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
