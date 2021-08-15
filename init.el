@@ -646,7 +646,7 @@ surrounded by word boundaries."
 
 (use-package highlight-parentheses
   ;; highlight all parens surrounding point
-  :hook proeg-mode)
+  :hook (prog-mode .  highlight-parentheses-mode))
 
 ;;;; Built-in Package Config
 
@@ -831,6 +831,7 @@ surrounded by word boundaries."
    ("C-x 4 b" . consult-buffer-other-window)
    ("C-x f" . consult-find)
    ;; C-c bindings (user-map)
+   ("C-c a" . org-agenda)
    ("C-c c" . org-capture)
    ("C-c i" . consult-imenu)
    ("C-c I" . consult-project-imenu)
@@ -859,6 +860,7 @@ surrounded by word boundaries."
   (indicate-empty-lines t)              ; show lines at the end of buffer
   (sentence-end-double-space nil)       ; single space after a sentence
   (indent-tabs-mode nil)                ; use spaces instead of tabs
+  (tab-width 2)
   (cursor-type '(bar . 2))              ; no fat cursor
   (js-indent-level 2)                   ; js settings needed for rjsx
   (js-switch-indent-offset 2)           ; more js settings
@@ -889,7 +891,9 @@ surrounded by word boundaries."
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
-  (windmove-default-keybindings)
-  (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el")))
+  (windmove-default-keybindings))
+
+(persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
+
 (provide 'init)
 ;;; init.el ends here
