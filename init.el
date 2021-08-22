@@ -215,16 +215,9 @@ surrounded by word boundaries."
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (custom-file (no-littering-expand-etc-file-name "custom.el")))
 
-
 (use-package bug-hunter
   ;; Automatically bisects init file
   )
-
-(use-package expand-region
-  ;; Expand the region by step
-  :bind
-  (("C-=" . er/expand-region)
-   ("C-\\" . er/contract-region)))
 
 (use-package visible-mark
   ;; Makes the mark visible
@@ -318,6 +311,12 @@ surrounded by word boundaries."
 (use-package consult-flycheck
   ;; add a consult-flycheck command
   :after (consult flycheck))
+
+;; (use-package consult-dir
+;;   :bind (("C-x C-d" . consult-dir)
+;;          :map minibuffer-local-completion-map
+;;          ("C-x C-d" . consult-dir)
+;;          ("C-x C-j" . consult-dir-jump-file)))
 
 (use-package marginalia
   ;; adds annotations to consult
@@ -426,7 +425,6 @@ surrounded by word boundaries."
           json-mode
           mhtml-mode
           yaml-mode) . lsp-deferred)
-  (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-indentation nil)
@@ -493,43 +491,37 @@ surrounded by word boundaries."
   ;; formatting for yml files
   :mode "\\.yml\\'")
 
-(use-package which-key
-  ;; shows list of available completions when key sequences begin
-  :custom
-  (which-key-popup-type 'minibuffer)
-  (which-key-sort-order 'which-key-key-order-alpha)
-  :config
-  (which-key-mode))
-
 (use-package org
   :custom
   (org-directory "~/notes")
   (org-default-notes-file "~/notes/index.org")
-  (org-agenda-files (list "~/notes/index.org"))
+  (org-agenda-files (list "~/notes"))
   (org-hide-emphasis-markers t)
   (org-hide-leading-stars t)
   (org-pretty-entities t)
   (org-startup-indented t)
+  (org-startup-with-inline-images t)
+  (org-image-actual-width '(300))
+  (org-agenda-restore-windows-after-quit t)
   :config
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right)
-  (add-hook 'org-mode-hook
-            '(lambda ()
-               (variable-pitch-mode 1)
-               (mapc
-                (lambda (face)
-                  (set-face-attribute face nil :inherit 'fixed-pitch))
-                (list 'org-code
-                      'org-link
-                      'org-block
-                      'org-table
-                      'org-block-begin-line
-                      'org-block-end-line
-                      'org-meta-line
-                      'org-document-info-keyword))))
   (add-hook 'org-mode-hook 'visual-line-mode))
+
+(use-package mixed-pitch
+  :hook (text-mode . mixed-pitch-mode)
+  :config
+  (set-face-attribute 'default nil :family "Hack" :height 150)
+  (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
+  (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150))
+
+(use-package org-superstar
+  ;; Nice bullets
+  :hook (org-mode . org-superstar-mode)
+  :config
+  (setq org-superstar-special-todo-items t))
 
 (use-package visual-fill-column
   ;; Line wrap at the fill column, not buffer end
@@ -571,36 +563,25 @@ surrounded by word boundaries."
   :config
   (global-disable-mouse-mode))
 
-(use-package prism
-  ;; colorize lisp by block
-  :preface
-  (defun my/prism-set ()
-    "Customize prism coloring."
-    (prism-set-colors
-      :strings-fn
-      (lambda (color)
-        (prism-blend color "white" 0.70))
-      :parens-fn
-      (lambda (color)
-        (prism-blend color (face-attribute 'default :background) 0.3))))
-  :hook
-  ((emacs-lisp-mode scheme-mode) . prism-mode)
-  :custom
-  (prism-parens t)
-  (prism-comments nil)
-  :config
-  (my/prism-set))
-
-(use-package outshine
-  ;; code folding for lisp files
-  :init
-  (defvar outline-minor-mode-prefix "C-c o")
-  :hook
-  ((emacs-lisp-mode conf-mode) . outshine-mode)
-  :bind
-  ("C-c o" . outshine-cycle)
-  :custom
-  (outshine-use-speed-commands t))
+;; (use-package prism
+;;   ;; colorize lisp by block
+;;   :preface
+;;   (defun my/prism-set ()
+;;     "Customize prism coloring."
+;;     (prism-set-colors
+;;       :strings-fn
+;;       (lambda (color)
+;;         (prism-blend color "white" 0.70))
+;;       :parens-fn
+;;       (lambda (color)
+;;         (prism-blend color (face-attribute 'default :background) 0.3))))
+;;   :hook
+;;   ((emacs-lisp-mode scheme-mode) . prism-mode)
+;;   :custom
+;;   (prism-parens t)
+;;   (prism-comments nil)
+;;   :config
+;;   (my/prism-set))
 
 (use-package password-store
   ;; front end for `pass'
@@ -846,8 +827,6 @@ surrounded by word boundaries."
    ("C-c C-k" . server-edit-abort)
    ([f1] . projectile-find-file)
    ([f2] . consult-ripgrep)
-   ([f3] . projectile-switch-project)
-   ([f5] . kmacro-call-macro)
    :map isearch-mode-map
    ("M-e" . consult-isearch)
    ("M-s l" . consult-line))
@@ -869,6 +848,7 @@ surrounded by word boundaries."
   (minibuffer-prompt-properties
    '(read-only t cursor-intangible t face minibuffer-prompt)) ; no cursor in minibuffer
   (enable-recursive-minibuffer t)
+  (help-window-select t)                ; move cursor to popup help windows
   :config
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (delete-selection-mode)
@@ -876,9 +856,8 @@ surrounded by word boundaries."
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
   (show-paren-mode 1)                   ; Show matching parens
-  (set-face-attribute 'default nil :family "Hack" :height 140)
-  (set-face-attribute 'fixed-pitch nil :family "Hack")
-  (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 140)
+  (set-face-attribute 'default nil :family "Hack" :height 150)
+  (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
   (when (eq system-type 'darwin)
     (set-face-attribute 'default (selected-frame) :family "Hack" :height 190)
     (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 190)
