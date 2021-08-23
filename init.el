@@ -1,18 +1,18 @@
 ;; init --- Initial setup -*- lexical-binding: t -*-
 
+;; Copyright (C) 2011-2021 Nicolas Winslow
+
+;; Author: Nicolas Winslow
+
 ;;; Commentary:
 
 ;;; Code:
 
 ;;;; Pre-Package Initialization
 
-;; Set all packages to compile async
-;; (setq-default comp-deferred-compilation t)
-
 ;;;; Initialize Package
 
 ;; This is only needed once, near the top of the file
-
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -433,8 +433,8 @@ surrounded by word boundaries."
   (lsp-signature-auto-activate nil)
   (lsp-signature-render-documentation nil)
   (lsp-enable-text-document-color nil)
-  (lsp-completion-enable nil)
-  (lsp-completion-show-kind nil)
+  ;;(lsp-completion-enable nil)
+  ;;(lsp-completion-show-kind nil)
   (lsp-enable-file-watchers nil)
   (lsp-keep-workspace-alive nil)
   (lsp-headerline-breadcrumb-enable nil)
@@ -629,7 +629,47 @@ surrounded by word boundaries."
   ;; highlight all parens surrounding point
   :hook (prog-mode .  highlight-parentheses-mode))
 
+(use-package helpful
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)
+         ("C-c C-d" . helpful-at-point)
+         ("C-h F" . helpful-function)
+         ("C-h C" . helpful-command)))
+
+(use-package corfu
+  :init
+  (corfu-global-mode))
+
 ;;;; Built-in Package Config
+
+(use-package isearch
+  :straight (:type built-in)
+  :custom
+  (isearch-allow-scroll t)
+  (lazy-highlight-buffer t)
+  (lazy-highlight-cleanup nil)
+  (lazy-highlight-initial-delay 0)
+  :hook
+  (isearch-update-post . me/isearch-aim-beginning)
+  :preface
+  (defun me/isearch-aim-beginning ()
+    "Move cursor back to the beginning of the current match."
+    (when (and isearch-forward (number-or-marker-p isearch-other-end))
+      (goto-char isearch-other-end))))
+
+(use-package help-mode
+  :straight (:type built-in)
+  :bind
+  (:map help-mode-map
+        ("<" . help-go-back)
+        (">" . help-go-forward)))
+
+(use-package dabbrev
+  ;; Swap M-/ and C-M-/
+  :straight (:type built-in)
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand)))
 
 (use-package xref
   ;; find identifier in prog modes
@@ -819,6 +859,7 @@ surrounded by word boundaries."
    ("C-c f" . consult-flycheck)
    ("C-c F" . consult-lsp-diagnostics)
    ("C-c s" . consult-lsp-symbols)
+   ("C-c o" . consult-outline)
    ("C-c v" . magit)
    ("C-c h" . consult-history)
    ("C-c m" . consult-mode-command)
@@ -849,6 +890,9 @@ surrounded by word boundaries."
    '(read-only t cursor-intangible t face minibuffer-prompt)) ; no cursor in minibuffer
   (enable-recursive-minibuffer t)
   (help-window-select t)                ; move cursor to popup help windows
+  (ad-redefinition-action 'accept)      ; silence warnings for redefinition
+  (cursor-in-non-selected-windows nil)  ; Hide cursor in inactive windows
+  (warning-minimum-level :erros)        ; Skip warning buffers
   :config
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (delete-selection-mode)
@@ -872,6 +916,7 @@ surrounded by word boundaries."
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (windmove-default-keybindings))
 
+(setq-local outline-regexp (rx ";;;" (* not-newline)))
 (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
 
 (provide 'init)
