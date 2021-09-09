@@ -492,10 +492,23 @@ surrounded by word boundaries."
   :mode "\\.yml\\'")
 
 (use-package org
+  ;; notes and todos
+  :preface
+  (defun org-capture-inbox ()
+    (interactive)
+    (call-interactively 'org-store-link)
+    (org-capture nil "i"))
+  :bind
+  ("C-c a" . org-agenda)
+  ("C-c c" . org-capture-inbox)
   :custom
   (org-directory "~/notes")
-  (org-default-notes-file "~/notes/index.org")
-  (org-agenda-files (list "~/notes"))
+  (org-default-notes-file "~/notes/inbox.org")
+  (org-agenda-files (list "~/notes/"))
+  (org-capture-templates
+   `(("i" "Inbox" entry  (file "inbox.org")
+      ,(concat "* TODO %?\n"
+               "/Entered on/ %U"))))
   (org-hide-emphasis-markers t)
   (org-hide-leading-stars t)
   (org-pretty-entities t)
@@ -503,11 +516,18 @@ surrounded by word boundaries."
   (org-startup-with-inline-images t)
   (org-image-actual-width '(300))
   (org-agenda-restore-windows-after-quit t)
+  (org-agenda-hide-tags-regexp ".")
+  (org-agenda-prefix-format
+   '((agenda . " %i %-12:c%?-12t% s")
+     (todo   . " ")
+     (tags   . " %i %-12:c")
+     (search . " %i %-12:c")))
   :config
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right)
+  (add-hook 'org-capture-mode-hook 'delete-other-windows)
   (add-hook 'org-mode-hook 'visual-line-mode))
 
 (use-package mixed-pitch
@@ -825,6 +845,7 @@ surrounded by word boundaries."
   :config
   (erc-log-mode))
 
+
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
   :straight nil
@@ -852,8 +873,6 @@ surrounded by word boundaries."
    ("C-x 4 b" . consult-buffer-other-window)
    ("C-x f" . consult-find)
    ;; C-c bindings (user-map)
-   ("C-c a" . org-agenda)
-   ("C-c c" . org-capture)
    ("C-c i" . consult-imenu)
    ("C-c I" . consult-project-imenu)
    ("C-c f" . consult-flycheck)
@@ -914,9 +933,11 @@ surrounded by word boundaries."
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (setq-local outline-regexp (rx ";;;" (* not-newline)))              ))
   (windmove-default-keybindings))
 
-(setq-local outline-regexp (rx ";;;" (* not-newline)))
 (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
 
 (provide 'init)
