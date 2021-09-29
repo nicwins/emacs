@@ -231,10 +231,6 @@ surrounded by word boundaries."
 ;;   ;; Indent as you type
 ;;   :hook (prog-mode . aggressive-indent-mode))
 
-(use-package rainbow-delimiters
-  ;; Change color of each inner block delimiter
-  :hook ((rjsx-mode json-mode text-mode) . rainbow-delimiters-mode))
-
 (use-package guix
   ;; front end for guix commands
   :if (memq system-type '(gnu/linux))
@@ -408,6 +404,7 @@ surrounded by word boundaries."
 ;;(use-package rjsx-mode)     ; jsx-aware major mode
 
 (use-package typescript-mode)
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . typescript-mode))
 
 ;; (use-package js-import)     ; auto add imports from project
 ;; (use-package js2-refactor
@@ -633,21 +630,22 @@ surrounded by word boundaries."
 (use-package filetags
   :if (memq system-type '(gnu/linux)))
 
-;; (use-package tree-sitter
-;;   :commands
-;;   (tree-sitter-langs)
-;;   :custom
-;;   (tree-sitter-hl-use-font-lock-keywords nil)
-;;   :hook
-;;   (tree-sitter-after-on . tree-sitter-hl-mode)
-;;   :config
-;;   (global-tree-sitter-mode))
+(use-package tree-sitter
+  :commands
+  (tree-sitter-langs)
+  :custom
+  (tree-sitter-hl-use-font-lock-keywords nil)
+  :hook
+  ((tree-sitter-after-on . tree-sitter-hl-mode)
+   (typescript-mode))
+  :config
+  (global-tree-sitter-mode))
 
-;; (use-package tree-sitter-langs
-;;   :after tree-sitter
-;;   :config
-;;   (tree-sitter-require 'javascript)
-;;   (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . javascript)))
+(use-package tree-sitter-langs
+  :after tree-sitter
+  :config
+  (tree-sitter-require 'javascript)
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-mode . javascript)))
 
 (use-package highlight-parentheses
   ;; highlight all parens surrounding point
@@ -925,24 +923,25 @@ surrounded by word boundaries."
   (show-paren-mode 1)                   ; Show matching parens
   (set-face-attribute 'default nil :family "Hack" :height 150)
   (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
-  (when (eq system-type 'darwin)
-    (set-face-attribute 'default (selected-frame) :family "Hack" :height 190)
-    (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 190)
-    (setq visible-bell nil)
-    (setq ring-bell-function 'ignore)
-    (setq auto-save-default nil)
-    (setq frame-resize-pixelwise t)
-    (set-frame-size (selected-frame) 2542 1412 t)
-    (setq ns-use-native-fullscreen nil))
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
-              (setq-local outline-regexp (rx ";;;" (* not-newline)))              ))
+              (setq-local outline-regexp (rx ";;;" (* not-newline)))))
   (windmove-default-keybindings))
 
 (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
+
+(when (eq system-type 'darwin)
+  (set-face-attribute 'default (selected-frame) :family "Hack" :height 190)
+  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 190)
+  (setq visible-bell nil)
+  (setq ring-bell-function 'ignore)
+  (setq auto-save-default nil)
+  (setq frame-resize-pixelwise t)
+  (set-frame-size (selected-frame) 2542 1412 t)
+  (setq ns-use-native-fullscreen nil))
 
 (provide 'init)
 ;;; init.el ends here
