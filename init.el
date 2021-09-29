@@ -227,9 +227,9 @@ surrounded by word boundaries."
   :config
   (global-visible-mark-mode 1))
 
-(use-package aggressive-indent
-  ;; Indent as you type
-  :hook (prog-mode . aggressive-indent-mode))
+;; (use-package aggressive-indent
+;;   ;; Indent as you type
+;;   :hook (prog-mode . aggressive-indent-mode))
 
 (use-package rainbow-delimiters
   ;; Change color of each inner block delimiter
@@ -405,23 +405,27 @@ surrounded by word boundaries."
   (apheleia-global-mode +1))
 
 (use-package json-mode)     ; major mode for json
-(use-package rjsx-mode)     ; jsx-aware major mode
-(use-package js-import)     ; auto add imports from project
-(use-package js2-refactor
-  ;; add refactoring commands
-  :config
-  (js2r-add-keybindings-with-prefix "C-c C-r"))
+;;(use-package rjsx-mode)     ; jsx-aware major mode
 
-(use-package xref-js2
-  :config
-  (add-hook 'rjsx-mode-hook
-            (lambda ()
-              (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
+(use-package typescript-mode)
+
+;; (use-package js-import)     ; auto add imports from project
+;; (use-package js2-refactor
+;;   ;; add refactoring commands
+;;   :config
+;;   (js2r-add-keybindings-with-prefix "C-c C-r"))
+
+;; (use-package xref-js2
+;;   :config
+;;   (add-hook 'rjsx-mode-hook
+;;             (lambda ()
+;;               (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 
 (use-package lsp-mode
   ;; language server protocol support
   :commands (lsp lsp-deferred)
   :hook ((rjsx-mode
+          typescript-mode
           json-mode
           mhtml-mode
           yaml-mode) . lsp-deferred)
