@@ -403,7 +403,9 @@ surrounded by word boundaries."
 (use-package json-mode)     ; major mode for json
 ;;(use-package rjsx-mode)     ; jsx-aware major mode
 
-(use-package typescript-mode)
+(use-package typescript-mode
+  :custom
+  (typescript-indent-level 2))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . typescript-mode))
 
 ;; (use-package js-import)     ; auto add imports from project
@@ -434,6 +436,8 @@ surrounded by word boundaries."
   (lsp-signature-auto-activate nil)
   (lsp-signature-render-documentation nil)
   (lsp-enable-text-document-color nil)
+  (lsp-enable-completion-at-point nil)
+  (lsp-completion-provider :none)
   ;;(lsp-completion-enable nil)
   ;;(lsp-completion-show-kind nil)
   (lsp-enable-file-watchers nil)
