@@ -403,11 +403,6 @@ surrounded by word boundaries."
 (use-package json-mode)     ; major mode for json
 ;;(use-package rjsx-mode)     ; jsx-aware major mode
 
-(use-package typescript-mode
-  :custom
-  (typescript-indent-level 2))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . typescript-mode))
-
 ;; (use-package js-import)     ; auto add imports from project
 ;; (use-package js2-refactor
 ;;   ;; add refactoring commands
@@ -423,8 +418,7 @@ surrounded by word boundaries."
 (use-package lsp-mode
   ;; language server protocol support
   :commands (lsp lsp-deferred)
-  :hook ((rjsx-mode
-          typescript-mode
+  :hook ((typescript-mode
           json-mode
           mhtml-mode
           yaml-mode) . lsp-deferred)
@@ -634,6 +628,14 @@ surrounded by word boundaries."
 (use-package filetags
   :if (memq system-type '(gnu/linux)))
 
+(use-package typescript-mode
+  :mode (rx ".js" string-end)
+  :init
+  (define-derived-mode typescript-tsx-mode typescript-mode "typescript-tsx")
+  (add-to-list 'auto-mode-alist (cons (rx ".jsx" string-end) #'typescript-tsx-mode))
+  :custom
+  (typescript-indent-level 2))
+
 (use-package tree-sitter
   :commands
   (tree-sitter-langs)
@@ -641,15 +643,15 @@ surrounded by word boundaries."
   (tree-sitter-hl-use-font-lock-keywords nil)
   :hook
   ((tree-sitter-after-on . tree-sitter-hl-mode)
-   (typescript-mode))
+   (typescript-tsx-mode . tree-sitter-hl-mode))
   :config
-  (global-tree-sitter-mode))
+  (setf (alist-get 'typescript-tsx-mode tree-sitter-major-mode-language-alist) 'tsx))
 
 (use-package tree-sitter-langs
   :after tree-sitter
   :config
   (tree-sitter-require 'javascript)
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-mode . javascript)))
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . javascript)))
 
 (use-package highlight-parentheses
   ;; highlight all parens surrounding point
