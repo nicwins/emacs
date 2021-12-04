@@ -927,8 +927,8 @@ surrounded by word boundaries."
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
   (show-paren-mode 1)                   ; Show matching parens
-  (set-face-attribute 'default nil :family "Hack" :height 150)
-  (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
+  (set-face-attribute 'default nil :family "Iosevka" :height 160)
+  (set-face-attribute 'fixed-pitch nil :family "Iosevka" :height 160)
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
@@ -940,7 +940,7 @@ surrounded by word boundaries."
 (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
 
 (when (eq system-type 'darwin)
-  (set-face-attribute 'default (selected-frame) :family "Hack" :height 190)
+  (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 190)
   (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 190)
   (setq visible-bell nil)
   (setq ring-bell-function 'ignore)
