@@ -960,8 +960,8 @@ surrounded by word boundaries."
 (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
 
 (when (eq system-type 'darwin)
-  (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 190)
-  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 190)
+  (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
+  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 200)
   (setq visible-bell nil)
   (setq ring-bell-function 'ignore)
   (setq auto-save-default nil)
