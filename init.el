@@ -401,19 +401,6 @@ surrounded by word boundaries."
   (apheleia-global-mode +1))
 
 (use-package json-mode)     ; major mode for json
-;;(use-package rjsx-mode)     ; jsx-aware major mode
-
-;; (use-package js-import)     ; auto add imports from project
-;; (use-package js2-refactor
-;;   ;; add refactoring commands
-;;   :config
-;;   (js2r-add-keybindings-with-prefix "C-c C-r"))
-
-;; (use-package xref-js2
-;;   :config
-;;   (add-hook 'rjsx-mode-hook
-;;             (lambda ()
-;;               (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 
 (use-package lsp-mode
   ;; language server protocol support
@@ -430,11 +417,11 @@ surrounded by word boundaries."
   (lsp-signature-auto-activate nil)
   (lsp-signature-render-documentation nil)
   (lsp-enable-text-document-color nil)
-  (lsp-enable-completion-at-point nil)
+  ;;(lsp-enable-completion-at-point nil)
   (lsp-completion-provider :none)
   ;;(lsp-completion-enable nil)
   ;;(lsp-completion-show-kind nil)
-  (lsp-enable-file-watchers nil)
+  (lsp-enable-file-watchers t)
   (lsp-keep-workspace-alive nil)
   (lsp-headerline-breadcrumb-enable nil)
   ;; Need to toggle this to get eslint alongside
@@ -466,16 +453,6 @@ surrounded by word boundaries."
 (use-package sml-mode
   ;; temporary for coursera
   )
-
-(use-package paredit
-  ;; auto manage paren pairs
-  :bind (:map paredit-mode-map ("M-s" . consult-line))
-  :hook
-  ((emacs-lisp-mode
-    eval-expression-minibuffer-setup
-    lisp-mode
-    lisp-interaction-mode
-    scheme-mode) . enable-paredit-mode))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -647,7 +624,15 @@ surrounded by word boundaries."
 
 (use-package corfu
   :init
-  (corfu-global-mode))
+  (corfu-global-mode)
+  :custom
+  (tab-always-indent 'complete))
+
+(use-package dabbrev
+  ;; Swap M-/ and C-M-/
+  :straight (:type built-in)
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand)))
 
 (use-package which-key
   :init (which-key-mode)
@@ -655,6 +640,11 @@ surrounded by word boundaries."
   (which-key-idle-delay 0.3)
   :bind
   ("C-c ?" . which-key-show-top-level))
+
+(use-package hungry-delete
+  :init (global-hungry-delete-mode)
+  :custom
+  (hungry-delete-join-reluctantly t))
 
 ;;;; Built-in Package Config
 
@@ -679,12 +669,6 @@ surrounded by word boundaries."
   (:map help-mode-map
         ("<" . help-go-back)
         (">" . help-go-forward)))
-
-(use-package dabbrev
-  ;; Swap M-/ and C-M-/
-  :straight (:type built-in)
-  :bind (("M-/" . dabbrev-completion)
-         ("C-M-/" . dabbrev-expand)))
 
 (use-package xref
   ;; find identifier in prog modes
