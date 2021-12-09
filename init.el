@@ -582,26 +582,6 @@ surrounded by word boundaries."
   :config
   (global-disable-mouse-mode))
 
-;; (use-package prism
-;;   ;; colorize lisp by block
-;;   :preface
-;;   (defun my/prism-set ()
-;;     "Customize prism coloring."
-;;     (prism-set-colors
-;;       :strings-fn
-;;       (lambda (color)
-;;         (prism-blend color "white" 0.70))
-;;       :parens-fn
-;;       (lambda (color)
-;;         (prism-blend color (face-attribute 'default :background) 0.3))))
-;;   :hook
-;;   ((emacs-lisp-mode scheme-mode) . prism-mode)
-;;   :custom
-;;   (prism-parens t)
-;;   (prism-comments nil)
-;;   :config
-;;   (my/prism-set))
-
 (use-package password-store
   ;; front end for `pass'
   :if (memq system-type '(gnu/linux)))
@@ -668,6 +648,13 @@ surrounded by word boundaries."
 (use-package corfu
   :init
   (corfu-global-mode))
+
+(use-package which-key
+  :init (which-key-mode)
+  :custom
+  (which-key-idle-delay 0.3)
+  :bind
+  ("C-c ?" . which-key-show-top-level))
 
 ;;;; Built-in Package Config
 
@@ -853,6 +840,39 @@ surrounded by word boundaries."
   :config
   (erc-log-mode))
 
+(use-package em-smart
+  ;; Plan-9 interface for eshell
+  :straight (:type built-in))
+
+(use-package eshell
+  ;; elisp shell and repl
+  :straight (:type built-in)
+  :preface
+  (defun my/eshell-here ()
+      "Opens up a new shell in the directory associated with the
+    current buffer's file. The eshell is renamed to match that
+    directory to make multiple eshell windows easier."
+      (interactive)
+      (let* ((parent (if (buffer-file-name)
+                         (file-name-directory (buffer-file-name))
+                       default-directory))
+             (height (/ (window-total-height) 3))
+             (name   (car (last (split-string parent "/" t)))))
+        (split-window-vertically (- height))
+        (other-window 1)
+        (eshell "new")
+        (rename-buffer (concat "*eshell: " name "*"))
+
+        (insert (concat "ls"))
+        (eshell-send-input)))
+   (defun eshell/x ()
+      (insert "exit")
+      (eshell-send-input)
+      (delete-window))
+  :custom
+  (eshell-where-to-jump 'begin)
+  (eshell-review-quick-commands nil)
+  (eshell-smart-space-goes-to-end t))
 
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
