@@ -397,11 +397,21 @@ surrounded by word boundaries."
 
 (use-package lsp-mode
   ;; language server protocol support
-  :commands (lsp lsp-deferred)
-  :hook ((typescript-mode
+  :commands (lsp
+             lsp-deferred
+             lsp-enable-which-key-integration
+             lsp-install-server
+             lsp-organize-imports)
+  :hook (((typescript-mode
           json-mode
           mhtml-mode
           yaml-mode) . lsp-deferred)
+         (lsp-mode . (lambda ()
+                       ;; Integrate `which-key'
+                       (lsp-enable-which-key-integration)
+
+                       ;; Organize imports
+                       (add-hook 'before-save-hook #'lsp-organize-imports t t))))
   :custom
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-indentation nil)
@@ -412,18 +422,24 @@ surrounded by word boundaries."
   (lsp-enable-text-document-color nil)
   ;;(lsp-enable-completion-at-point nil)
   (lsp-completion-provider :none)
-  ;;(lsp-completion-enable nil)
+  (lsp-completion-enable nil)
   ;;(lsp-completion-show-kind nil)
-  (lsp-enable-file-watchers t)
+  (lsp-enable-file-watchers nil)
   (lsp-keep-workspace-alive nil)
   (lsp-headerline-breadcrumb-enable nil)
   ;; Need to toggle this to get eslint alongside
-  ;; (lsp-disabled-clients '(ts-ls))
-  (lsp-disabled-clients nil)
-  ;; Config specific to tsserver/theia ide
+  ;;(lsp-disabled-clients nil)
+  ;; Config specific to tsserver
   (lsp-clients-typescript-log-verbosity "off")
+  (lsp-clients-typescript-tls-path "/usr/local/bin/typescript-language-server")
+  ;; (lsp-auto-guess-root t)
+  (read-process-output-max (* 1024 1024)) ;; 1mb
   :init
   (setq lsp-keymap-prefix "C-c l")
+   :bind (:map lsp-mode-map
+              ("C-c C-d" . lsp-describe-thing-at-point)
+              ([remap xref-find-definitions] . lsp-find-definition)
+              ([remap xref-find-references] . lsp-find-references))
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
@@ -437,6 +453,10 @@ surrounded by word boundaries."
   (lsp-ui-doc-delay 9000)
   (lsp-ui-doc-show-with-cursor nil)
   (lsp-ui-doc-show-with-mouse nil))
+
+(use-package lsp-treemacs
+  :after lsp-mode
+  :init (lsp-treemacs-sync-mode 1))
 
 (use-package consult-lsp
   ;; provide a consult front end for lsp
