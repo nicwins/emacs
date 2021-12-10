@@ -48,27 +48,37 @@
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
-(defun my/rename-file-and-buffer ()
-  "Rename the current buffer and file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (message "Buffer is not visiting a file!")
-      (let ((new-name (read-file-name "New name: " filename)))
-        (rename-file filename new-name t)
-        (set-visited-file-name new-name t t)))))
+(defun visiting-buffer-rename (file newname &optional _ok-if-already-exists)
+  "Rename buffer visiting FILE to NEWNAME.
+Intended as :after advice for `rename-file'."
+  (when (called-interactively-p 'any)
+    (when-let ((buffer (get-file-buffer file)))
+      (with-current-buffer buffer
+        (set-visited-file-name newname nil t)
+        (when (derived-mode-p 'emacs-lisp-mode)
+          (save-excursion
+            (let* ((base (file-name-nondirectory file))
+                   (sans (file-name-sans-extension base))
+                   (newbase (file-name-nondirectory newname))
+                   (newsans (file-name-sans-extension newbase)))
+              (goto-char (point-min))
+              (while (search-forward-regexp (format "^;;; %s" base) nil t)
+                (replace-match (concat ";;; " newbase)))
+              (goto-char (point-max))
+              (when
+                  (search-backward-regexp (format "^(provide '%s)" sans) nil t)
+                (replace-match (format "(provide '%s)" newsans))))))))))
 
-(defun my/delete-file-and-buffer ()
-  "Kill the current buffer and delete the file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (when filename
-      (if (vc-backend filename)
-          (vc-delete-file filename)
-        (progn
-          (delete-file filename)
-          (message "Deleted file %s" filename)
-          (kill-buffer))))))
+(advice-add 'rename-file :after 'visiting-buffer-rename)
+
+(defun visiting-buffer-kill (file &optional _trash)
+  "Kill buffer visiting FILE.
+Intended as :after advice for `delete-file'."
+  (when (called-interactively-p 'any)
+    (when-let ((buffer (get-file-buffer file)))
+      (kill-buffer buffer))))
+
+(advice-add 'delete-file :after 'visiting-buffer-kill)
 
 (defun my/switch-to-last-buffer ()
   "Flip between two buffers."
@@ -395,73 +405,85 @@ surrounded by word boundaries."
 
 (use-package json-mode)     ; major mode for json
 
-(use-package lsp-mode
-  ;; language server protocol support
-  :commands (lsp
-             lsp-deferred
-             lsp-enable-which-key-integration
-             lsp-install-server
-             lsp-organize-imports)
-  :hook (((typescript-mode
-          json-mode
-          mhtml-mode
-          yaml-mode) . lsp-deferred)
-         (lsp-mode . (lambda ()
-                       ;; Integrate `which-key'
-                       (lsp-enable-which-key-integration)
+;; (use-package lsp-mode
+;;   ;; language server protocol support
+;;   :commands (lsp
+;;              lsp-deferred
+;;              lsp-enable-which-key-integration
+;;              lsp-install-server
+;;              lsp-organize-imports)
+;;   :hook (((typescript-mode
+;;           json-mode
+;;           mhtml-mode
+;;           yaml-mode) . lsp-deferred)
+;;          (lsp-mode . (lambda ()
+;;                        ;; Integrate `which-key'
+;;                        (lsp-enable-which-key-integration)
 
-                       ;; Organize imports
-                       (add-hook 'before-save-hook #'lsp-organize-imports t t))))
+;;                        ;; Organize imports
+;;                        (add-hook 'before-save-hook #'lsp-organize-imports t t))))
+;;   :custom
+;;   (lsp-enable-symbol-highlighting t)
+;;   (lsp-enable-indentation nil)
+;;   (lsp-eldoc-enable-hover nil)
+;;   (lsp-prefer-capf t)
+;;   (lsp-signature-auto-activate nil)
+;;   (lsp-signature-render-documentation nil)
+;;   (lsp-enable-text-document-color nil)
+;;   ;;(lsp-enable-completion-at-point nil)
+;;   (lsp-completion-provider :none)
+;;   (lsp-completion-enable nil)
+;;   ;;(lsp-completion-show-kind nil)
+;;   (lsp-enable-file-watchers nil)
+;;   (lsp-keep-workspace-alive nil)
+;;   (lsp-headerline-breadcrumb-enable nil)
+;;   ;; Need to toggle this to get eslint alongside
+;;   ;;(lsp-disabled-clients nil)
+;;   ;; Config specific to tsserver
+;;   (lsp-clients-typescript-log-verbosity "off")
+;;   (lsp-clients-typescript-tls-path "/usr/local/bin/typescript-language-server")
+;;   ;; (lsp-auto-guess-root t)
+;;   (read-process-output-max (* 1024 1024)) ;; 1mb
+;;   :init
+;;   (setq lsp-keymap-prefix "C-c l")
+;;    :bind (:map lsp-mode-map
+;;               ("C-c C-d" . lsp-describe-thing-at-point)
+;;               ([remap xref-find-definitions] . lsp-find-definition)
+;;               ([remap xref-find-references] . lsp-find-references))
+;;   :config
+;;   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
+
+;; (use-package lsp-ui
+;;   ;; lsp-ui visual extras
+;;   :custom
+;;   (lsp-ui-sideline-show-code-actions nil)
+;;   (lsp-ui-sideline-update-mode "line")
+;;   (lsp-ui-peek-enable nil)
+;;   (lsp-ui-doc-enable t)
+;;   (lsp-ui-doc-delay 9000)
+;;   (lsp-ui-doc-show-with-cursor nil)
+;;   (lsp-ui-doc-show-with-mouse nil))
+
+;; (use-package lsp-treemacs
+;;   :after lsp-mode
+;;   :init (lsp-treemacs-sync-mode 1))
+
+;; (use-package consult-lsp
+;;   ;; provide a consult front end for lsp
+;;   :after (consult lsp)
+;;   :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
+
+(use-package eglot
   :custom
-  (lsp-enable-symbol-highlighting t)
-  (lsp-enable-indentation nil)
-  (lsp-eldoc-enable-hover nil)
-  (lsp-prefer-capf t)
-  (lsp-signature-auto-activate nil)
-  (lsp-signature-render-documentation nil)
-  (lsp-enable-text-document-color nil)
-  ;;(lsp-enable-completion-at-point nil)
-  (lsp-completion-provider :none)
-  (lsp-completion-enable nil)
-  ;;(lsp-completion-show-kind nil)
-  (lsp-enable-file-watchers nil)
-  (lsp-keep-workspace-alive nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  ;; Need to toggle this to get eslint alongside
-  ;;(lsp-disabled-clients nil)
-  ;; Config specific to tsserver
-  (lsp-clients-typescript-log-verbosity "off")
-  (lsp-clients-typescript-tls-path "/usr/local/bin/typescript-language-server")
-  ;; (lsp-auto-guess-root t)
-  (read-process-output-max (* 1024 1024)) ;; 1mb
+  (eglot-autoshutdown t)
+  :hook
+  (typescript-mode . eglot-ensure)
   :init
-  (setq lsp-keymap-prefix "C-c l")
-   :bind (:map lsp-mode-map
-              ("C-c C-d" . lsp-describe-thing-at-point)
-              ([remap xref-find-definitions] . lsp-find-definition)
-              ([remap xref-find-references] . lsp-find-references))
+  (put 'eglot-server-programs 'safe-local-variable 'listp)
   :config
-  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
-
-(use-package lsp-ui
-  ;; lsp-ui visual extras
-  :custom
-  (lsp-ui-sideline-show-code-actions nil)
-  (lsp-ui-sideline-update-mode "line")
-  (lsp-ui-peek-enable nil)
-  (lsp-ui-doc-enable t)
-  (lsp-ui-doc-delay 9000)
-  (lsp-ui-doc-show-with-cursor nil)
-  (lsp-ui-doc-show-with-mouse nil))
-
-(use-package lsp-treemacs
-  :after lsp-mode
-  :init (lsp-treemacs-sync-mode 1))
-
-(use-package consult-lsp
-  ;; provide a consult front end for lsp
-  :after (consult lsp)
-  :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
+  (add-to-list 'eglot-stay-out-of 'eldoc-documentation-strategy)
+  (put 'eglot-error 'flymake-overlay-control nil)
+  (put 'eglot-warning 'flymake-overlay-control nil))
 
 (use-package sml-mode
   ;; temporary for coursera
@@ -659,6 +681,7 @@ surrounded by word boundaries."
   :custom
   (hungry-delete-join-reluctantly t))
 
+
 ;;;; Built-in Package Config
 
 (use-package isearch
@@ -669,9 +692,9 @@ surrounded by word boundaries."
   (lazy-highlight-cleanup nil)
   (lazy-highlight-initial-delay 0)
   :hook
-  (isearch-update-post . me/isearch-aim-beginning)
+  (isearch-update-post . my/isearch-aim-beginning)
   :preface
-  (defun me/isearch-aim-beginning ()
+  (defun my/isearch-aim-beginning ()
     "Move cursor back to the beginning of the current match."
     (when (and isearch-forward (number-or-marker-p isearch-other-end))
       (goto-char isearch-other-end))))
