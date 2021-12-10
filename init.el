@@ -143,13 +143,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (interactive)
   (set-mark-command 1))
 
-(defun exchange-point-and-mark-no-activate ()
-  "Identical to \\[exchange-point-and-mark] but will not activate the region."
-  (interactive)
-  (exchange-point-and-mark)
-  (deactivate-mark nil))
-(define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
-
 (defvar my/re-builder-positions nil
   "Store point and region bounds before calling `re-builder'.")
 (advice-add 're-builder
@@ -222,7 +215,7 @@ surrounded by word boundaries."
 (use-package visible-mark
   ;; Makes the mark visible
   :custom
-  (visible-mark-max 1)
+  (visible-mark-max 3)
   (visible-mark-faces `(visible-mark-face1 visible-mark-face2))
   :config
   (global-visible-mark-mode 1))
@@ -637,7 +630,7 @@ surrounded by word boundaries."
 (use-package which-key
   :init (which-key-mode)
   :custom
-  (which-key-idle-delay 0.3)
+  (which-key-idle-delay 1)
   :bind
   ("C-c ?" . which-key-show-top-level))
 
@@ -853,6 +846,19 @@ surrounded by word boundaries."
       (insert "exit")
       (eshell-send-input)
       (delete-window))
+   (defun my/eshell-lint ()
+     "Opens up a new shell and runs lint."
+     (interactive)
+     (let* ((height (/ (window-total-height) 3)))
+       (split-window-vertically (- height))
+       (other-window 1)
+       (eshell "new")
+       (rename-buffer (concat "*eshell: lint*"))
+       (insert (concat "npm run lint"))
+       (eshell-send-input)))
+   :bind
+   (([f9] . my/eshell-here)
+    ([f8] . my/eshell-lint))
   :custom
   (eshell-where-to-jump 'begin)
   (eshell-review-quick-commands nil)
