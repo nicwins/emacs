@@ -311,11 +311,11 @@ surrounded by word boundaries."
   ;; add a consult-flycheck command
   :after (consult flycheck))
 
-;; (use-package consult-dir
-;;   :bind (("C-x C-d" . consult-dir)
-;;          :map minibuffer-local-completion-map
-;;          ("C-x C-d" . consult-dir)
-;;          ("C-x C-j" . consult-dir-jump-file)))
+(use-package consult-dir
+  :bind (("C-x C-d" . consult-dir)
+         :map minibuffer-local-completion-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
 
 (use-package marginalia
   ;; adds annotations to consult
@@ -599,6 +599,11 @@ surrounded by word boundaries."
   :bind (:map dired-mode-map
               (")" . dired-git-info-mode)))
 
+(use-package dired-narrow
+  :ensure t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
+
 (use-package async
   ;; use dired functions async
   :config
@@ -669,7 +674,6 @@ surrounded by word boundaries."
   :custom
   (hungry-delete-join-reluctantly t))
 
-
 ;;;; Built-in Package Config
 
 (use-package isearch
@@ -715,18 +719,39 @@ surrounded by word boundaries."
   ;; Dired listing switches - see man ls
   (dired-listing-switches "-alhF --group-directories-first")
   (dired-hide-details-hide-symlink-targets nil)
-  (dired-auto-revert-buffer t)
-  (dired-guess-shell-alist-user
-   '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
-      "mpv")
-     ("\\.html?\\'" "firefox"))))
+  (dired-auto-revert-buffer t))
 
 (use-package dired-x
   ;; extension for dired
   :straight (:type built-in)
   :hook (dired-mode . dired-omit-mode)
+  :preface (eval-after-load  "dired-x" '(defun dired-clean-up-after-deletion (fn)
+  "My clean up after a deleted file or directory FN.
+Remove expanded subdir of deleted dir, if any."
+  (save-excursion (and (cdr dired-subdir-alist)
+                       (dired-goto-subdir fn)
+                       (dired-kill-subdir)))
+
+  ;; Offer to kill buffer of deleted file FN.
+  (if dired-clean-up-buffers-too
+      (progn
+        (let ((buf (get-file-buffer fn)))
+          (and buf
+               (save-excursion ; you never know where kill-buffer leaves you
+                 (kill-buffer buf))))
+        (let ((buf-list (dired-buffers-for-dir (expand-file-name fn)))
+              (buf nil))
+          (and buf-list
+               (while buf-list
+                 (save-excursion (kill-buffer (car buf-list)))
+                 (setq buf-list (cdr buf-list)))))))
+  ))
   :custom
   (dired-omit-verbose nil)
+  (dired-guess-shell-alist-user
+   '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
+      "! (mpv ? &>/dev/null &)")
+     ("\\.html?\\'" "! (firefox ? &>/dev/null &)")))
   :config
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$")))
 
@@ -788,8 +813,7 @@ surrounded by word boundaries."
   (kept-old-versions 2)
   (version-control t)
   (vc-follow-symlinks t)
-  (create-lockfiles nil)
-  (delete-by-moving-to-trash t))
+  (create-lockfiles nil))
 
 (use-package recentf
   ;; Recent file list
@@ -962,7 +986,6 @@ surrounded by word boundaries."
   (cursor-in-non-selected-windows nil)  ; Hide cursor in inactive windows
   (warning-minimum-level :erros)        ; Skip warning buffers
   :config
-  (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (delete-selection-mode)
   (fset 'yes-or-no-p 'y-or-n-p)         ; use y or n to confirm
   (set-language-environment "UTF-8")
@@ -981,6 +1004,7 @@ surrounded by word boundaries."
 (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
 
 (when (eq system-type 'darwin)
+  (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
   (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 200)
   (setq visible-bell nil)
