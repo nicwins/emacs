@@ -714,6 +714,7 @@ surrounded by word boundaries."
   ;; directory management
   :straight (:type built-in)
   :hook (dired-mode . dired-hide-details-mode)
+  
   :custom
   (dired-dwim-target t)
   ;; Dired listing switches - see man ls
@@ -724,28 +725,39 @@ surrounded by word boundaries."
 (use-package dired-x
   ;; extension for dired
   :straight (:type built-in)
-  :hook (dired-mode . dired-omit-mode)
-  :preface (eval-after-load  "dired-x" '(defun dired-clean-up-after-deletion (fn)
-  "My clean up after a deleted file or directory FN.
+  :preface
+  (defun dired-clean-up-after-deletion (fn)
+     "My clean up after a deleted file or directory FN.
 Remove expanded subdir of deleted dir, if any."
-  (save-excursion (and (cdr dired-subdir-alist)
-                       (dired-goto-subdir fn)
-                       (dired-kill-subdir)))
+     (save-excursion (and (cdr dired-subdir-alist)
+                          (dired-goto-subdir fn)
+                          (dired-kill-subdir)))
 
-  ;; Offer to kill buffer of deleted file FN.
-  (if dired-clean-up-buffers-too
-      (progn
-        (let ((buf (get-file-buffer fn)))
-          (and buf
-               (save-excursion ; you never know where kill-buffer leaves you
-                 (kill-buffer buf))))
-        (let ((buf-list (dired-buffers-for-dir (expand-file-name fn)))
-              (buf nil))
-          (and buf-list
-               (while buf-list
-                 (save-excursion (kill-buffer (car buf-list)))
-                 (setq buf-list (cdr buf-list)))))))
-  ))
+     ;; Offer to kill buffer of deleted file FN.
+     (if dired-clean-up-buffers-too
+         (progn
+           (let ((buf (get-file-buffer fn)))
+             (and buf
+                  (save-excursion ; you never know where kill-buffer leaves you
+                    (kill-buffer buf))))
+           (let ((buf-list (dired-buffers-for-dir (expand-file-name fn)))
+                 (buf nil))
+             (and buf-list
+                  (while buf-list
+                    (save-excursion (kill-buffer (car buf-list)))
+                    (setq buf-list (cdr buf-list))))))))
+     
+  (defun dired-find-file-or-do-async-shell-command ()
+    "If there is a default command defined for this file type, run it asynchronously .
+If not, open it in Emacs."
+    (interactive)
+    (let ((default (dired-guess-default (cons (dired-get-filename) '())))
+          (file-list (cons (dired-get-filename) '())))
+      (if (null default) (dired-find-file)
+        (dired-run-shell-command (dired-shell-stuff-it default file-list nil)))))
+  :hook (dired-mode . dired-omit-mode)
+  :bind (:map dired-mode-map
+              ("<return>" . dired-find-file-or-do-async-shell-command))
   :custom
   (dired-omit-verbose nil)
   (dired-guess-shell-alist-user
@@ -753,6 +765,7 @@ Remove expanded subdir of deleted dir, if any."
       "! (mpv ? &>/dev/null &)")
      ("\\.html?\\'" "! (firefox ? &>/dev/null &)")))
   :config
+  ;; setting this in custom throws a dired-omit-files is undefined
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$")))
 
 (use-package server
