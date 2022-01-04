@@ -610,9 +610,6 @@ surrounded by word boundaries."
   (autoload 'dired-async-mode "dired-async.el" nil t)
   (dired-async-mode 1))
 
-(use-package filetags
-  :if (memq system-type '(gnu/linux)))
-
 (use-package typescript-mode
   :mode (rx ".js" string-end)
   :init
