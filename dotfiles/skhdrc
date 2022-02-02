@@ -1,6 +1,5 @@
 # -*- mode: conf -*-
 
-
 # Start a drop term
 #cmd - return : iterm2 --dropdown
 

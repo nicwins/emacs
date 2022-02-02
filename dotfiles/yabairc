@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+
 # global settings
 yabai -m config mouse_follows_focus          on
 yabai -m config focus_follows_mouse          autoraise
@@ -31,16 +34,18 @@ yabai -m config right_padding                10
 yabai -m config window_gap                   10
 
 # mission-control desktop labels
-yabai -m space 4 --label term
-yabai -m space 5 --label emacs
-yabai -m space 6 --label mongo
-yabai -m space 7 --label postman
-yabai -m space 8 --label scratch
-yabai -m space 9 --label last
-yabai -m space 1 --label web
-yabai -m space 2 --label comms
-yabai -m space 3 --label extra
-yabai -m config external_bar all:26:0
+yabai -m space 1 --label term
+yabai -m space 2 --label emacs
+yabai -m space 3 --label mongo
+yabai -m space 4 --label postman
+yabai -m space 5 --label scratch
+yabai -m space 6 --label last
+yabai -m space 7 --label web
+yabai -m space 8 --label comms
+yabai -m space 9 --label extra
+
+# spacebarr is broken atm
+#yabai -m config external_bar all:26:0
 
 # window rules
 yabai -m rule --add app="^Emacs$" space=emacs

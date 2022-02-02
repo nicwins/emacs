@@ -544,12 +544,13 @@ surrounded by word boundaries."
   (add-hook 'org-capture-mode-hook 'delete-other-windows)
   (add-hook 'org-mode-hook 'visual-line-mode))
 
-(use-package mixed-pitch
-  :hook (text-mode . mixed-pitch-mode)
-  :config
-  (set-face-attribute 'default nil :family "Hack" :height 150)
-  (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
-  (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150))
+;; need to scope this not-macos
+;; (use-package mixed-pitch
+;;   :hook (text-mode . mixed-pitch-mode)
+;;   :config
+;;   (set-face-attribute 'default nil :family "Hack" :height 150)
+;;   (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
+;;   (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150))
 
 (use-package org-superstar
   ;; Nice bullets
@@ -704,11 +705,11 @@ surrounded by word boundaries."
         ("<" . help-go-back)
         (">" . help-go-forward)))
 
-(use-package xref
-  ;; find identifier in prog modes
-  :straight (:type built-in)
-  :custom
-  (xref-search-program 'ripgrep))
+;; (use-package xref
+;;   ;; find identifier in prog modes
+;;   :straight (:type built-in)
+;;   :custom
+;;   (xref-search-program 'ripgrep))
 
 (use-package elec-pair
   ;; automatically match pairs

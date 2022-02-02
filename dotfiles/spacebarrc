@@ -26,7 +26,7 @@ spacebar -m config foreground_color     0xffebdbb2
 spacebar -m config space_icon_color     0xfffb4934
 spacebar -m config dnd_icon_color       0xff83a598
 spacebar -m config clock_icon_color     0xffebdbb2
-spacebar -m config space_icon_strip     VII VIII IX I II III IV V VI X
+spacebar -m config space_icon_strip     I II III IV V VI VII VIII IX  
 spacebar -m config space_icon           
 spacebar -m config clock_icon           
 spacebar -m config dnd_icon             
