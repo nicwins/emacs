@@ -462,7 +462,13 @@ surrounded by word boundaries."
               ([remap xref-find-definitions] . lsp-find-definition)
               ([remap xref-find-references] . lsp-find-references))
   :config
-  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
+  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
+  (defun lsp-f-canonical (file-name)
+    "Return the canonical FILE-NAME, without a trailing slash."
+    (let ((fn (directory-file-name (expand-file-name file-name))))
+      (if (file-name-case-insensitive-p fn)
+          (downcase fn)
+        fn))))
 
 (use-package lsp-ui
   ;; lsp-ui visual extras
