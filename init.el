@@ -446,7 +446,7 @@ surrounded by word boundaries."
   (lsp-completion-enable nil)
   ;;(lsp-completion-show-kind nil)
   (lsp-enable-file-watchers nil)
-  (lsp-keep-workspace-alive nil)
+  ;;(lsp-keep-workspace-alive nil)
   (lsp-headerline-breadcrumb-enable nil)
   ;; Need to toggle this to get eslint alongside
   ;;(lsp-disabled-clients nil)
@@ -455,6 +455,8 @@ surrounded by word boundaries."
   (lsp-clients-typescript-tls-path "/usr/local/bin/typescript-language-server")
   ;; (lsp-auto-guess-root t)
   (read-process-output-max (* 1024 1024)) ;; 1mb
+  (lsp-clients-typescript-init-opts
+   '(:importModuleSpecifierEnding "jsx" :generateReturnInDocTemplate t))
   :init
   (setq lsp-keymap-prefix "C-c l")
    :bind (:map lsp-mode-map
@@ -480,10 +482,6 @@ surrounded by word boundaries."
   (lsp-ui-doc-delay 9000)
   (lsp-ui-doc-show-with-cursor nil)
   (lsp-ui-doc-show-with-mouse nil))
-
-(use-package lsp-treemacs
-  :after lsp-mode
-  :init (lsp-treemacs-sync-mode 1))
 
 (use-package consult-lsp
   ;; provide a consult front end for lsp
