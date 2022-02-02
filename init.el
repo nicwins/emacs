@@ -234,18 +234,18 @@ surrounded by word boundaries."
 ;;   ;; Indent as you type
 ;;   :hook (prog-mode . aggressive-indent-mode))
 
-(use-package guix
-  ;; front end for guix commands
-  :if (memq system-type '(gnu/linux))
-  :hook (scheme-mode . guix-devel-mode))
+;; (use-package guix
+;;   ;; front end for guix commands
+;;   :if (memq system-type '(gnu/linux))
+;;   :hook (scheme-mode . guix-devel-mode))
 
-(use-package geiser-guile
-  ;; major mode for guile with repl
-  :if (memq system-type '(gnu/linux))
-  :custom
-  (geiser-mode-start-repl-p t)
-  :config
-  (add-to-list 'geiser-guile-load-path "~/src/guix"))
+;; (use-package geiser-guile
+;;   ;; major mode for guile with repl
+;;   :if (memq system-type '(gnu/linux))
+;;   :custom
+;;   (geiser-mode-start-repl-p t)
+;;   :config
+;;   (add-to-list 'geiser-guile-load-path "~/src/guix"))
 
 (use-package flycheck
   ;; code linter
@@ -286,9 +286,20 @@ surrounded by word boundaries."
   :custom
   (completion-styles '(orderless))
   (completion-category-defaults nil)
+  (orderless-component-separator "*")
   (completion-category-overrides '((file (styles partial-completion))))
   :config
+  (add-hook 'minibuffer-setup-hook (lambda () (setq-local orderless-component-separator " ")))
   (savehist-mode))
+
+(use-package corfu
+  :init
+  (corfu-global-mode)
+  :custom
+  (tab-always-indent 'complete)
+  (corfu-auto t)
+  (corfu-quit-no-match t)
+  (corfu-quit-at-boundary t))
 
 (use-package consult
   ;; enhanced selection ui
@@ -646,12 +657,6 @@ surrounded by word boundaries."
          ("C-c C-d" . helpful-at-point)
          ("C-h F" . helpful-function)
          ("C-h C" . helpful-command)))
-
-(use-package corfu
-  :init
-  (corfu-global-mode)
-  :custom
-  (tab-always-indent 'complete))
 
 (use-package dabbrev
   ;; Swap M-/ and C-M-/
