@@ -417,8 +417,13 @@ surrounded by word boundaries."
 (use-package json-mode)     ; major mode for json
 
 (use-package lsp-mode
+  :commands (lsp)
+  :hook ((typescript-mode
+         json-mode
+         mhtml-mode
+         yaml-mode) . lsp)
   :config
-  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
+  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
 (use-package lsp-ui)
 
