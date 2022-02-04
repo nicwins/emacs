@@ -417,84 +417,90 @@ surrounded by word boundaries."
 (use-package json-mode)     ; major mode for json
 
 (use-package lsp-mode
-  ;; language server protocol support
-  :commands (lsp
-             lsp-deferred
-             lsp-enable-which-key-integration
-             lsp-install-server
-             lsp-organize-imports)
-  :hook (((typescript-mode
-          json-mode
-          mhtml-mode
-          yaml-mode) . lsp-deferred)
-         (lsp-mode . (lambda ()
-                       ;; Integrate `which-key'
-                       (lsp-enable-which-key-integration)
-
-                       ;; Organize imports
-                       (add-hook 'before-save-hook #'lsp-organize-imports t t))))
-  :custom
-  (lsp-enable-symbol-highlighting t)
-  (lsp-enable-indentation nil)
-  (lsp-eldoc-enable-hover nil)
-  (lsp-completion-provider :none)
-  (lsp-signature-auto-activate nil)
-  (lsp-signature-render-documentation nil)
-  (lsp-enable-text-document-color nil)
-  ;;(lsp-enable-completion-at-point nil)
-  (lsp-completion-provider :none)
-  (lsp-completion-enable nil)
-  ;;(lsp-completion-show-kind nil)
-  ;;(lsp-enable-file-watchers nil)
-  ;;(lsp-keep-workspace-alive nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  ;; Need to toggle this to get eslint alongside
-  ;;(lsp-disabled-clients nil)
-  ;; Config specific to tsserver
-  (lsp-clients-typescript-log-verbosity "off")
-  (lsp-clients-typescript-tls-path "/usr/local/bin/typescript-language-server")
-  ;; (lsp-auto-guess-root t)
-  (read-process-output-max (* 1024 1024)) ;; 1mb
-  (lsp-clients-typescript-init-opts
-   '(:importModuleSpecifierEnding "jsx" :generateReturnInDocTemplate t))
-  :init
-  (defun my/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless))) ;; Configure orderless
-  (setq lsp-keymap-prefix "C-c l")
-  :hook
-  (lsp-completion-mode . my/lsp-mode-setup-completion)
-  :bind (:map lsp-mode-map
-              ("C-c C-d" . lsp-describe-thing-at-point)
-              ([remap xref-find-definitions] . lsp-find-definition)
-              ([remap xref-find-references] . lsp-find-references))
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
-  (defun lsp-f-canonical (file-name)
-    "Return the canonical FILE-NAME, without a trailing slash."
-    (let ((fn (directory-file-name (expand-file-name file-name))))
-      (if (file-name-case-insensitive-p fn)
-          (downcase fn)
-        fn)))
-  (add-hook 'lsp-mode-hook (lambda ()
-			                       ;; Switch back to corfu and orderless
-			                       (company-mode 0)
-			                       (setcdr (cadr (assq 'lsp-capf completion-category-defaults))
-				                             '(orderless))
-			                       (setf (caadr ;; Pad before lsp modeline error info
-				                            (assq 'global-mode-string mode-line-misc-info))
-				                           " "))))
 
-(use-package lsp-ui
-  ;; lsp-ui visual extras
-  :custom
-  (lsp-ui-sideline-show-code-actions nil)
-  (lsp-ui-sideline-update-mode "line")
-  (lsp-ui-peek-enable nil)
-  (lsp-ui-doc-enable t)
-  (lsp-ui-doc-delay 9000)
-  (lsp-ui-doc-show-with-cursor nil)
-  (lsp-ui-doc-show-with-mouse nil))
+(use-package lsp-ui)
+
+;; (use-package lsp-mode
+;;   ;; language server protocol support
+;;   :commands (lsp
+;;              lsp-deferred
+;;              lsp-enable-which-key-integration
+;;              lsp-install-server
+;;              lsp-organize-imports)
+;;   :hook (((typescript-mode
+;;           json-mode
+;;           mhtml-mode
+;;           yaml-mode) . lsp-deferred)
+;;          (lsp-mode . (lambda ()
+;;                        ;; Integrate `which-key'
+;;                        (lsp-enable-which-key-integration)
+
+;;                        ;; Organize imports
+;;                        (add-hook 'before-save-hook #'lsp-organize-imports t t))))
+;;   :custom
+;;   (lsp-enable-symbol-highlighting t)
+;;   (lsp-enable-indentation nil)
+;;   (lsp-eldoc-enable-hover nil)
+;;   (lsp-completion-provider :none)
+;;   (lsp-signature-auto-activate nil)
+;;   (lsp-signature-render-documentation nil)
+;;   (lsp-enable-text-document-color nil)
+;;   ;;(lsp-enable-completion-at-point nil)
+;;   (lsp-completion-provider :none)
+;;   (lsp-completion-enable nil)
+;;   ;;(lsp-completion-show-kind nil)
+;;   ;;(lsp-enable-file-watchers nil)
+;;   ;;(lsp-keep-workspace-alive nil)
+;;   (lsp-headerline-breadcrumb-enable nil)
+;;   ;; Need to toggle this to get eslint alongside
+;;   ;;(lsp-disabled-clients nil)
+;;   ;; Config specific to tsserver
+;;   (lsp-clients-typescript-log-verbosity "off")
+;;   (lsp-clients-typescript-tls-path "/usr/local/bin/typescript-language-server")
+;;   ;; (lsp-auto-guess-root t)
+;;   (read-process-output-max (* 1024 1024)) ;; 1mb
+;;   (lsp-clients-typescript-init-opts
+;;    '(:importModuleSpecifierEnding "jsx" :generateReturnInDocTemplate t))
+;;   :init
+;;   (defun my/lsp-mode-setup-completion ()
+;;     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+;;           '(orderless))) ;; Configure orderless
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   :hook
+;;   (lsp-completion-mode . my/lsp-mode-setup-completion)
+;;   :bind (:map lsp-mode-map
+;;               ("C-c C-d" . lsp-describe-thing-at-point)
+;;               ([remap xref-find-definitions] . lsp-find-definition)
+;;               ([remap xref-find-references] . lsp-find-references))
+;;   :config
+;;   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
+;;   (defun lsp-f-canonical (file-name)
+;;     "Return the canonical FILE-NAME, without a trailing slash."
+;;     (let ((fn (directory-file-name (expand-file-name file-name))))
+;;       (if (file-name-case-insensitive-p fn)
+;;           (downcase fn)
+;;         fn)))
+;;   (add-hook 'lsp-mode-hook (lambda ()
+;; 			                       ;; Switch back to corfu and orderless
+;; 			                       (company-mode 0)
+;; 			                       (setcdr (cadr (assq 'lsp-capf completion-category-defaults))
+;; 				                             '(orderless))
+;; 			                       (setf (caadr ;; Pad before lsp modeline error info
+;; 				                            (assq 'global-mode-string mode-line-misc-info))
+;; 				                           " "))))
+
+;; (use-package lsp-ui
+;;   ;; lsp-ui visual extras
+;;   :custom
+;;   (lsp-ui-sideline-show-code-actions nil)
+;;   (lsp-ui-sideline-update-mode "line")
+;;   (lsp-ui-peek-enable nil)
+;;   (lsp-ui-doc-enable t)
+;;   (lsp-ui-doc-delay 9000)
+;;   (lsp-ui-doc-show-with-cursor nil)
+;;   (lsp-ui-doc-show-with-mouse nil))
 
 (use-package consult-lsp
   ;; provide a consult front end for lsp
