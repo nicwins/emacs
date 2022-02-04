@@ -437,7 +437,7 @@ surrounded by word boundaries."
   (lsp-enable-symbol-highlighting t)
   (lsp-enable-indentation nil)
   (lsp-eldoc-enable-hover nil)
-  (lsp-prefer-capf t)
+  (lsp-completion-provider :none)
   (lsp-signature-auto-activate nil)
   (lsp-signature-render-documentation nil)
   (lsp-enable-text-document-color nil)
@@ -445,7 +445,7 @@ surrounded by word boundaries."
   (lsp-completion-provider :none)
   (lsp-completion-enable nil)
   ;;(lsp-completion-show-kind nil)
-  (lsp-enable-file-watchers nil)
+  ;;(lsp-enable-file-watchers nil)
   ;;(lsp-keep-workspace-alive nil)
   (lsp-headerline-breadcrumb-enable nil)
   ;; Need to toggle this to get eslint alongside
@@ -458,8 +458,13 @@ surrounded by word boundaries."
   (lsp-clients-typescript-init-opts
    '(:importModuleSpecifierEnding "jsx" :generateReturnInDocTemplate t))
   :init
+  (defun my/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless))) ;; Configure orderless
   (setq lsp-keymap-prefix "C-c l")
-   :bind (:map lsp-mode-map
+  :hook
+  (lsp-completion-mode . my/lsp-mode-setup-completion)
+  :bind (:map lsp-mode-map
               ("C-c C-d" . lsp-describe-thing-at-point)
               ([remap xref-find-definitions] . lsp-find-definition)
               ([remap xref-find-references] . lsp-find-references))
@@ -470,7 +475,15 @@ surrounded by word boundaries."
     (let ((fn (directory-file-name (expand-file-name file-name))))
       (if (file-name-case-insensitive-p fn)
           (downcase fn)
-        fn))))
+        fn)))
+  (add-hook 'lsp-mode-hook (lambda ()
+			                       ;; Switch back to corfu and orderless
+			                       (company-mode 0)
+			                       (setcdr (cadr (assq 'lsp-capf completion-category-defaults))
+				                             '(orderless))
+			                       (setf (caadr ;; Pad before lsp modeline error info
+				                            (assq 'global-mode-string mode-line-misc-info))
+				                           " "))))
 
 (use-package lsp-ui
   ;; lsp-ui visual extras
@@ -544,13 +557,12 @@ surrounded by word boundaries."
   (add-hook 'org-capture-mode-hook 'delete-other-windows)
   (add-hook 'org-mode-hook 'visual-line-mode))
 
-;; need to scope this not-macos
-;; (use-package mixed-pitch
-;;   :hook (text-mode . mixed-pitch-mode)
-;;   :config
-;;   (set-face-attribute 'default nil :family "Hack" :height 150)
-;;   (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
-;;   (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150))
+(use-package mixed-pitch
+  :hook (text-mode . mixed-pitch-mode)
+  :config
+  (set-face-attribute 'default nil :family "Hack" :height 150)
+  (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
+  (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150))
 
 (use-package org-superstar
   ;; Nice bullets
@@ -705,11 +717,11 @@ surrounded by word boundaries."
         ("<" . help-go-back)
         (">" . help-go-forward)))
 
-;; (use-package xref
-;;   ;; find identifier in prog modes
-;;   :straight (:type built-in)
-;;   :custom
-;;   (xref-search-program 'ripgrep))
+(use-package xref
+  ;; find identifier in prog modes
+  :straight (:type built-in)
+  :custom
+  (xref-search-program 'ripgrep))
 
 (use-package elec-pair
   ;; automatically match pairs
