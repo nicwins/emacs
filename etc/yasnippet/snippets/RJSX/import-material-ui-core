@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: Import Material-UI core
-# key: >imc
-# --
-
-import { $0 } from '@material-ui/core';

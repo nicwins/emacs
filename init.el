@@ -230,22 +230,24 @@ surrounded by word boundaries."
   :config
   (global-visible-mark-mode 1))
 
-;; (use-package aggressive-indent
-;;   ;; Indent as you type
-;;   :hook (prog-mode . aggressive-indent-mode))
+(use-package aggressive-indent
+  ;; Indent as you type
+  :hook (prog-mode . aggressive-indent-mode))
 
-;; (use-package guix
-;;   ;; front end for guix commands
-;;   :if (memq system-type '(gnu/linux))
-;;   :hook (scheme-mode . guix-devel-mode))
+(use-package geiser-guile
+  ;; major mode for guile with repl
+  :if (memq system-type '(gnu/linux))
+  ;;:after (emacs-geiser)
+  :hook (scheme-mode . guix-devel-mode)
+  :custom
+  (geiser-mode-start-repl-p t)
+  :config
+  (add-to-list 'geiser-guile-load-path "~/src/guix"))
 
-;; (use-package geiser-guile
-;;   ;; major mode for guile with repl
-;;   :if (memq system-type '(gnu/linux))
-;;   :custom
-;;   (geiser-mode-start-repl-p t)
-;;   :config
-;;   (add-to-list 'geiser-guile-load-path "~/src/guix"))
+(use-package guix
+  :after (geiser-guile)
+  ;; front end for guix commands
+  :if (memq system-type '(gnu/linux)))
 
 (use-package flycheck
   ;; code linter
@@ -419,9 +421,11 @@ surrounded by word boundaries."
 (use-package lsp-mode
   :commands (lsp)
   :hook ((typescript-mode
-         json-mode
-         mhtml-mode
-         yaml-mode) . lsp)
+          json-mode
+          mhtml-mode
+          yaml-mode) . lsp)
+  :custom
+  (lsp-signature-render-documentation nil)
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
@@ -512,6 +516,14 @@ surrounded by word boundaries."
   :after (consult lsp)
   :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
 
+(use-package puni
+  :defer t
+  :hook ((prog-mode
+          sgml-mode
+          nxml-mode
+          tex-mode
+          eval-expression-minibuffer-setup) . puni-mode))
+
 (use-package sml-mode
   ;; temporary for coursera
   )
@@ -600,7 +612,9 @@ surrounded by word boundaries."
          ("C-c y x" . yas-expand)
          :map yas-keymap
          ("C-i" . yas-next-field-or-maybe-expand))
-  :mode ("/\\.emacs\\.d/snippets/" . snippet-mode))
+  :mode ("/\\.emacs\\.d/snippets/" . snippet-mode)
+  :custom
+  (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets"))
 
 (use-package perspective
   ;; window and buffer manager

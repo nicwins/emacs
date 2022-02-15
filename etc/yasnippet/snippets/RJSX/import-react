@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: Import React Modules
-# key: >irm
-# --
-
-import { $0 } from 'react';
