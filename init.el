@@ -1041,9 +1041,10 @@ If not, open it in Emacs."
   (help-window-select t)                ; move cursor to popup help windows
   (ad-redefinition-action 'accept)      ; silence warnings for redefinition
   (cursor-in-non-selected-windows nil)  ; Hide cursor in inactive windows
-  (warning-minimum-level :erros)        ; Skip warning buffers
+  (warning-suppress-types '((comp)))
   :config
   (delete-selection-mode)
+  (put 'upcase-region 'disabled nil)
   (fset 'yes-or-no-p 'y-or-n-p)         ; use y or n to confirm
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
