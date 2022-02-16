@@ -13,6 +13,9 @@
 ;;;; Initialize Package
 
 ;; This is only needed once, near the top of the file
+(defvar straight-fix-flycheck)
+(setq straight-fix-flycheck t)
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -27,8 +30,6 @@
   (load bootstrap-file nil 'nomessage))
 
 (setq-default straight-use-package-by-default t)
-(defvar straight-fix-flycheck)
-(setq straight-fix-flycheck t)
 
 ;; Bootstrap `use-package'
 (setq-default use-package-verbose nil            ; Don't report loading details
@@ -36,6 +37,7 @@
               use-package-expand-minimally t) ; minimize expanded code
 
 (straight-use-package 'use-package)
+(eval-when-compile (require 'use-package))
 
 ;;;; Global Helper Functions
 (defun my/eval-and-replace ()
@@ -99,7 +101,7 @@ Intended as :after advice for `delete-file'."
   (newline-and-indent))
 
 (defun my/comment-or-uncomment-region-or-line ()
-  "Comments or uncomments the region or the current line if there's no active region."
+  "Comments or uncomments the region or the current line."
   (interactive)
   (let (beg end)
     (if (region-active-p)
@@ -194,10 +196,6 @@ surrounded by word boundaries."
       (query-replace-regexp re replacement delimited beg end))))
 
 ;;;; Package Configuration
-(use-package use-package-ensure-system-package
-  ;; ensure global binaries are installed
-  )
-
 (use-package exec-path-from-shell
   ;; Load path from user shell
   :custom
@@ -218,9 +216,8 @@ surrounded by word boundaries."
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (custom-file (no-littering-expand-etc-file-name "custom.el")))
 
-(use-package bug-hunter
-  ;; Automatically bisects init file
-  )
+;; Automatically bisects init file
+(use-package bug-hunter)
 
 (use-package visible-mark
   ;; Makes the mark visible
@@ -232,7 +229,8 @@ surrounded by word boundaries."
 
 (use-package aggressive-indent
   ;; Indent as you type
-  :hook (prog-mode . aggressive-indent-mode))
+  :config
+  (add-hook 'prog-mode-hook #'aggressive-indent-mode))
 
 (use-package geiser-guile
   ;; major mode for guile with repl
@@ -251,7 +249,10 @@ surrounded by word boundaries."
 
 (use-package flycheck
   ;; code linter
-  :init (global-flycheck-mode))
+  :init (global-flycheck-mode)
+  :custom
+  ;;(flycheck-emacs-lisp-load-path '("~/.config/emacs/straight/repos/use-package"))
+  (flycheck-emacs-lisp-load-path 'inherit))
 
 (use-package doom-modeline
   ;; fancy modeline
@@ -260,6 +261,7 @@ surrounded by word boundaries."
   (doom-modeline-buffer-encoding nil)
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-icon (display-graphic-p))
+  (doom-modeline-hud t)
   :config
   (doom-modeline-mode 1))
 
@@ -301,7 +303,12 @@ surrounded by word boundaries."
   (tab-always-indent 'complete)
   (corfu-auto t)
   (corfu-quit-no-match t)
-  (corfu-quit-at-boundary t))
+  (corfu-quit-at-boundary t)
+  :config
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq-local corfu-auto nil)
+              (corfu-mode))))
 
 (use-package consult
   ;; enhanced selection ui
@@ -318,7 +325,17 @@ surrounded by word boundaries."
   (consult-project-root-function #'projectile-project-root)
   (xref-show-xrefs-function #'consult-xref)
   (xref-show-definitions-function #'consult-xref)
-  (consult-narrow-key "<"))
+  :config
+  (consult-customize consult--source-buffer :hidden t :default nil)
+  (defvar consult--source-perspective
+    (list :name     "Perspective"
+          :narrow   ?s
+          :category 'buffer
+          :state    #'consult--buffer-state
+          :default  t
+          :items    #'persp-get-buffer-names))
+
+  (push consult--source-perspective consult-buffer-sources))
 
 (use-package consult-flycheck
   ;; add a consult-flycheck command
@@ -355,11 +372,6 @@ surrounded by word boundaries."
 
 (use-package projectile
   ;; project traversal
-  :bind (:map projectile-mode-map
-              ("C-c p" . projectile-command-map))
-  :preface
-  (defun my/projectile-ignore-project (project-root)
-    (f-descendant-of? project-root (expand-file-name "~/.config/emacs/straight/")))
   :config
   (projectile-mode 1))
 
@@ -431,86 +443,6 @@ surrounded by word boundaries."
 
 (use-package lsp-ui)
 
-;; (use-package lsp-mode
-;;   ;; language server protocol support
-;;   :commands (lsp
-;;              lsp-deferred
-;;              lsp-enable-which-key-integration
-;;              lsp-install-server
-;;              lsp-organize-imports)
-;;   :hook (((typescript-mode
-;;           json-mode
-;;           mhtml-mode
-;;           yaml-mode) . lsp-deferred)
-;;          (lsp-mode . (lambda ()
-;;                        ;; Integrate `which-key'
-;;                        (lsp-enable-which-key-integration)
-
-;;                        ;; Organize imports
-;;                        (add-hook 'before-save-hook #'lsp-organize-imports t t))))
-;;   :custom
-;;   (lsp-enable-symbol-highlighting t)
-;;   (lsp-enable-indentation nil)
-;;   (lsp-eldoc-enable-hover nil)
-;;   (lsp-completion-provider :none)
-;;   (lsp-signature-auto-activate nil)
-;;   (lsp-signature-render-documentation nil)
-;;   (lsp-enable-text-document-color nil)
-;;   ;;(lsp-enable-completion-at-point nil)
-;;   (lsp-completion-provider :none)
-;;   (lsp-completion-enable nil)
-;;   ;;(lsp-completion-show-kind nil)
-;;   ;;(lsp-enable-file-watchers nil)
-;;   ;;(lsp-keep-workspace-alive nil)
-;;   (lsp-headerline-breadcrumb-enable nil)
-;;   ;; Need to toggle this to get eslint alongside
-;;   ;;(lsp-disabled-clients nil)
-;;   ;; Config specific to tsserver
-;;   (lsp-clients-typescript-log-verbosity "off")
-;;   (lsp-clients-typescript-tls-path "/usr/local/bin/typescript-language-server")
-;;   ;; (lsp-auto-guess-root t)
-;;   (read-process-output-max (* 1024 1024)) ;; 1mb
-;;   (lsp-clients-typescript-init-opts
-;;    '(:importModuleSpecifierEnding "jsx" :generateReturnInDocTemplate t))
-;;   :init
-;;   (defun my/lsp-mode-setup-completion ()
-;;     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-;;           '(orderless))) ;; Configure orderless
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   :hook
-;;   (lsp-completion-mode . my/lsp-mode-setup-completion)
-;;   :bind (:map lsp-mode-map
-;;               ("C-c C-d" . lsp-describe-thing-at-point)
-;;               ([remap xref-find-definitions] . lsp-find-definition)
-;;               ([remap xref-find-references] . lsp-find-references))
-;;   :config
-;;   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log"))
-;;   (defun lsp-f-canonical (file-name)
-;;     "Return the canonical FILE-NAME, without a trailing slash."
-;;     (let ((fn (directory-file-name (expand-file-name file-name))))
-;;       (if (file-name-case-insensitive-p fn)
-;;           (downcase fn)
-;;         fn)))
-;;   (add-hook 'lsp-mode-hook (lambda ()
-;; 			                       ;; Switch back to corfu and orderless
-;; 			                       (company-mode 0)
-;; 			                       (setcdr (cadr (assq 'lsp-capf completion-category-defaults))
-;; 				                             '(orderless))
-;; 			                       (setf (caadr ;; Pad before lsp modeline error info
-;; 				                            (assq 'global-mode-string mode-line-misc-info))
-;; 				                           " "))))
-
-;; (use-package lsp-ui
-;;   ;; lsp-ui visual extras
-;;   :custom
-;;   (lsp-ui-sideline-show-code-actions nil)
-;;   (lsp-ui-sideline-update-mode "line")
-;;   (lsp-ui-peek-enable nil)
-;;   (lsp-ui-doc-enable t)
-;;   (lsp-ui-doc-delay 9000)
-;;   (lsp-ui-doc-show-with-cursor nil)
-;;   (lsp-ui-doc-show-with-mouse nil))
-
 (use-package consult-lsp
   ;; provide a consult front end for lsp
   :after (consult lsp)
@@ -550,7 +482,7 @@ surrounded by word boundaries."
     (org-capture nil "i"))
   :bind
   ("C-c a" . org-agenda)
-  ("C-c c" . org-capture-inbox)
+  ("C-c q" . org-capture-inbox)
   :custom
   (org-directory "~/notes")
   (org-default-notes-file "~/notes/inbox.org")
@@ -600,32 +532,35 @@ surrounded by word boundaries."
 (use-package yasnippet
   ;; template system for emacs
   :hook (prog-mode . yas-minor-mode)
-  :bind (("C-c y d" . yas-load-directory)
-         ("C-c y i" . yas-insert-snippet)
-         ("C-c y f" . yas-visit-snippet-file)
-         ("C-c y n" . yas-new-snippet)
-         ("C-c y t" . yas-tryout-snippet)
-         ("C-c y l" . yas-describe-tables)
-         ("C-c y g" . yas/global-mode)
-         ("C-c y m" . yas/minor-mode)
-         ("C-c y r" . yas-reload-all)
-         ("C-c y x" . yas-expand)
-         :map yas-keymap
-         ("C-i" . yas-next-field-or-maybe-expand))
-  :mode ("/\\.emacs\\.d/snippets/" . snippet-mode)
-  :custom
-  (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets"))
+  :config
+  (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets")
+  (yas-reload-all))
 
+;; setup default persps for 1-9
 (use-package perspective
   ;; window and buffer manager
+  :preface
+  ;; (defun my/switch-to-persp-one ()
+  ;;   "Switches to persp one."
+  ;;   ((interactive) (persp-switch-by-number 1)))
   :bind
   (("C-c t" . persp-switch)
-   ("C-x b" . persp-switch-to-buffer*)
-   ("C-x k" . persp-kill-buffer*))
+   ("C-x k" . persp-kill-buffer*)
+   ("C-c x" . my/switch-to-persp-one))
   :custom
   (persp-state-default-file (no-littering-expand-var-file-name "perspective/perspectives.el"))
   (persp-modestring-short t)
+  (persp-sort 'created)
   :config
+  (global-set-key (kbd "C-c x") (lambda () (interactive) (persp-switch "main")))
+  (global-set-key (kbd "C-c c") (lambda () (interactive) (persp-switch "II")))
+  (global-set-key (kbd "C-c d") (lambda () (interactive) (persp-switch "III")))
+  (global-set-key (kbd "C-c r") (lambda () (interactive) (persp-switch "IV")))
+  (global-set-key (kbd "C-c s") (lambda () (interactive) (persp-switch "V")))
+  (global-set-key (kbd "C-c t") (lambda () (interactive) (persp-switch "VI")))
+  (global-set-key (kbd "C-c w") (lambda () (interactive) (persp-switch "VII")))
+  (global-set-key (kbd "C-c f") (lambda () (interactive) (persp-switch "VIII")))
+  (global-set-key (kbd "C-c p") (lambda () (interactive) (persp-switch "IV")))
   (persp-mode))
 
 (use-package disable-mouse
@@ -931,50 +866,49 @@ If not, open it in Emacs."
 
 (use-package em-smart
   ;; Plan-9 interface for eshell
-  :straight (:type built-in))
+  :straight (:type built-in)
+  :custom
+  (eshell-where-to-jump 'begin)
+  (eshell-review-quick-commands nil)
+  (eshell-smart-space-goes-to-end t))
 
 (use-package eshell
   ;; elisp shell and repl
   :straight (:type built-in)
   :preface
   (defun my/eshell-here ()
-      "Opens up a new shell in the directory associated with the
+    "Opens up a new shell in the directory associated with the
     current buffer's file. The eshell is renamed to match that
     directory to make multiple eshell windows easier."
-      (interactive)
-      (let* ((parent (if (buffer-file-name)
-                         (file-name-directory (buffer-file-name))
-                       default-directory))
-             (height (/ (window-total-height) 3))
-             (name   (car (last (split-string parent "/" t)))))
-        (split-window-vertically (- height))
-        (other-window 1)
-        (eshell "new")
-        (rename-buffer (concat "*eshell: " name "*"))
-
-        (insert (concat "ls"))
-        (eshell-send-input)))
-   (defun eshell/x ()
-      (insert "exit")
+    (interactive)
+    (let* ((parent (if (buffer-file-name)
+                       (file-name-directory (buffer-file-name))
+                     default-directory))
+           (height (/ (window-total-height) 2))
+           (name   (car (last (split-string parent "/" t)))))
+      (split-window-vertically (- height))
+      (other-window 1)
+      (eshell "new")
+      (rename-buffer (concat "*eshell: " name "*"))
+      (insert (concat "ls"))
       (eshell-send-input)
-      (delete-window))
-   (defun my/eshell-lint ()
-     "Opens up a new shell and runs lint."
-     (interactive)
-     (let* ((height (/ (window-total-height) 3)))
-       (split-window-vertically (- height))
-       (other-window 1)
-       (eshell "new")
-       (rename-buffer (concat "*eshell: lint*"))
-       (insert (concat "npm run lint"))
-       (eshell-send-input)))
-   :bind
-   (([f9] . my/eshell-here)
-    ([f8] . my/eshell-lint))
-  :custom
-  (eshell-where-to-jump 'begin)
-  (eshell-review-quick-commands nil)
-  (eshell-smart-space-goes-to-end t))
+      (eshell-smart-initialize)))
+  (defun eshell/x ()
+    (delete-window)
+    (eshell/exit))
+  (defun my/eshell-lint ()
+    "Opens up a new shell and runs lint."
+    (interactive)
+    (let* ((height (/ (window-total-height) 4)))
+      (split-window-vertically (- height))
+      (other-window 1)
+      (eshell "new")
+      (rename-buffer (concat "*eshell: lint*"))
+      (insert (concat "npm run lint"))
+      (eshell-send-input)))
+  :bind
+  (([f8] . my/eshell-here)
+   ([f9] . my/eshell-lint)))
 
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
@@ -999,20 +933,18 @@ If not, open it in Emacs."
    ("M-'" . consult-register-store)
    ("M-#" . consult-register-load)
    ;; C-x bindings
+   ("C-x b" . consult-buffer)
    ("C-x C-b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
-   ("C-x f" . consult-find)
    ;; C-c bindings (user-map)
    ("C-c i" . consult-imenu)
    ("C-c I" . consult-project-imenu)
-   ("C-c f" . consult-flycheck)
+   ("C-c z" . consult-flycheck)
    ("C-c F" . consult-lsp-diagnostics)
-   ("C-c s" . consult-lsp-symbols)
-   ("C-c o" . consult-outline)
    ("C-c v" . magit)
    ("C-c h" . consult-history)
    ("C-c m" . consult-mode-command)
-   ("C-c r" . my/switch-to-last-buffer)
+   ("C-c p" . my/switch-to-last-buffer)
    ("C-c C-c" . server-edit)
    ("C-c C-k" . server-edit-abort)
    ([f1] . projectile-find-file)

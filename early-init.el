@@ -27,7 +27,8 @@
 
 (defvar better-gc-cons-threshold 67108864 ; 64mb
   "The default value to use for `gc-cons-threshold'.
-If you experience freezing, decrease this. If you experience stuttering, increase this.")
+If you experience freezing, decrease this.
+If you experience stuttering, increase this.")
 
 (add-hook 'emacs-startup-hook
 	  (lambda ()
@@ -35,5 +36,5 @@ If you experience freezing, decrease this. If you experience stuttering, increas
 	    (setq file-name-handler-alist file-name-handler-alist-original)
 	    (makunbound 'file-name-handler-alist-original)))
 
-(provide 'early-init.el)
-;;; early-init ends here
+(provide 'early-init)
+;;; early-init.el ends here
