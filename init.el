@@ -216,8 +216,7 @@ surrounded by word boundaries."
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (custom-file (no-littering-expand-etc-file-name "custom.el")))
 
-;; Automatically bisects init file
-(use-package bug-hunter)
+(use-package bug-hunter) ;; Automatically bisects init file
 
 (use-package visible-mark
   ;; Makes the mark visible
@@ -235,7 +234,6 @@ surrounded by word boundaries."
 (use-package geiser-guile
   ;; major mode for guile with repl
   :if (memq system-type '(gnu/linux))
-  ;;:after (emacs-geiser)
   :hook (scheme-mode . guix-devel-mode)
   :custom
   (geiser-mode-start-repl-p t)
@@ -243,8 +241,9 @@ surrounded by word boundaries."
   (add-to-list 'geiser-guile-load-path "~/src/guix"))
 
 (use-package guix
-  :after (geiser-guile)
   ;; front end for guix commands
+  ;; requires guix install guix!
+  :after (geiser-guile)
   :if (memq system-type '(gnu/linux)))
 
 (use-package flycheck
@@ -297,6 +296,7 @@ surrounded by word boundaries."
   (savehist-mode))
 
 (use-package corfu
+  ;; autocomplete package
   :init
   (corfu-global-mode)
   :custom
@@ -342,6 +342,7 @@ surrounded by word boundaries."
   :after (consult flycheck))
 
 (use-package consult-dir
+  ;; browse recent dirs and bookmarks
   :bind (("C-x C-d" . consult-dir)
          :map minibuffer-local-completion-map
          ("C-x C-d" . consult-dir)
@@ -375,16 +376,10 @@ surrounded by word boundaries."
   :config
   (projectile-mode 1))
 
-;; needed for projectile-ripgrep
-(use-package ripgrep
-  ;; faster grep
-  )
 
-(use-package rg
-  ;; ripgrep for consult
-  ;;:ensure-system-package
-  ;;(rg . ripgrep)
-  )
+(use-package ripgrep) ; needed for projectile-ripgrep
+
+(use-package rg) ; ripgrep for consult
 
 (use-package magit
   ;; emacs interface for git
@@ -428,9 +423,10 @@ surrounded by word boundaries."
               file))
   (apheleia-global-mode +1))
 
-(use-package json-mode)     ; major mode for json
+(use-package json-mode) ; major mode for json
 
 (use-package lsp-mode
+  ;; language server protocol for emacs
   :commands (lsp)
   :hook ((typescript-mode
           json-mode
@@ -445,7 +441,7 @@ surrounded by word boundaries."
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
-(use-package lsp-ui)
+(use-package lsp-ui) ;; ui fluff for lsp
 
 (use-package consult-lsp
   ;; provide a consult front end for lsp
@@ -453,6 +449,7 @@ surrounded by word boundaries."
   :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
 
 (use-package puni
+  ;; balanced editing mode
   :defer t
   :hook ((prog-mode
           sgml-mode
@@ -460,9 +457,7 @@ surrounded by word boundaries."
           tex-mode
           eval-expression-minibuffer-setup) . puni-mode))
 
-(use-package sml-mode
-  ;; temporary for coursera
-  )
+(use-package sml-mode) ; temporary for coursera
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -517,6 +512,7 @@ surrounded by word boundaries."
   (add-hook 'org-mode-hook 'visual-line-mode))
 
 (use-package mixed-pitch
+  ;; use both pitch types in one buffer
   :hook (text-mode . mixed-pitch-mode)
   :config
   (set-face-attribute 'default nil :family "Hack" :height 150)
@@ -540,13 +536,8 @@ surrounded by word boundaries."
   (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets")
   (yas-reload-all))
 
-;; setup default persps for 1-9
 (use-package perspective
   ;; window and buffer manager
-  :preface
-  ;; (defun my/switch-to-persp-one ()
-  ;;   "Switches to persp one."
-  ;;   ((interactive) (persp-switch-by-number 1)))
   :bind
   (("C-c t" . persp-switch)
    ("C-x k" . persp-kill-buffer*)
@@ -592,6 +583,7 @@ surrounded by word boundaries."
               (")" . dired-git-info-mode)))
 
 (use-package dired-narrow
+  ;; filter dired buffers
   :ensure t
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
@@ -603,6 +595,7 @@ surrounded by word boundaries."
   (dired-async-mode 1))
 
 (use-package typescript-mode
+  ;; major mode for ts/js
   :mode (rx ".js" string-end)
   :init
   (define-derived-mode typescript-tsx-mode typescript-mode "typescript-tsx")
@@ -611,6 +604,7 @@ surrounded by word boundaries."
   (typescript-indent-level 2))
 
 (use-package tree-sitter
+  ;; fast syntax highlighting
   :commands
   (tree-sitter-langs)
   :custom
@@ -622,6 +616,7 @@ surrounded by word boundaries."
   (setf (alist-get 'typescript-tsx-mode tree-sitter-major-mode-language-alist) 'tsx))
 
 (use-package tree-sitter-langs
+  ;; helper package for tree-sitter
   :after tree-sitter
   :config
   (tree-sitter-require 'javascript)
@@ -632,6 +627,7 @@ surrounded by word boundaries."
   :hook (prog-mode .  highlight-parentheses-mode))
 
 (use-package helpful
+  ;; better formatting for help buffers
   :bind (("C-h f" . helpful-callable)
          ("C-h v" . helpful-variable)
          ("C-h k" . helpful-key)
@@ -646,16 +642,12 @@ surrounded by word boundaries."
          ("C-M-/" . dabbrev-expand)))
 
 (use-package which-key
+  ;; Display keybindings in popup
   :init (which-key-mode)
   :custom
   (which-key-idle-delay 1)
   :bind
   ("C-c ?" . which-key-show-top-level))
-
-(use-package hungry-delete
-  :init (global-hungry-delete-mode)
-  :custom
-  (hungry-delete-join-reluctantly t))
 
 ;;;; Built-in Package Config
 
