@@ -438,6 +438,10 @@ surrounded by word boundaries."
           yaml-mode) . lsp)
   :custom
   (lsp-signature-render-documentation nil)
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-enable-indentation nil)
+  (lsp-signature-render-documentation nil)
+  (read-process-output-max (* 1024 1024))
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
