@@ -226,10 +226,11 @@ surrounded by word boundaries."
   :config
   (global-visible-mark-mode 1))
 
-(use-package aggressive-indent
-  ;; Indent as you type
-  :config
-  (add-hook 'prog-mode-hook #'aggressive-indent-mode))
+;; need this for lisp only
+;; (use-package aggressive-indent
+;;   ;; Indent as you type
+;;   :config
+;;   (add-hook 'prog-mode-hook #'aggressive-indent-mode))
 
 (use-package geiser-guile
   ;; major mode for guile with repl
@@ -438,6 +439,7 @@ surrounded by word boundaries."
   (lsp-enable-indentation nil)
   (lsp-signature-render-documentation nil)
   (read-process-output-max (* 1024 1024))
+  (lsp-completion-provider :none)
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
 
@@ -997,6 +999,7 @@ If not, open it in Emacs."
   (setq ring-bell-function 'ignore)
   (setq auto-save-default nil)
   (setq frame-resize-pixelwise t)
+  (setq magit-git-executable "/usr/local/bin/git")
   (set-frame-size (selected-frame) 2542 1412 t)
   (setq ns-use-native-fullscreen nil))
 
