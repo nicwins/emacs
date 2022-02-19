@@ -438,7 +438,6 @@ surrounded by word boundaries."
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-enable-indentation nil)
   (lsp-signature-render-documentation nil)
-  (read-process-output-max (* 1024 1024))
   (lsp-completion-provider :none)
   :config
   (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
