@@ -40,16 +40,6 @@
 (eval-when-compile (require 'use-package))
 
 ;;;; Global Helper Functions
-(defun my/eval-and-replace ()
-  "Replace the preceding sexp with its value."
-  (interactive)
-  (backward-kill-sexp)
-  (condition-case nil
-      (prin1 (eval (read (current-kill 0)))
-             (current-buffer))
-    (error (message "Invalid expression")
-           (insert (current-kill 0)))))
-
 (defun visiting-buffer-rename (file newname &optional _ok-if-already-exists)
   "Rename buffer visiting FILE to NEWNAME.
 Intended as :after advice for `rename-file'."
@@ -111,29 +101,6 @@ Intended as :after advice for `delete-file'."
     (next-logical-line)
     (back-to-indentation)))
 
-(defun my/smarter-move-beginning-of-line (arg)
-  "Move point back to indentation of beginning of line.
-
-Move point to the first non-whitespace character on this line.
-If point is already there, move to the beginning of the line.
-Effectively toggle between the first non-whitespace character and
-the beginning of the line.
-
-If ARG is not nil or 1, move forward ARG - 1 lines first.  If
-point reaches the beginning or end of the buffer, stop there."
-  (interactive "^p")
-  (setq arg (or arg 1))
-
-  ;; Move lines first
-  (when (/= arg 1)
-    (let ((line-move-visual nil))
-      (forward-line (1- arg))))
-
-  (let ((orig-point (point)))
-    (back-to-indentation)
-    (when (= orig-point (point))
-      (move-beginning-of-line 1))))
-
 (defun my/three-column-layout ()
   "Set the frame to three columns."
   (interactive)
@@ -141,19 +108,6 @@ point reaches the beginning or end of the buffer, stop there."
   (split-window-horizontally)
   (split-window-horizontally)
   (balance-windows))
-
-(defun push-mark-no-activate ()
-  "Pushes `point' to `mark-ring' and does not activate the region.
-Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
-  (interactive)
-  (push-mark (point) t nil)
-  (message "Pushed mark to ring"))
-
-(defun jump-to-mark ()
-  "Jumps to the local mark, respecting the `mark-ring' order.
-This is the same as using \\[set-mark-command] with the prefix argument."
-  (interactive)
-  (set-mark-command 1))
 
 (defvar my/re-builder-positions nil
   "Store point and region bounds before calling `re-builder'.")
@@ -218,19 +172,11 @@ surrounded by word boundaries."
 
 (use-package bug-hunter) ;; Automatically bisects init file
 
-(use-package visible-mark
-  ;; Makes the mark visible
-  :custom
-  (visible-mark-max 3)
-  (visible-mark-faces `(visible-mark-face1 visible-mark-face2))
+(use-package aggressive-indent
+  ;; Indent as you type
   :config
-  (global-visible-mark-mode 1))
-
-;; need this for lisp only
-;; (use-package aggressive-indent
-;;   ;; Indent as you type
-;;   :config
-;;   (add-hook 'prog-mode-hook #'aggressive-indent-mode))
+  (global-aggressive-indent-mode 1)
+  (add-to-list 'aggressive-indent-excluded-modes 'typescript-mode))
 
 (use-package geiser-guile
   ;; major mode for guile with repl
@@ -305,6 +251,14 @@ surrounded by word boundaries."
   (corfu-auto t)
   (corfu-quit-no-match t)
   (corfu-quit-at-boundary t)
+  (corfu-cycle t)
+  (corfu-preselect-first nil)
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
   :config
   (add-hook 'eshell-mode-hook
             (lambda ()
@@ -640,7 +594,9 @@ surrounded by word boundaries."
   ;; Swap M-/ and C-M-/
   :straight (:type built-in)
   :bind (("M-/" . dabbrev-completion)
-         ("C-M-/" . dabbrev-expand)))
+         ("C-M-/" . dabbrev-expand))
+  :custom
+  (dabbrev-case-fold-search nil))
 
 (use-package which-key
   ;; Display keybindings in popup
@@ -657,7 +613,6 @@ surrounded by word boundaries."
   :custom
   (isearch-allow-scroll t)
   (lazy-highlight-buffer t)
-  (lazy-highlight-cleanup nil)
   (lazy-highlight-initial-delay 0)
   :hook
   (isearch-update-post . my/isearch-aim-beginning)
@@ -915,7 +870,6 @@ If not, open it in Emacs."
               :override #'consult-completing-read-multiple)
   :bind
   (;; Basic Overrides
-   ("C-a" . my/smarter-move-beginning-of-line)
    ("C-," . my/comment-or-uncomment-region-or-line)
    ("M-s" . consult-line)
    ("C-o" . my/newline-below)
@@ -925,8 +879,6 @@ If not, open it in Emacs."
    ("M-g g" . consult-goto-line)
    ("M-g M-g" . consult-goto-line)
    ("M-g m" . consult-mark)
-   ("C-<tab>" . push-mark-no-activate)
-   ("M-<tab>" . jump-to-mark)
    ("M-'" . consult-register-store)
    ("M-#" . consult-register-load)
    ;; C-x bindings
@@ -934,6 +886,7 @@ If not, open it in Emacs."
    ("C-x C-b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
    ;; C-c bindings (user-map)
+   ("C-c b" . my/switch-to-last-buffer)
    ("C-c i" . consult-imenu)
    ("C-c I" . consult-project-imenu)
    ("C-c z" . consult-flycheck)
@@ -946,6 +899,9 @@ If not, open it in Emacs."
    ("C-c C-k" . server-edit-abort)
    ([f1] . projectile-find-file)
    ([f2] . consult-ripgrep)
+   ([f3] . start-kbd-macro)
+   ([f4] . end-kbd-macro)
+   ([f5] . kmacro-call-macro)
    :map isearch-mode-map
    ("M-e" . consult-isearch)
    ("M-s l" . consult-line))
@@ -986,6 +942,7 @@ If not, open it in Emacs."
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
+  (menu-bar-mode)
   (windmove-default-keybindings))
 
 (persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
