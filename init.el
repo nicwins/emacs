@@ -658,46 +658,51 @@ surrounded by word boundaries."
   :straight (:type built-in)
   :preface
   (defun dired-clean-up-after-deletion (fn)
-     "My clean up after a deleted file or directory FN.
+    "My clean up after a deleted file or directory FN.
 Remove expanded subdir of deleted dir, if any."
-     (save-excursion (and (cdr dired-subdir-alist)
-                          (dired-goto-subdir fn)
-                          (dired-kill-subdir)))
-
-     ;; Offer to kill buffer of deleted file FN.
-     (if dired-clean-up-buffers-too
-         (progn
-           (let ((buf (get-file-buffer fn)))
-             (and buf
-                  (save-excursion ; you never know where kill-buffer leaves you
-                    (kill-buffer buf))))
-           (let ((buf-list (dired-buffers-for-dir (expand-file-name fn)))
-                 (buf nil))
-             (and buf-list
-                  (while buf-list
-                    (save-excursion (kill-buffer (car buf-list)))
-                    (setq buf-list (cdr buf-list))))))))
-     
-  (defun dired-find-file-or-do-async-shell-command ()
-    "If there is a default command defined for this file type, run it asynchronously .
-If not, open it in Emacs."
+    (save-excursion (and (cdr dired-subdir-alist)
+                         (dired-goto-subdir fn)
+                         (dired-kill-subdir)))
+    ;; Offer to kill buffer of deleted file FN.
+    (if dired-clean-up-buffers-too
+        (progn
+          (let ((buf (get-file-buffer fn)))
+            (and buf
+                 (save-excursion ; you never know where kill-buffer leaves you
+                   (kill-buffer buf))))
+          (let ((buf-list (dired-buffers-for-dir (expand-file-name fn)))
+                (buf nil))
+            (and buf-list
+                 (while buf-list
+                   (save-excursion (kill-buffer (car buf-list)))
+                   (setq buf-list (cdr buf-list))))))))
+  (defun my/dired-open()
     (interactive)
-    (let ((default (dired-guess-default (cons (dired-get-filename) '())))
-          (file-list (cons (dired-get-filename) '())))
-      (if (null default) (dired-find-file)
-        (dired-run-shell-command (dired-shell-stuff-it default file-list nil)))))
-  :hook (dired-mode . dired-omit-mode)
-  :bind (:map dired-mode-map
-              ("<return>" . dired-find-file-or-do-async-shell-command))
+    (cond ;; use dired-find-file if it is a directory
+     ((file-directory-p (dired-get-file-for-visit)) (dired-find-file))
+     ;; use dired-find-file if the mime type of the file is emacs.desktop
+     ((string= "emacs.desktop"
+               (string-trim-right
+                (shell-command-to-string
+                 (format "xdg-mime query filetype %s | xargs xdg-mime query default"
+                         (shell-quote-argument
+                          (dired-get-file-for-visit))))))
+      (dired-find-file))
+     ;; use xdg-open for everything else
+     ;; start-process quote the arguments so you do not need the sell-quote-argument function
+     (t (start-process "dired-open" nil "xdg-open" (dired-get-file-for-visit)))))
   :custom
   (dired-omit-verbose nil)
-  (dired-guess-shell-alist-user
-   '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\)\\(?:\\.part\\)?\\'"
-      "! (mpv ? &>/dev/null &)")
-     ("\\.html?\\'" "! (firefox ? &>/dev/null &)")))
   :config
   ;; setting this in custom throws a dired-omit-files is undefined
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$")))
+
+(use-package wdired
+  ;; editable dired buffers
+  :straight (:type built-in)
+  :bind ((:map wdired-mode-map
+               ("<return>" . dired-find-file-or-do-async-shell-command)
+               ("C-x C-s" . wdired-finish-edit))))
 
 (use-package server
   ;; The emacs server
