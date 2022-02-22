@@ -678,16 +678,12 @@ Remove expanded subdir of deleted dir, if any."
                    (setq buf-list (cdr buf-list))))))))
   (defun my/dired-open()
     (interactive)
+    ;; use dired-find-file if we have an emacs default
+    (let ((default (dired-guess-default (cons (dired-get-filename) '())))
+          (file-list (cons (dired-get-filename) '())))
+      (if (null default) (dired-find-file)))
     (cond ;; use dired-find-file if it is a directory
      ((file-directory-p (dired-get-file-for-visit)) (dired-find-file))
-     ;; use dired-find-file if the mime type of the file is emacs.desktop
-     ((string= "emacs.desktop"
-               (string-trim-right
-                (shell-command-to-string
-                 (format "xdg-mime query filetype %s | xargs xdg-mime query default"
-                         (shell-quote-argument
-                          (dired-get-file-for-visit))))))
-      (dired-find-file))
      ;; use xdg-open for everything else
      ;; start-process quote the arguments so you do not need the sell-quote-argument function
      (t (start-process "dired-open" nil "xdg-open" (dired-get-file-for-visit)))))
