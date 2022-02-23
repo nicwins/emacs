@@ -645,12 +645,12 @@ surrounded by word boundaries."
   ;; directory management
   :straight (:type built-in)
   :hook (dired-mode . dired-hide-details-mode)
-  
   :custom
   (dired-dwim-target t)
   ;; Dired listing switches - see man ls
   (dired-listing-switches "-alhF --group-directories-first")
   (dired-hide-details-hide-symlink-targets nil)
+  (dired-recursive-copies 'always)
   (dired-auto-revert-buffer t))
 
 (use-package dired-x
@@ -678,17 +678,22 @@ Remove expanded subdir of deleted dir, if any."
                    (setq buf-list (cdr buf-list))))))))
   (defun my/dired-open()
     (interactive)
-    ;; use dired-find-file if we have an emacs default
-    (let ((default (dired-guess-default (cons (dired-get-filename) '())))
-          (file-list (cons (dired-get-filename) '())))
-      (if (null default) (dired-find-file)))
     (cond ;; use dired-find-file if it is a directory
      ((file-directory-p (dired-get-file-for-visit)) (dired-find-file))
+     ;; If there is no default defined, open in dired
+     ((null (dired-guess-default (cons (dired-get-filename) '()))) (dired-find-file))
      ;; use xdg-open for everything else
      ;; start-process quote the arguments so you do not need the sell-quote-argument function
      (t (start-process "dired-open" nil "xdg-open" (dired-get-file-for-visit)))))
+  :hook (dired-mode . dired-omit-mode)
+  :bind (:map dired-mode-map
+              ("<return>" . my/dired-open))
   :custom
   (dired-omit-verbose nil)
+  (dired-guess-shell-alist-user
+   '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\|mov\\)\\(?:\\.part\\)?\\'"
+      "! (mpv ? &>/dev/null &)")
+     ("\\.html?\\'" "! (firefox ? &>/dev/null &)")))
   :config
   ;; setting this in custom throws a dired-omit-files is undefined
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$")))
@@ -697,7 +702,7 @@ Remove expanded subdir of deleted dir, if any."
   ;; editable dired buffers
   :straight (:type built-in)
   :bind ((:map wdired-mode-map
-               ("<return>" . dired-find-file-or-do-async-shell-command)
+               ("<return>" . my/dired-open)
                ("C-x C-s" . wdired-finish-edit))))
 
 (use-package server
