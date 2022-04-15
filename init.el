@@ -227,6 +227,7 @@ surrounded by word boundaries."
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
               ("DEL" . vertico-directory-delete-char)
+              ("^" . vertico-directory-delete-char)
               ("M-DEL" . vertico-directory-delete-word))
   ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
@@ -540,8 +541,8 @@ surrounded by word boundaries."
 (use-package dired-narrow
   ;; filter dired buffers
   :ensure t
-  :bind (:map dired-mode-map
-              ("/" . dired-narrow)))
+  :bind ((:map dired-mode-map
+               ("/" . dired-narrow))))
 
 (use-package async
   ;; use dired functions async
@@ -597,6 +598,8 @@ surrounded by word boundaries."
          ("C-M-/" . dabbrev-expand))
   :custom
   (dabbrev-case-fold-search nil))
+
+(use-package wgrep)
 
 (use-package which-key
   ;; Display keybindings in popup
