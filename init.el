@@ -525,9 +525,10 @@ surrounded by word boundaries."
   ;; front end for `pass'
   :if (memq system-type '(gnu/linux)))
 
-(use-package pass
+(use-package pass 
   ;; use the unix `pass' store
-  :if (memq system-type '(gnu/linux)))
+  :if (memq system-type '(gnu/linux))
+  :custom (pass-username-field "user"))
 
 (use-package diredfl
   ;; dired font-lock
@@ -936,10 +937,10 @@ Remove expanded subdir of deleted dir, if any."
   (ad-redefinition-action 'accept)      ; silence warnings for redefinition
   (cursor-in-non-selected-windows nil)  ; Hide cursor in inactive windows
   (warning-suppress-types '((comp)))
+  (use-short-answers t)                 ; y on n to confirm
   :config
   (delete-selection-mode)
   (put 'upcase-region 'disabled nil)
-  (fset 'yes-or-no-p 'y-or-n-p)         ; use y or n to confirm
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
   (show-paren-mode 1)                   ; Show matching parens
