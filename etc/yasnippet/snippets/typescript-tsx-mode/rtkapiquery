@@ -1,0 +1,11 @@
+# contributor: me
+# name: template for an api query with redux-toolkit
+# key: raq
+# --
+${1:get}$2: build.${3:$$(yas-choose-value '("query" "mutation"))}({
+  query: (${4:data}) => ({
+    $0
+  }),
+  ${5:transformResponse: response => response.data,}
+  ${6:${7:$$(yas-choose-value '("providesTags" "invalidatesTags"))}${8:: ['$2'],}}
+}),

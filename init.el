@@ -600,7 +600,9 @@ surrounded by word boundaries."
   :custom
   (dabbrev-case-fold-search nil))
 
-(use-package wgrep)
+(use-package wgrep
+  :custom
+  (wdired-allow-to-change-permissions t))
 
 (use-package which-key
   ;; Display keybindings in popup
@@ -700,7 +702,7 @@ Remove expanded subdir of deleted dir, if any."
      ("\\.html?\\'" "! (firefox ? &>/dev/null &)")))
   :config
   ;; setting this in custom throws a dired-omit-files is undefined
-  (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$")))
+  (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$")))
 
 (use-package wdired
   ;; editable dired buffers
