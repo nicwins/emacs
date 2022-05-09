@@ -378,6 +378,7 @@ surrounded by word boundaries."
   ((magit-credential . magit-process-buffer)
    (git-commit-post-finish-hook . magit-process-buffer))
   :config
+  (setq my-magit-log-buffer-file-registered nil)
   (advice-add 'magit-status :around #'magit-status--around)
   (advice-add 'magit-log-buffer-file :around #'magit-log-buffer-file--before)
   (advice-add 'magit-mode-bury-buffer :around #'magit-mode-bury-buffer--around)
