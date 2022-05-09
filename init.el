@@ -339,39 +339,57 @@ surrounded by word boundaries."
 
 (use-package magit
   ;; emacs interface for git
-  :hook
-  (magit-credential . magit-process-buffer)
-  :config
-  (defadvice magit-status (around magit-fullscreen activate)
-    "Set magit status to full-screen."
+  :preface
+  (defun magit-status--around (orig-magit-status &rest args)
+    "Set magit status to fullscreen."
     (window-configuration-to-register :magit-fullscreen)
-    ad-do-it
+    (apply orig-magit-status args)
     (delete-other-windows))
 
-  (defadvice magit-mode-quit-window (around magit-quit-session activate)
+  (defun magit-log-buffer-file--before (orig-fun &rest args)
+    "Store the window configuration before logging."
+    (setq my-magit-log-buffer-file-registered t)
+    (window-configuration-to-register :magit-fullscreen)
+    (apply orig-fun args))
+
+  (defun magit-mode-bury-buffer--around (orig-magit-mode-bury-buffer &rest args)
     "Restore previous window configuration if we are burying magit-status."
-    (if (equal (symbol-name major-mode) "magit-status-mode")
+    (if (or
+         (equal (symbol-name major-mode) "magit-status-mode")
+         (and my-magit-log-buffer-file-registered
+              (equal (symbol-name major-mode) "magit-log-mode")))
         (progn
-          ad-do-it
+          (setq my-magit-log-buffer-file-registered nil)
+          (apply orig-magit-mode-bury-buffer args)
           (jump-to-register :magit-fullscreen))
-      ad-do-it
+      (apply orig-magit-mode-bury-buffer args)
       (delete-other-windows)))
 
-  (define-advice magit-push-current-to-upstream (:before (args) query-yes-or-no)
-    "Prompt for confirmation before permitting a push to upstream."
+  (defun magit-push-current-to-upstream--before (orig-fun &rest args)
+    "Promt for confirmation before pushing to upstream."
     (when-let ((branch (magit-get-current-branch)))
       (unless (yes-or-no-p (format "Push %s branch upstream to %s? "
                                    branch
-                                   (or (magit-get-upstream-branch branch)
-                                       (magit-get "branch" branch "remote"))))
-        (user-error "Push to upstream aborted by user")))))
+                                   (magit-get "branch" branch "remote")))
+        (user-error "Pushed aborted"))))
+  :bind
+  ("C-c l" . magit-log-buffer-file)
+  :hook
+  ((magit-credential . magit-process-buffer)
+   (git-commit-post-finish-hook . magit-process-buffer))
+  :config
+  (advice-add 'magit-status :around #'magit-status--around)
+  (advice-add 'magit-log-buffer-file :around #'magit-log-buffer-file--before)
+  (advice-add 'magit-mode-bury-buffer :around #'magit-mode-bury-buffer--around)
+  (advice-add 'magit-push-current-to-upstream
+              :before #'magit-push-current-to-upstream--before))
 
 (use-package apheleia
   ;; run code formatters, saving point
   :straight
   (apheleia :type git
-	    :host github
-	    :repo "raxod502/apheleia")
+	          :host github
+	          :repo "raxod502/apheleia")
   :config
   (setf (alist-get 'prettier apheleia-formatters)
         '(npx "prettier"
@@ -698,8 +716,7 @@ Remove expanded subdir of deleted dir, if any."
   (dired-omit-verbose nil)
   (dired-guess-shell-alist-user
    '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\|mov\\)\\(?:\\.part\\)?\\'"
-      "! (mpv ? &>/dev/null &)")
-     ("\\.html?\\'" "! (firefox ? &>/dev/null &)")))
+      "! (mpv ? &>/dev/null &)")))
   :config
   ;; setting this in custom throws a dired-omit-files is undefined
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$")))
