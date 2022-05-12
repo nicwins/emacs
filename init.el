@@ -486,6 +486,13 @@ surrounded by word boundaries."
   (add-hook 'org-capture-mode-hook 'delete-other-windows)
   (add-hook 'org-mode-hook 'visual-line-mode))
 
+(use-package ob-http
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (http . t))))
+
 (use-package mixed-pitch
   ;; use both pitch types in one buffer
   :hook (text-mode . mixed-pitch-mode)
