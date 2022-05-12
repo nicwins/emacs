@@ -1,5 +1,4 @@
-# Apply with git config --global core.excludesFile ~/.config/emacs/dotfiles/global.gitignore
-jsconfig.json
+# Apply with git config --global core.excludesFile ~/.config/git/global.gitignore
 .DS_Store
 .projectile
 .ignore

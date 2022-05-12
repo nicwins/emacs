@@ -39,7 +39,7 @@ yabai -m space 2 --label emacs
 yabai -m space 3 --label mongo
 yabai -m space 4 --label postman
 yabai -m space 5 --label scratch
-yabai -m space 6 --label last
+yabai -m space 6 --label scratch2
 yabai -m space 7 --label web
 yabai -m space 8 --label comms
 yabai -m space 9 --label extra
