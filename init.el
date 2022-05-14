@@ -394,7 +394,7 @@ surrounded by word boundaries."
   :config
   (setf (alist-get 'prettier apheleia-formatters)
         '(npx "prettier"
-              ;; "--single-quote" "true"
+              "--single-quote" "true"
               file))
   (apheleia-global-mode +1))
 
@@ -478,6 +478,7 @@ surrounded by word boundaries."
      (todo   . " ")
      (tags   . " %i %-12:c")
      (search . " %i %-12:c")))
+  (org-confirm-babel-evaluate nil) ; disable confirm exec
   :config
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
@@ -497,9 +498,14 @@ surrounded by word boundaries."
   ;; use both pitch types in one buffer
   :hook (text-mode . mixed-pitch-mode)
   :config
-  (set-face-attribute 'default nil :family "Hack" :height 150)
-  (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
-  (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150))
+  (when (eq system-type 'darwin)
+    (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
+    (set-face-attribute 'fixed-pitch nil :family "Iosevka" :height 200)
+    (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 200))
+  (when (eq system-type 'ns)
+    (set-face-attribute 'default nil :family "Hack" :height 150)
+    (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
+    (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150)))
 
 (use-package org-superstar
   ;; Nice bullets
@@ -873,7 +879,7 @@ Remove expanded subdir of deleted dir, if any."
     (let* ((parent (if (buffer-file-name)
                        (file-name-directory (buffer-file-name))
                      default-directory))
-           (height (/ (window-total-height) 2))
+           (height (/ (window-total-height) 3))
            (name   (car (last (split-string parent "/" t)))))
       (split-window-vertically (- height))
       (other-window 1)
