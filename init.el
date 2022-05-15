@@ -557,13 +557,6 @@ surrounded by word boundaries."
     (mapc 'my/set-static-perspectives static-perspectives))
   (persp-mode))
 
-(use-package disable-mouse
-  ;; Globally disable the mouse
-  :init
-  (setq disable-mouse-wheel-events nil)
-  :config
-  (global-disable-mouse-mode))
-
 (use-package password-store
   ;; front end for `pass'
   :if (eq system-type 'gnu/linux))
