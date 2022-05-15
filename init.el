@@ -530,20 +530,31 @@ surrounded by word boundaries."
   (("C-c t" . persp-switch)
    ("C-x k" . persp-kill-buffer*)
    ("C-c x" . my/switch-to-persp-one))
+  :preface
+  (defun my/set-static-perspectives (static-perspective)
+    "Setup initial perspectives."
+    (let ((perspective-name (elt static-perspective 0))
+          (key-binding (elt static-perspective 1)))
+      (global-set-key
+       (kbd key-binding)
+       (lambda ()
+         (interactive)
+         (persp-switch perspective-name)))))
   :custom
   (persp-state-default-file (no-littering-expand-var-file-name "perspective/perspectives.el"))
   (persp-modestring-short t)
   (persp-sort 'created)
   :config
-  (global-set-key (kbd "C-c x") (lambda () (interactive) (persp-switch "main")))
-  (global-set-key (kbd "C-c c") (lambda () (interactive) (persp-switch "II")))
-  (global-set-key (kbd "C-c d") (lambda () (interactive) (persp-switch "III")))
-  (global-set-key (kbd "C-c r") (lambda () (interactive) (persp-switch "IV")))
-  (global-set-key (kbd "C-c s") (lambda () (interactive) (persp-switch "V")))
-  (global-set-key (kbd "C-c t") (lambda () (interactive) (persp-switch "VI")))
-  (global-set-key (kbd "C-c w") (lambda () (interactive) (persp-switch "VII")))
-  (global-set-key (kbd "C-c f") (lambda () (interactive) (persp-switch "VIII")))
-  (global-set-key (kbd "C-c p") (lambda () (interactive) (persp-switch "IV")))
+  (let ((static-perspectives [["main" "C-c x"]
+                              ["II" "C-c c"]
+                              ["III" "C-c d"]
+                              ["IV" "C-c r"]
+                              ["V" "C-c s"]
+                              ["VI" "C-c t"]
+                              ["VII" "C-c w"]
+                              ["VIII" "C-c f"]
+                              ["IV" "C-c p"]]))
+    (mapc 'my/set-static-perspectives static-perspectives))
   (persp-mode))
 
 (use-package disable-mouse
@@ -557,10 +568,27 @@ surrounded by word boundaries."
   ;; front end for `pass'
   :if (memq system-type '(gnu/linux)))
 
-(use-package pass 
+(use-package pass
   ;; use the unix `pass' store
   :if (memq system-type '(gnu/linux))
-  :custom (pass-username-field "user"))
+  :preface
+  (defun pass-status--around (orig-pass &rest args)
+    "Set pass status to fullscreen."
+    (window-configuration-to-register :pass-fullscreen)
+    (apply orig-pass args)
+    (delete-other-windows))
+
+  (defun pass-quit--around (orig-pass-quit &rest args)
+    "Restore previous window configuration."
+    (if (equal (symbol-name major-mode) "pass-mode")
+        (progn
+          (apply orig-pass-quit args)
+          (jump-to-register :pass-fullscreen)))
+    (apply orig-pass-quit args))
+  :custom (pass-username-field "user")
+  :config
+  (advice-add 'pass :around #'pass-status--around)
+  (advice-add 'pass-quit :around #'pass-quit--around))
 
 (use-package diredfl
   ;; dired font-lock
