@@ -180,7 +180,7 @@ surrounded by word boundaries."
 
 (use-package geiser-guile
   ;; major mode for guile with repl
-  :if (memq system-type '(gnu/linux))
+  :if (eq system-type 'gnu/linux)
   :hook (scheme-mode . guix-devel-mode)
   :custom
   (geiser-mode-start-repl-p t)
@@ -191,7 +191,7 @@ surrounded by word boundaries."
   ;; front end for guix commands
   ;; requires guix install guix!
   :after (geiser-guile)
-  :if (memq system-type '(gnu/linux)))
+  :if (eq system-type 'gnu/linux))
 
 (use-package flycheck
   ;; code linter
@@ -502,7 +502,7 @@ surrounded by word boundaries."
     (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
     (set-face-attribute 'fixed-pitch nil :family "Iosevka" :height 200)
     (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 200))
-  (when (eq system-type 'ns)
+  (when (eq system-type 'gnu/linux)
     (set-face-attribute 'default nil :family "Hack" :height 150)
     (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
     (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150)))
@@ -566,11 +566,11 @@ surrounded by word boundaries."
 
 (use-package password-store
   ;; front end for `pass'
-  :if (memq system-type '(gnu/linux)))
+  :if (eq system-type 'gnu/linux))
 
 (use-package pass
   ;; use the unix `pass' store
-  :if (memq system-type '(gnu/linux))
+  :if (eq system-type 'gnu/linux)
   :preface
   (defun pass-status--around (orig-pass &rest args)
     "Set pass status to fullscreen."
