@@ -576,8 +576,8 @@ surrounded by word boundaries."
     (if (equal (symbol-name major-mode) "pass-mode")
         (progn
           (apply orig-pass-quit args)
-          (jump-to-register :pass-fullscreen)))
-    (apply orig-pass-quit args))
+          (jump-to-register :pass-fullscreen))
+      (apply orig-pass-quit args)))
   :custom (pass-username-field "user")
   :config
   (advice-add 'pass :around #'pass-status--around)
