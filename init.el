@@ -332,7 +332,6 @@ surrounded by word boundaries."
   :config
   (projectile-mode 1))
 
-
 (use-package ripgrep) ; needed for projectile-ripgrep
 
 (use-package rg) ; ripgrep for consult
@@ -541,7 +540,8 @@ surrounded by word boundaries."
          (interactive)
          (persp-switch perspective-name)))))
   :custom
-  (persp-state-default-file (no-littering-expand-var-file-name "perspective/perspectives.el"))
+  (persp-state-default-file
+   (no-littering-expand-var-file-name "perspective/perspectives.el"))
   (persp-modestring-short t)
   (persp-sort 'created)
   :config
@@ -616,7 +616,8 @@ surrounded by word boundaries."
   :mode (rx ".js" string-end)
   :init
   (define-derived-mode typescript-tsx-mode typescript-mode "typescript-tsx")
-  (add-to-list 'auto-mode-alist (cons (rx ".jsx" string-end) #'typescript-tsx-mode))
+  (add-to-list 'auto-mode-alist
+               (cons (rx ".jsx" string-end) #'typescript-tsx-mode))
   :custom
   (typescript-indent-level 2))
 
@@ -630,14 +631,17 @@ surrounded by word boundaries."
   ((tree-sitter-after-on . tree-sitter-hl-mode)
    (typescript-tsx-mode . tree-sitter-hl-mode))
   :config
-  (setf (alist-get 'typescript-tsx-mode tree-sitter-major-mode-language-alist) 'tsx))
+  (setf
+   (alist-get 'typescript-tsx-mode tree-sitter-major-mode-language-alist)
+   'tsx))
 
 (use-package tree-sitter-langs
   ;; helper package for tree-sitter
   :after tree-sitter
   :config
   (tree-sitter-require 'javascript)
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . javascript)))
+  (add-to-list 'tree-sitter-major-mode-language-alist
+               '(typescript-tsx-mode . javascript)))
 
 (use-package highlight-parentheses
   ;; highlight all parens surrounding point
