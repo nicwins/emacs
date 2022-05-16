@@ -39,117 +39,6 @@
 (straight-use-package 'use-package)
 (eval-when-compile (require 'use-package))
 
-;;;; Global Helper Functions
-(defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
-  "Rename buffer visiting FILE to NEWNAME.
-Intended as :after advice for `rename-file'."
-  (when (called-interactively-p 'any)
-    (when-let ((buffer (get-file-buffer file)))
-      (with-current-buffer buffer
-        (set-visited-file-name newname nil t)
-        (when (derived-mode-p 'emacs-lisp-mode)
-          (save-excursion
-            (let* ((base (file-name-nondirectory file))
-                   (sans (file-name-sans-extension base))
-                   (newbase (file-name-nondirectory newname))
-                   (newsans (file-name-sans-extension newbase)))
-              (goto-char (point-min))
-              (while (search-forward-regexp (format "^;;; %s" base) nil t)
-                (replace-match (concat ";;; " newbase)))
-              (goto-char (point-max))
-              (when
-                  (search-backward-regexp (format "^(provide '%s)" sans) nil t)
-                (replace-match (format "(provide '%s)" newsans))))))))))
-
-(advice-add 'rename-file :after 'my/visiting-buffer-rename)
-
-(defun my/visiting-buffer-kill (file &optional _trash)
-  "Kill buffer visiting FILE.
-Intended as :after advice for `delete-file'."
-  (when (called-interactively-p 'any)
-    (when-let ((buffer (get-file-buffer file)))
-      (kill-buffer buffer))))
-
-(advice-add 'delete-file :after 'my/visiting-buffer-kill)
-
-(defun my/switch-to-last-buffer ()
-  "Flip between two buffers."
-  (interactive)
-  (switch-to-buffer nil))
-
-(defun my/newline-below ()
-  "Insert newline below and indent."
-  (interactive)
-  (end-of-line)
-  (newline-and-indent))
-
-(defun my/newline-above ()
-  "Insert newline above and indent."
-  (interactive)
-  (forward-line -1)
-  (end-of-line)
-  (newline-and-indent))
-
-(defun my/comment-or-uncomment-region-or-line ()
-  "Comments or uncomments the region or the current line."
-  (interactive)
-  (let (beg end)
-    (if (region-active-p)
-        (setq beg (region-beginning) end (region-end))
-      (setq beg (line-beginning-position) end (line-end-position)))
-    (comment-or-uncomment-region beg end)
-    (next-logical-line)
-    (back-to-indentation)))
-
-(defun my/three-column-layout ()
-  "Set the frame to three columns."
-  (interactive)
-  (delete-other-windows)
-  (split-window-horizontally)
-  (split-window-horizontally)
-  (balance-windows))
-
-(defvar my/re-builder-positions nil
-  "Store point and region bounds before calling `re-builder'.")
-(advice-add 're-builder
-            :before
-            (defun my/re-builder-save-state (&rest _)
-              "Save into `my/re-builder-positions' the point and region
-positions before calling `re-builder'."
-              (setq my/re-builder-positions
-                    (cons (point)
-                          (when (region-active-p)
-                            (list (region-beginning)
-                                  (region-end)))))))
-
-(defun my/reb-replace-regexp (&optional delimited)
-  "Run `query-replace-regexp' with the contents of `re-builder'.
-With non-nil optional argument DELIMITED, only replace matches
-surrounded by word boundaries."
-  (interactive "P")
-  (reb-update-regexp)
-  (let* ((re (reb-target-binding reb-regexp))
-         (replacement (query-replace-read-to
-                       re
-                       (concat "Query replace"
-                               (if current-prefix-arg
-                                   (if (eq current-prefix-arg '-) " backward" " word")
-                                 "")
-                               " regexp"
-                               (if (with-selected-window reb-target-window
-                                     (region-active-p)) " in region" ""))
-                       t))
-         (pnt (car my/re-builder-positions))
-         (beg (cadr my/re-builder-positions))
-         (end (caddr my/re-builder-positions)))
-    (with-selected-window reb-target-window
-      (goto-char pnt) ; replace with (goto-char (match-beginning 0)) if you want
-                                        ; to control where in the buffer the replacement starts
-                                        ; with re-builder
-      (setq my/re-builder-positions nil)
-      (reb-quit)
-      (query-replace-regexp re replacement delimited beg end))))
-
 ;;;; Package Configuration
 (use-package exec-path-from-shell
   ;; Load path from user shell
@@ -248,6 +137,12 @@ surrounded by word boundaries."
   ;; autocomplete package
   :init
   (corfu-global-mode)
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
   :custom
   (tab-always-indent 'complete)
   (corfu-auto t)
@@ -255,12 +150,6 @@ surrounded by word boundaries."
   (corfu-quit-at-boundary t)
   (corfu-cycle t)
   (corfu-preselect-first nil)
-  :bind
-  (:map corfu-map
-        ("TAB" . corfu-next)
-        ([tab] . corfu-next)
-        ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous))
   :config
   (add-hook 'eshell-mode-hook
             (lambda ()
@@ -278,6 +167,31 @@ surrounded by word boundaries."
 
   ;; Optionally replace `completing-read-multiple' with an enhanced version.
   (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+  :bind
+  (;; Basic Overrides
+   ("M-s" . consult-line)
+   ("M-y" . consult-yank-pop)
+   ("<help> a" . consult-apropos)
+   ("M-g g" . consult-goto-line)
+   ("M-g M-g" . consult-goto-line)
+   ("M-g m" . consult-mark)
+   ("M-'" . consult-register-store)
+   ("M-#" . consult-register-load)
+   ;; C-x bindings
+   ("C-x b" . consult-buffer)
+   ("C-x C-b" . consult-buffer)
+   ("C-x 4 b" . consult-buffer-other-window)
+   ;; C-c bindings (user-map)
+   ("C-c i" . consult-imenu)
+   ("C-c I" . consult-project-imenu)
+   ("C-c z" . consult-flycheck)
+   ("C-c F" . consult-lsp-diagnostics)
+   ("C-c h" . consult-history)
+   ("C-c m" . consult-mode-command)
+   ([f2] . consult-ripgrep)
+   :map isearch-mode-map
+   ("M-e" . consult-isearch)
+   ("M-s l" . consult-line))
   :custom
   (consult-project-root-function #'projectile-project-root)
   (xref-show-xrefs-function #'consult-xref)
@@ -291,7 +205,6 @@ surrounded by word boundaries."
           :state    #'consult--buffer-state
           :default  t
           :items    #'persp-get-buffer-names))
-
   (push consult--source-perspective consult-buffer-sources))
 
 (use-package consult-flycheck
@@ -313,8 +226,8 @@ surrounded by word boundaries."
 (use-package embark
   ;; provide actions on competion candidates, or text at point
   :bind
-  ("M-." . embark-dwim)
-  ("C-." . embark-act)
+  (("M-." . embark-dwim)
+   ("C-." . embark-act))
   :custom
   (embark-prompt-style 'completion)
   (prefix-help-command #'embark-prefix-help-command))
@@ -330,6 +243,8 @@ surrounded by word boundaries."
 
 (use-package projectile
   ;; project traversal
+  :bind
+  ([f1] . projectile-find-file)
   :config
   (projectile-mode 1))
 
@@ -373,7 +288,8 @@ surrounded by word boundaries."
                                    (magit-get "branch" branch "remote")))
         (user-error "Pushed aborted"))))
   :bind
-  ("C-c l" . magit-log-buffer-file)
+  (("C-c l" . magit-log-buffer-file)
+   ("C-c v" . magit))
   :hook
   ((magit-credential . magit-process-buffer)
    (git-commit-post-finish-hook . magit-process-buffer))
@@ -455,8 +371,8 @@ surrounded by word boundaries."
     (call-interactively 'org-store-link)
     (org-capture nil "i"))
   :bind
-  ("C-c a" . org-agenda)
-  ("C-c q" . org-capture-inbox)
+  (("C-c a" . org-agenda)
+   ("C-c q" . org-capture-inbox))
   :custom
   (org-directory "~/notes")
   (org-default-notes-file "~/notes/inbox.org")
@@ -723,25 +639,6 @@ surrounded by word boundaries."
   ;; extension for dired
   :straight (:type built-in)
   :preface
-  (defun dired-clean-up-after-deletion (fn)
-    "My clean up after a deleted file or directory FN.
-Remove expanded subdir of deleted dir, if any."
-    (save-excursion (and (cdr dired-subdir-alist)
-                         (dired-goto-subdir fn)
-                         (dired-kill-subdir)))
-    ;; Offer to kill buffer of deleted file FN.
-    (if dired-clean-up-buffers-too
-        (progn
-          (let ((buf (get-file-buffer fn)))
-            (and buf
-                 (save-excursion ; you never know where kill-buffer leaves you
-                   (kill-buffer buf))))
-          (let ((buf-list (dired-buffers-for-dir (expand-file-name fn)))
-                (buf nil))
-            (and buf-list
-                 (while buf-list
-                   (save-excursion (kill-buffer (car buf-list)))
-                   (setq buf-list (cdr buf-list))))))))
   (defun my/dired-open()
     (interactive)
     (cond ;; use dired-find-file if it is a directory
@@ -844,6 +741,47 @@ Remove expanded subdir of deleted dir, if any."
 (use-package re-builder
   ;; interactive regex builder
   :straight (:type built-in)
+  :preface
+  (defvar my/re-builder-positions nil
+    "Store point and region bounds before calling `re-builder'.")
+  (advice-add 're-builder
+              :before
+              (defun my/re-builder-save-state (&rest _)
+                "Save into `my/re-builder-positions' the point and region
+positions before calling `re-builder'."
+                (setq my/re-builder-positions
+                      (cons (point)
+                            (when (region-active-p)
+                              (list (region-beginning)
+                                    (region-end)))))))
+  
+  (defun my/reb-replace-regexp (&optional delimited)
+    "Run `query-replace-regexp' with the contents of `re-builder'.
+With non-nil optional argument DELIMITED, only replace matches
+surrounded by word boundaries."
+    (interactive "P")
+    (reb-update-regexp)
+    (let* ((re (reb-target-binding reb-regexp))
+           (replacement (query-replace-read-to
+                         re
+                         (concat "Query replace"
+                                 (if current-prefix-arg
+                                     (if (eq current-prefix-arg '-) " backward" " word")
+                                   "")
+                                 " regexp"
+                                 (if (with-selected-window reb-target-window
+                                       (region-active-p)) " in region" ""))
+                         t))
+           (pnt (car my/re-builder-positions))
+           (beg (cadr my/re-builder-positions))
+           (end (caddr my/re-builder-positions)))
+      (with-selected-window reb-target-window
+        (goto-char pnt) ; replace with (goto-char (match-beginning 0)) if you want
+                                        ; to control where in the buffer the replacement starts
+                                        ; with re-builder
+        (setq my/re-builder-positions nil)
+        (reb-quit)
+        (query-replace-regexp re replacement delimited beg end))))
   :bind
   (("C-M-%" . re-builder)
    :map reb-mode-map
@@ -924,46 +862,70 @@ Remove expanded subdir of deleted dir, if any."
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
   :straight nil
+  :preface
+  (defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
+    "Rename buffer visiting FILE to NEWNAME.
+Intended as :after advice for `rename-file'."
+    (when (called-interactively-p 'any)
+      (when-let ((buffer (get-file-buffer file)))
+        (with-current-buffer buffer
+          (set-visited-file-name newname nil t)
+          (when (derived-mode-p 'emacs-lisp-mode)
+            (save-excursion
+              (let* ((base (file-name-nondirectory file))
+                     (sans (file-name-sans-extension base))
+                     (newbase (file-name-nondirectory newname))
+                     (newsans (file-name-sans-extension newbase)))
+                (goto-char (point-min))
+                (while (search-forward-regexp (format "^;;; %s" base) nil t)
+                  (replace-match (concat ";;; " newbase)))
+                (goto-char (point-max))
+                (when
+                    (search-backward-regexp (format "^(provide '%s)" sans) nil t)
+                  (replace-match (format "(provide '%s)" newsans))))))))))
+
+  (defun my/visiting-buffer-kill (file &optional _trash)
+    "Kill buffer visiting FILE.
+Intended as :after advice for `delete-file'."
+    (when (called-interactively-p 'any)
+      (when-let ((buffer (get-file-buffer file)))
+        (kill-buffer buffer))))
+
+  (defun my/switch-to-last-buffer ()
+    "Flip between two buffers."
+    (interactive)
+    (switch-to-buffer nil))
+
+  (defun my/comment-or-uncomment-region-or-line ()
+    "Comments or uncomments the region or the current line."
+    (interactive)
+    (let (beg end)
+      (if (region-active-p)
+          (setq beg (region-beginning) end (region-end))
+        (setq beg (line-beginning-position) end (line-end-position)))
+      (comment-or-uncomment-region beg end)
+      (next-logical-line)
+      (back-to-indentation)))
+
+  (defun my/three-column-layout ()
+    "Set the frame to three columns."
+    (interactive)
+    (delete-other-windows)
+    (split-window-horizontally)
+    (split-window-horizontally)
+    (balance-windows))
   :init
-  (advice-add #'completing-read-multiple
-              :override #'consult-completing-read-multiple)
+  (advice-add
+   #'completing-read-multiple
+   :override #'consult-completing-read-multiple)
   :bind
-  (;; Basic Overrides
-   ("C-," . my/comment-or-uncomment-region-or-line)
-   ("M-s" . consult-line)
-   ("C-o" . my/newline-below)
-   ("C-S-o" . my/newline-above)
-   ("M-y" . consult-yank-pop)
-   ("<help> a" . consult-apropos)
-   ("M-g g" . consult-goto-line)
-   ("M-g M-g" . consult-goto-line)
-   ("M-g m" . consult-mark)
-   ("M-'" . consult-register-store)
-   ("M-#" . consult-register-load)
-   ;; C-x bindings
-   ("C-x b" . consult-buffer)
-   ("C-x C-b" . consult-buffer)
-   ("C-x 4 b" . consult-buffer-other-window)
-   ;; C-c bindings (user-map)
+  (("C-," . my/comment-or-uncomment-region-or-line)
    ("C-c b" . my/switch-to-last-buffer)
-   ("C-c i" . consult-imenu)
-   ("C-c I" . consult-project-imenu)
-   ("C-c z" . consult-flycheck)
-   ("C-c F" . consult-lsp-diagnostics)
-   ("C-c v" . magit)
-   ("C-c h" . consult-history)
-   ("C-c m" . consult-mode-command)
-   ("C-c p" . my/switch-to-last-buffer)
    ("C-c C-c" . server-edit)
    ("C-c C-k" . server-edit-abort)
-   ([f1] . projectile-find-file)
-   ([f2] . consult-ripgrep)
    ([f3] . start-kbd-macro)
    ([f4] . end-kbd-macro)
-   ([f5] . kmacro-call-macro)
-   :map isearch-mode-map
-   ("M-e" . consult-isearch)
-   ("M-s l" . consult-line))
+   ([f5] . kmacro-call-macro))
   :hook
   ((text-mode . visual-line-mode)
    (minibuffer-setup . cursor-intangible-mode))
@@ -988,6 +950,8 @@ Remove expanded subdir of deleted dir, if any."
   (warning-suppress-types '((comp)))
   (use-short-answers t)                 ; y on n to confirm
   :config
+  (advice-add 'rename-file :after 'my/visiting-buffer-rename)
+  (advice-add 'delete-file :after 'my/visiting-buffer-kill)
   (delete-selection-mode)
   (put 'upcase-region 'disabled nil)
   (set-language-environment "UTF-8")
