@@ -40,7 +40,7 @@
 (eval-when-compile (require 'use-package))
 
 ;;;; Global Helper Functions
-(defun visiting-buffer-rename (file newname &optional _ok-if-already-exists)
+(defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
   "Rename buffer visiting FILE to NEWNAME.
 Intended as :after advice for `rename-file'."
   (when (called-interactively-p 'any)
@@ -61,16 +61,16 @@ Intended as :after advice for `rename-file'."
                   (search-backward-regexp (format "^(provide '%s)" sans) nil t)
                 (replace-match (format "(provide '%s)" newsans))))))))))
 
-(advice-add 'rename-file :after 'visiting-buffer-rename)
+(advice-add 'rename-file :after 'my/visiting-buffer-rename)
 
-(defun visiting-buffer-kill (file &optional _trash)
+(defun my/visiting-buffer-kill (file &optional _trash)
   "Kill buffer visiting FILE.
 Intended as :after advice for `delete-file'."
   (when (called-interactively-p 'any)
     (when-let ((buffer (get-file-buffer file)))
       (kill-buffer buffer))))
 
-(advice-add 'delete-file :after 'visiting-buffer-kill)
+(advice-add 'delete-file :after 'my/visiting-buffer-kill)
 
 (defun my/switch-to-last-buffer ()
   "Flip between two buffers."
@@ -121,7 +121,8 @@ positions before calling `re-builder'."
                           (when (region-active-p)
                             (list (region-beginning)
                                   (region-end)))))))
-(defun reb-replace-regexp (&optional delimited)
+
+(defun my/reb-replace-regexp (&optional delimited)
   "Run `query-replace-regexp' with the contents of `re-builder'.
 With non-nil optional argument DELIMITED, only replace matches
 surrounded by word boundaries."
@@ -341,14 +342,14 @@ surrounded by word boundaries."
   :preface
   (defun magit-status--around (orig-magit-status &rest args)
     "Set magit status to fullscreen."
-    (window-configuration-to-register :magit-fullscreen)
+    (window-configuration-to-register :my/magit-fullscreen)
     (apply orig-magit-status args)
     (delete-other-windows))
 
   (defun magit-log-buffer-file--before (orig-fun &rest args)
     "Store the window configuration before logging."
     (setq my-magit-log-buffer-file-registered t)
-    (window-configuration-to-register :magit-fullscreen)
+    (window-configuration-to-register :my/magit-fullscreen)
     (apply orig-fun args))
 
   (defun magit-mode-bury-buffer--around (orig-magit-mode-bury-buffer &rest args)
@@ -360,7 +361,7 @@ surrounded by word boundaries."
         (progn
           (setq my-magit-log-buffer-file-registered nil)
           (apply orig-magit-mode-bury-buffer args)
-          (jump-to-register :magit-fullscreen))
+          (jump-to-register :my/magit-fullscreen))
       (apply orig-magit-mode-bury-buffer args)
       (delete-other-windows)))
 
@@ -527,9 +528,20 @@ surrounded by word boundaries."
   ;; window and buffer manager
   :bind
   (("C-c t" . persp-switch)
-   ("C-x k" . persp-kill-buffer*)
-   ("C-c x" . my/switch-to-persp-one))
+   ("C-x k" . persp-kill-buffer*))
   :preface
+  (defvar my/static-perspectives
+    [["main" "C-c x"]
+     ["II" "C-c c"]
+     ["III" "C-c d"]
+     ["IV" "C-c r"]
+     ["V" "C-c s"]
+     ["VI" "C-c t"]
+     ["VII" "C-c w"]
+     ["VIII" "C-c f"]
+     ["IV" "C-c p"]]
+    "Perspectives and binds on init.")
+  
   (defun my/set-static-perspectives (static-perspective)
     "Setup initial perspectives."
     (let ((perspective-name (elt static-perspective 0))
@@ -545,16 +557,7 @@ surrounded by word boundaries."
   (persp-modestring-short t)
   (persp-sort 'created)
   :config
-  (let ((static-perspectives [["main" "C-c x"]
-                              ["II" "C-c c"]
-                              ["III" "C-c d"]
-                              ["IV" "C-c r"]
-                              ["V" "C-c s"]
-                              ["VI" "C-c t"]
-                              ["VII" "C-c w"]
-                              ["VIII" "C-c f"]
-                              ["IV" "C-c p"]]))
-    (mapc 'my/set-static-perspectives static-perspectives))
+  (mapc 'my/set-static-perspectives my/static-perspectives)
   (persp-mode))
 
 (use-package password-store
@@ -567,7 +570,7 @@ surrounded by word boundaries."
   :preface
   (defun pass-status--around (orig-pass &rest args)
     "Set pass status to fullscreen."
-    (window-configuration-to-register :pass-fullscreen)
+    (window-configuration-to-register :my/pass-fullscreen)
     (apply orig-pass args)
     (delete-other-windows))
 
@@ -576,7 +579,7 @@ surrounded by word boundaries."
     (if (equal (symbol-name major-mode) "pass-mode")
         (progn
           (apply orig-pass-quit args)
-          (jump-to-register :pass-fullscreen))
+          (jump-to-register :my/pass-fullscreen))
       (apply orig-pass-quit args)))
   :custom (pass-username-field "user")
   :config
@@ -844,9 +847,9 @@ Remove expanded subdir of deleted dir, if any."
   :bind
   (("C-M-%" . re-builder)
    :map reb-mode-map
-   ("RET" . reb-replace-regexp)
+   ("RET" . my/reb-replace-regexp)
    :map reb-lisp-mode-map
-   ("RET" . reb-replace-regexp))
+   ("RET" . my/reb-replace-regexp))
   :custom
   (reb-re-syntax 'rx))
 
@@ -855,21 +858,7 @@ Remove expanded subdir of deleted dir, if any."
   :custom
   (ediff-window-setup-function 'ediff-setup-windows-plain)
   (ediff-split-window-function 'split-window-horizontally)
-  (ediff-diff-options "-w")
-  :config
-  (defvar ediff-last-windows nil
-    "Last ediff window configuration.")
-
-  (defun ediff-restore-windows ()
-    "Restore window configuration to `ediff-last-windows'."
-    (set-window-configuration ediff-last-windows)
-    (remove-hook 'ediff-after-quit-hook-internal
-                 'ediff-restore-windows))
-
-  (defadvice ediff-buffers (around ediff-restore-windows activate)
-    (setq ediff-last-windows (current-window-configuration))
-    (add-hook 'ediff-after-quit-hook-internal 'ediff-restore-windows)
-    ad-do-it))
+  (ediff-diff-options "-w"))
 
 (use-package erc
   ;; emacs irc interface
@@ -914,6 +903,8 @@ Remove expanded subdir of deleted dir, if any."
       (eshell-send-input)
       (eshell-smart-initialize)))
   (defun eshell/x ()
+    "Fast close and delete."
+    ;; can't use my/ here, for eshell to pick it up
     (delete-window)
     (eshell/exit))
   (defun my/eshell-lint ()
