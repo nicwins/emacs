@@ -348,8 +348,6 @@
           tex-mode
           eval-expression-minibuffer-setup) . puni-mode))
 
-(use-package sml-mode) ; temporary for coursera
-
 (use-package undo-tree
   ;; make undo a tree rather than line
   :config (global-undo-tree-mode))
@@ -709,12 +707,6 @@
   :config
   (save-place-mode 1))
 
-(use-package sql
-  ;; major mode for sql, with repl
-  :straight nil
-  :custom
-  (sql-product 'postgres))
-
 (use-package files
   ;; General file handling
   :straight nil
@@ -776,9 +768,7 @@ surrounded by word boundaries."
            (beg (cadr my/re-builder-positions))
            (end (caddr my/re-builder-positions)))
       (with-selected-window reb-target-window
-        (goto-char pnt) ; replace with (goto-char (match-beginning 0)) if you want
-                                        ; to control where in the buffer the replacement starts
-                                        ; with re-builder
+        (goto-char pnt)
         (setq my/re-builder-positions nil)
         (reb-quit)
         (query-replace-regexp re replacement delimited beg end))))
