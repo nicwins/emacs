@@ -25,27 +25,26 @@ shift+cmd+ctrl+alt - o : yabai -m window --warp east
 
 ## workspaces
 # switch to workspace
-cmd+ctrl+alt - x : yabai -m space --focus term
-cmd+ctrl+alt - c : yabai -m space --focus emacs
-cmd+ctrl+alt - d : yabai -m space --focus mongo
-cmd+ctrl+alt - r : yabai -m space --focus postman
-cmd+ctrl+alt - s : yabai -m space --focus scratch
-cmd+ctrl+alt - t : yabai -m space --focus scratch2
-cmd+ctrl+alt - w : yabai -m space --focus web
-cmd+ctrl+alt - f : yabai -m space --focus comms
-cmd+ctrl+alt - p : yabai -m space --focus extra
-cmd+ctrl+alt - g : yabai -m space --focus recent
+cmd+ctrl+alt - x : yabai -m space --focus ws1
+cmd+ctrl+alt - c : yabai -m space --focus ws2
+cmd+ctrl+alt - d : yabai -m space --focus ws3
+cmd+ctrl+alt - r : yabai -m space --focus ws4
+cmd+ctrl+alt - s : yabai -m space --focus ws5
+cmd+ctrl+alt - t : yabai -m space --focus ws6
+cmd+ctrl+alt - w : yabai -m space --focus ws7
+cmd+ctrl+alt - f : yabai -m space --focus ws8
+cmd+ctrl+alt - p : yabai -m space --focus ws9
 
 # Move container to workspace
-shift+cmd+ctrl+alt - x : yabai -m window --space term; yabai -m space --focus term
-shift+cmd+ctrl+alt - c : yabai -m window --space emacs; yabai -m space --focus emacs
-shift+cmd+ctrl+alt - d : yabai -m window --space mongo; yabai -m space --focus mongo
-shift+cmd+ctrl+alt - r : yabai -m window --space postman; yabai -m space --focus postman
-shift+cmd+ctrl+alt - s : yabai -m window --space scratch; yabai -m space --focus scratch
-shift+cmd+ctrl+alt - t : yabai -m window --space last; yabai -m space --focus last
-shift+cmd+ctrl+alt - w : yabai -m window --space web; yabai -m space --focus web
-shift+cmd+ctrl+alt - f : yabai -m window --space comms; yabai -m space --focus comms
-shift+cmd+ctrl+alt - p : yabai -m window --space extra; yabai -m space --focus extra
+shift+cmd+ctrl+alt - x : yabai -m window --space ws1
+shift+cmd+ctrl+alt - c : yabai -m window --space ws2
+shift+cmd+ctrl+alt - d : yabai -m window --space ws3
+shift+cmd+ctrl+alt - r : yabai -m window --space ws4
+shift+cmd+ctrl+alt - s : yabai -m window --space ws5
+shift+cmd+ctrl+alt - t : yabai -m window --space ws6
+shift+cmd+ctrl+alt - w : yabai -m window --space ws7
+shift+cmd+ctrl+alt - f : yabai -m window --space ws8
+shift+cmd+ctrl+alt - p : yabai -m window --space ws9
 
 # toggle window split
 cmd+ctrl+alt - l : yabai -m window --toggle split

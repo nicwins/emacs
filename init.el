@@ -156,6 +156,13 @@
               (setq-local corfu-auto nil)
               (corfu-mode))))
 
+(use-package projectile
+  ;; project traversal
+  :bind
+  ([f1] . projectile-find-file)
+  :config
+  (projectile-mode 1))
+
 (use-package consult
   ;; enhanced selection ui
   :after (projectile)
@@ -167,31 +174,6 @@
 
   ;; Optionally replace `completing-read-multiple' with an enhanced version.
   (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
-  :bind
-  (;; Basic Overrides
-   ("M-s" . consult-line)
-   ("M-y" . consult-yank-pop)
-   ("<help> a" . consult-apropos)
-   ("M-g g" . consult-goto-line)
-   ("M-g M-g" . consult-goto-line)
-   ("M-g m" . consult-mark)
-   ("M-'" . consult-register-store)
-   ("M-#" . consult-register-load)
-   ;; C-x bindings
-   ("C-x b" . consult-buffer)
-   ("C-x C-b" . consult-buffer)
-   ("C-x 4 b" . consult-buffer-other-window)
-   ;; C-c bindings (user-map)
-   ("C-c i" . consult-imenu)
-   ("C-c I" . consult-project-imenu)
-   ("C-c z" . consult-flycheck)
-   ("C-c F" . consult-lsp-diagnostics)
-   ("C-c h" . consult-history)
-   ("C-c m" . consult-mode-command)
-   ([f2] . consult-ripgrep)
-   :map isearch-mode-map
-   ("M-e" . consult-isearch)
-   ("M-s l" . consult-line))
   :custom
   (consult-project-root-function #'projectile-project-root)
   (xref-show-xrefs-function #'consult-xref)
@@ -240,13 +222,6 @@
   ;; auto-updating embark collect buffer
   :hook
   (embark-collect-mode . embark-consult-preview-minor-mode))
-
-(use-package projectile
-  ;; project traversal
-  :bind
-  ([f1] . projectile-find-file)
-  :config
-  (projectile-mode 1))
 
 (use-package ripgrep) ; needed for projectile-ripgrep
 
@@ -523,11 +498,7 @@
 
 (use-package typescript-mode
   ;; major mode for ts/js
-  :mode (rx ".js" string-end)
-  :init
-  (define-derived-mode typescript-tsx-mode typescript-mode "typescript-tsx")
-  (add-to-list 'auto-mode-alist
-               (cons (rx ".jsx" string-end) #'typescript-tsx-mode))
+  :mode (rx "." (or "j" "t") "s" (zero-or-one "x") string-end)
   :custom
   (typescript-indent-level 2))
 
@@ -909,13 +880,36 @@ Intended as :after advice for `delete-file'."
    #'completing-read-multiple
    :override #'consult-completing-read-multiple)
   :bind
-  (("C-," . my/comment-or-uncomment-region-or-line)
+  (("M-s" . consult-line)
+   ("M-y" . consult-yank-pop)
+   ("<help> a" . consult-apropos)
+   ("M-g g" . consult-goto-line)
+   ("M-g M-g" . consult-goto-line)
+   ("M-g m" . consult-mark)
+   ("M-'" . consult-register-store)
+   ("M-#" . consult-register-load)
+   ;; C-x bindings
+   ("C-x b" . consult-buffer)
+   ("C-x C-b" . consult-buffer)
+   ("C-x 4 b" . consult-buffer-other-window)
+   ;; C-c bindings (user-map)
+   ("C-c i" . consult-imenu)
+   ("C-c I" . consult-project-imenu)
+   ("C-c z" . consult-flycheck)
+   ("C-c F" . consult-lsp-diagnostics)
+   ("C-c h" . consult-history)
+   ("C-c m" . consult-mode-command)
+   ([f2] . consult-ripgrep)
+   ("C-," . my/comment-or-uncomment-region-or-line)
    ("C-c b" . my/switch-to-last-buffer)
    ("C-c C-c" . server-edit)
    ("C-c C-k" . server-edit-abort)
    ([f3] . start-kbd-macro)
    ([f4] . end-kbd-macro)
-   ([f5] . kmacro-call-macro))
+   ([f5] . kmacro-call-macro)
+   :map isearch-mode-map
+   ("M-e" . consult-isearch)
+   ("M-s l" . consult-line))
   :hook
   ((text-mode . visual-line-mode)
    (minibuffer-setup . cursor-intangible-mode))
