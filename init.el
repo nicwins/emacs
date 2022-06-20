@@ -496,33 +496,45 @@
   (autoload 'dired-async-mode "dired-async.el" nil t)
   (dired-async-mode 1))
 
-(use-package typescript-mode
-  ;; major mode for ts/js
-  :mode (rx "." (or "j" "t") "s" (zero-or-one "x") string-end)
-  :custom
-  (typescript-indent-level 2))
-
 (use-package tree-sitter
   ;; fast syntax highlighting
   :commands
   (tree-sitter-langs)
-  :custom
-  (tree-sitter-hl-use-font-lock-keywords nil)
   :hook
-  ((tree-sitter-after-on . tree-sitter-hl-mode)
-   (typescript-tsx-mode . tree-sitter-hl-mode))
+  (tree-sitter-after-on . tree-sitter-hl-mode)
   :config
-  (setf
-   (alist-get 'typescript-tsx-mode tree-sitter-major-mode-language-alist)
-   'tsx))
+  (global-tree-sitter-mode))
 
 (use-package tree-sitter-langs
   ;; helper package for tree-sitter
+  :after tree-sitter)
+
+(use-package typescript-mode
+  ;; major mode for ts/js
+  ;;:mode (rx "." (or "j" "t") "s" (zero-or-one "x") string-end)
   :after tree-sitter
+  :preface
+  (define-derived-mode typescriptreact-mode typescript-mode
+    "TypeScript TSX")
+  :custom
+  (typescript-indent-level 2)
   :config
-  (tree-sitter-require 'javascript)
-  (add-to-list 'tree-sitter-major-mode-language-alist
-               '(typescript-tsx-mode . javascript)))
+  ;; use our derived mode for tsx files
+  (add-to-list 'auto-mode-alist '("\\.\(j\|t\)sx?\\'" . typescriptreact-mode))
+  ;; by default, typescript-mode is mapped to the treesitter typescript parser
+  ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
+
+(use-package tsi
+  :straight (tsi :type git :host github :repo "orzechowskid/tsi.el")
+  :after tree-sitter
+  ;; define autoload definitions which when actually invoked will cause package to be loaded
+  :commands (tsi-typescript-mode tsi-json-mode tsi-css-mode)
+  :init
+  (add-hook 'typescript-mode-hook (lambda () (tsi-typescript-mode 1)))
+  (add-hook 'json-mode-hook (lambda () (tsi-json-mode 1)))
+  (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
+  (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
 
 (use-package highlight-parentheses
   ;; highlight all parens surrounding point
