@@ -136,7 +136,7 @@
 (use-package corfu
   ;; autocomplete package
   :init
-  (corfu-global-mode)
+  (global-corfu-mode)
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -156,17 +156,34 @@
               (setq-local corfu-auto nil)
               (corfu-mode))))
 
-(use-package projectile
-  ;; project traversal
-  :bind
-  ([f1] . projectile-find-file)
-  :config
-  (projectile-mode 1))
+(use-package rg) ; ripgrep for consult
 
 (use-package consult
   ;; enhanced selection ui
-  :after (projectile)
-  :commands (projectile-project-root)
+  :bind
+  (("M-s" . consult-line)
+   ("M-y" . consult-yank-pop)
+   ("<help> a" . consult-apropos)
+   ("M-g g" . consult-goto-line)
+   ("M-g M-g" . consult-goto-line)
+   ("M-g m" . consult-mark)
+   ("M-'" . consult-register-store)
+   ("M-#" . consult-register-load)
+   ;; C-x bindings
+   ("C-x b" . consult-buffer)
+   ("C-x C-b" . consult-buffer)
+   ("C-x 4 b" . consult-buffer-other-window)
+   ;; C-c bindings (user-map)
+   ("C-c i" . consult-imenu)
+   ("C-c I" . consult-project-imenu)
+   ("C-c z" . consult-flycheck)
+   ("C-c F" . consult-lsp-diagnostics)
+   ("C-c h" . consult-history)
+   ("C-c m" . consult-mode-command)
+   ([f2] . consult-ripgrep)
+   :map isearch-mode-map
+   ("M-e" . consult-isearch)
+   ("M-s l" . consult-line))
   :init
   ;; Optionally tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
@@ -175,23 +192,8 @@
   ;; Optionally replace `completing-read-multiple' with an enhanced version.
   (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
   :custom
-  (consult-project-root-function #'projectile-project-root)
   (xref-show-xrefs-function #'consult-xref)
-  (xref-show-definitions-function #'consult-xref)
-  :config
-  (consult-customize consult--source-buffer :hidden t :default nil)
-  (defvar consult--source-perspective
-    (list :name     "Perspective"
-          :narrow   ?s
-          :category 'buffer
-          :state    #'consult--buffer-state
-          :default  t
-          :items    #'persp-get-buffer-names))
-  (push consult--source-perspective consult-buffer-sources))
-
-(use-package consult-flycheck
-  ;; add a consult-flycheck command
-  :after (consult flycheck))
+  (xref-show-definitions-function #'consult-xref))
 
 (use-package consult-dir
   ;; browse recent dirs and bookmarks
@@ -222,10 +224,6 @@
   ;; auto-updating embark collect buffer
   :hook
   (embark-collect-mode . embark-consult-preview-minor-mode))
-
-(use-package ripgrep) ; needed for projectile-ripgrep
-
-(use-package rg) ; ripgrep for consult
 
 (use-package magit
   ;; emacs interface for git
@@ -413,41 +411,41 @@
   (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets")
   (yas-reload-all))
 
-(use-package perspective
-  ;; window and buffer manager
-  :bind
-  (("C-c t" . persp-switch)
-   ("C-x k" . persp-kill-buffer*))
-  :preface
-  (defvar my/static-perspectives
-    [["main" "C-c x"]
-     ["II" "C-c c"]
-     ["III" "C-c d"]
-     ["IV" "C-c r"]
-     ["V" "C-c s"]
-     ["VI" "C-c t"]
-     ["VII" "C-c w"]
-     ["VIII" "C-c f"]
-     ["IV" "C-c p"]]
-    "Perspectives and binds on init.")
-  
-  (defun my/set-static-perspectives (static-perspective)
-    "Setup initial perspectives."
-    (let ((perspective-name (elt static-perspective 0))
-          (key-binding (elt static-perspective 1)))
-      (global-set-key
-       (kbd key-binding)
-       (lambda ()
-         (interactive)
-         (persp-switch perspective-name)))))
-  :custom
-  (persp-state-default-file
-   (no-littering-expand-var-file-name "perspective/perspectives.el"))
-  (persp-modestring-short t)
-  (persp-sort 'created)
-  :config
-  (mapc 'my/set-static-perspectives my/static-perspectives)
-  (persp-mode))
+;; (use-package perspective
+;;   ;; window and buffer manager
+;;   :bind
+;;   (("C-c t" . persp-switch)
+;;    ("C-x k" . persp-kill-buffer*))
+;;   :preface
+;;   (defvar my/static-perspectives
+;;     [["main" "C-c x"]
+;;      ["II" "C-c c"]
+;;      ["III" "C-c d"]
+;;      ["IV" "C-c r"]
+;;      ["V" "C-c s"]
+;;      ["VI" "C-c t"]
+;;      ["VII" "C-c w"]
+;;      ["VIII" "C-c f"]
+;;      ["IV" "C-c p"]]
+;;     "Perspectives and binds on init.")
+
+;;   (defun my/set-static-perspectives (static-perspective)
+;;     "Setup initial perspectives."
+;;     (let ((perspective-name (elt static-perspective 0))
+;;           (key-binding (elt static-perspective 1)))
+;;       (global-set-key
+;;        (kbd key-binding)
+;;        (lambda ()
+;;          (interactive)
+;;          (persp-switch perspective-name)))))
+;;   :custom
+;;   (persp-state-default-file
+;;    (no-littering-expand-var-file-name "perspective/perspectives.el"))
+;;   (persp-modestring-short t)
+;;   (persp-sort 'created)
+;;   :config
+;;   (mapc 'my/set-static-perspectives my/static-perspectives)
+;;   (persp-mode))
 
 (use-package password-store
   ;; front end for `pass'
@@ -607,6 +605,8 @@
 (use-package dired
   ;; directory management
   :straight (:type built-in)
+  :preface
+  
   :hook (dired-mode . dired-hide-details-mode)
   :custom
   (dired-dwim-target t)
@@ -641,6 +641,27 @@
   ;; setting this in custom throws a dired-omit-files is undefined
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$")))
 
+(eval-after-load  'dired
+  '(defun dired-clean-up-after-deletion (fn)
+     "My. Clean up after a deleted file or directory FN.
+  Remove expanded subdir of deleted dir, if any."
+     (save-excursion (and (cdr dired-subdir-alist)
+                          (dired-goto-subdir fn)
+                          (dired-kill-subdir)))
+     ;; Offer to kill buffer of deleted file FN.
+     (if dired-clean-up-buffers-too
+         (progn
+           (let ((buf (get-file-buffer fn)))
+             (and buf
+                  (save-excursion ; you never know where kill-buffer leaves you
+                    (kill-buffer buf))))
+           (let ((buf-list (dired-buffers-for-dir (expand-file-name fn)))
+                 (buf nil))
+             (and buf-list
+                  (while buf-list
+                    (save-excursion (kill-buffer (car buf-list)))
+                    (setq buf-list (cdr buf-list)))))))))
+
 (use-package wdired
   ;; editable dired buffers
   :straight (:type built-in)
@@ -664,8 +685,8 @@
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
-	 ("\\.md\\'" . markdown-mode)
-	 ("\\.markdown\\'" . markdown-mode)))
+	       ("\\.md\\'" . markdown-mode)
+	       ("\\.markdown\\'" . markdown-mode)))
 
 (use-package eldoc
   ;; Use Eldoc for elisp
@@ -723,7 +744,7 @@
               :before
               (defun my/re-builder-save-state (&rest _)
                 "Save into `my/re-builder-positions' the point and region
-positions before calling `re-builder'."
+  positions before calling `re-builder'."
                 (setq my/re-builder-positions
                       (cons (point)
                             (when (region-active-p)
@@ -732,8 +753,8 @@ positions before calling `re-builder'."
   
   (defun my/reb-replace-regexp (&optional delimited)
     "Run `query-replace-regexp' with the contents of `re-builder'.
-With non-nil optional argument DELIMITED, only replace matches
-surrounded by word boundaries."
+  With non-nil optional argument DELIMITED, only replace matches
+  surrounded by word boundaries."
     (interactive "P")
     (reb-update-regexp)
     (let* ((re (reb-target-binding reb-regexp))
@@ -798,8 +819,8 @@ surrounded by word boundaries."
   :preface
   (defun my/eshell-here ()
     "Opens up a new shell in the directory associated with the
-    current buffer's file. The eshell is renamed to match that
-    directory to make multiple eshell windows easier."
+  current buffer's file. The eshell is renamed to match that
+  directory to make multiple eshell windows easier."
     (interactive)
     (let* ((parent (if (buffer-file-name)
                        (file-name-directory (buffer-file-name))
@@ -832,13 +853,20 @@ surrounded by word boundaries."
   (([f8] . my/eshell-here)
    ([f9] . my/eshell-lint)))
 
+(use-package tab-bar
+  :straight nil
+  :custom
+  (tab-bar-mode 1)
+  :config
+  (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar))
+
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
   :straight nil
   :preface
   (defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
     "Rename buffer visiting FILE to NEWNAME.
-Intended as :after advice for `rename-file'."
+  Intended as :after advice for `rename-file'."
     (when (called-interactively-p 'any)
       (when-let ((buffer (get-file-buffer file)))
         (with-current-buffer buffer
@@ -892,36 +920,14 @@ Intended as :after advice for `delete-file'."
    #'completing-read-multiple
    :override #'consult-completing-read-multiple)
   :bind
-  (("M-s" . consult-line)
-   ("M-y" . consult-yank-pop)
-   ("<help> a" . consult-apropos)
-   ("M-g g" . consult-goto-line)
-   ("M-g M-g" . consult-goto-line)
-   ("M-g m" . consult-mark)
-   ("M-'" . consult-register-store)
-   ("M-#" . consult-register-load)
-   ;; C-x bindings
-   ("C-x b" . consult-buffer)
-   ("C-x C-b" . consult-buffer)
-   ("C-x 4 b" . consult-buffer-other-window)
-   ;; C-c bindings (user-map)
-   ("C-c i" . consult-imenu)
-   ("C-c I" . consult-project-imenu)
-   ("C-c z" . consult-flycheck)
-   ("C-c F" . consult-lsp-diagnostics)
-   ("C-c h" . consult-history)
-   ("C-c m" . consult-mode-command)
-   ([f2] . consult-ripgrep)
-   ("C-," . my/comment-or-uncomment-region-or-line)
+  (("C-," . my/comment-or-uncomment-region-or-line)
    ("C-c b" . my/switch-to-last-buffer)
    ("C-c C-c" . server-edit)
    ("C-c C-k" . server-edit-abort)
+   ([f1] . project-find-file)
    ([f3] . start-kbd-macro)
    ([f4] . end-kbd-macro)
-   ([f5] . kmacro-call-macro)
-   :map isearch-mode-map
-   ("M-e" . consult-isearch)
-   ("M-s l" . consult-line))
+   ([f5] . kmacro-call-macro))
   :hook
   ((text-mode . visual-line-mode)
    (minibuffer-setup . cursor-intangible-mode))
@@ -961,10 +967,9 @@ Intended as :after advice for `delete-file'."
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
-  (menu-bar-mode)
+  ;;(menu-bar-mode)
+  (repeat-mode)
   (windmove-default-keybindings))
-
-(persp-state-load (no-littering-expand-var-file-name "perspective/perspectives.el"))
 
 (when (eq system-type 'darwin)
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
