@@ -228,6 +228,15 @@
 (use-package magit
   ;; emacs interface for git
   :preface
+  (defun opt-out-of-consult-crm (&rest args)
+    (if (advice-member-p #'consult-completing-read-multiple #'completing-read-multiple)
+        (unwind-protect
+            (progn
+              (advice-remove #'completing-read-multiple #'consult-completing-read-multiple)
+              (apply args))
+          (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple))
+      (apply args)))
+
   (defun magit-status--around (orig-magit-status &rest args)
     "Set magit status to fullscreen."
     (window-configuration-to-register :my/magit-fullscreen)
@@ -268,6 +277,7 @@
    (git-commit-post-finish-hook . magit-process-buffer))
   :config
   (setq my-magit-log-buffer-file-registered nil)
+  (advice-add #'magit-completing-read-multiple* :around #'opt-out-of-consult-crm)
   (advice-add 'magit-status :around #'magit-status--around)
   (advice-add 'magit-log-buffer-file :around #'magit-log-buffer-file--before)
   (advice-add 'magit-mode-bury-buffer :around #'magit-mode-bury-buffer--around)
@@ -509,16 +519,17 @@
 
 (use-package typescript-mode
   ;; major mode for ts/js
-  ;;:mode (rx "." (or "j" "t") "s" (zero-or-one "x") string-end)
+  ;;:mode (rx "." (or "j" "t") "s" (zero-or-one  "x"))
   :after tree-sitter
   :preface
   (define-derived-mode typescriptreact-mode typescript-mode
     "TypeScript TSX")
+  :init
+  ;; use our derived mode for tsx files
+  (add-to-list 'auto-mode-alist '("\\.[jt]sx?\\'" . typescriptreact-mode))
   :custom
   (typescript-indent-level 2)
   :config
-  ;; use our derived mode for tsx files
-  (add-to-list 'auto-mode-alist '("\\.\(j\|t\)sx?\\'" . typescriptreact-mode))
   ;; by default, typescript-mode is mapped to the treesitter typescript parser
   ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
