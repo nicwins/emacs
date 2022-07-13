@@ -421,42 +421,6 @@
   (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets")
   (yas-reload-all))
 
-;; (use-package perspective
-;;   ;; window and buffer manager
-;;   :bind
-;;   (("C-c t" . persp-switch)
-;;    ("C-x k" . persp-kill-buffer*))
-;;   :preface
-;;   (defvar my/static-perspectives
-;;     [["main" "C-c x"]
-;;      ["II" "C-c c"]
-;;      ["III" "C-c d"]
-;;      ["IV" "C-c r"]
-;;      ["V" "C-c s"]
-;;      ["VI" "C-c t"]
-;;      ["VII" "C-c w"]
-;;      ["VIII" "C-c f"]
-;;      ["IV" "C-c p"]]
-;;     "Perspectives and binds on init.")
-
-;;   (defun my/set-static-perspectives (static-perspective)
-;;     "Setup initial perspectives."
-;;     (let ((perspective-name (elt static-perspective 0))
-;;           (key-binding (elt static-perspective 1)))
-;;       (global-set-key
-;;        (kbd key-binding)
-;;        (lambda ()
-;;          (interactive)
-;;          (persp-switch perspective-name)))))
-;;   :custom
-;;   (persp-state-default-file
-;;    (no-littering-expand-var-file-name "perspective/perspectives.el"))
-;;   (persp-modestring-short t)
-;;   (persp-sort 'created)
-;;   :config
-;;   (mapc 'my/set-static-perspectives my/static-perspectives)
-;;   (persp-mode))
-
 (use-package password-store
   ;; front end for `pass'
   :if (eq system-type 'gnu/linux))
