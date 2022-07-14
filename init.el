@@ -471,8 +471,6 @@
 (use-package tree-sitter
   ;; fast syntax highlighting
   :demand
-  :commands
-  (tree-sitter-langs)
   :hook
   (tree-sitter-after-on . tree-sitter-hl-mode)
   :config
