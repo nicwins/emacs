@@ -542,6 +542,20 @@
   :bind
   ("C-c ?" . which-key-show-top-level))
 
+(use-package project
+  :straight nil)
+
+(use-package project-x
+  :straight (project-x :type git :host github :repo "karthink/project-x")
+  :after project
+  :custom
+  (project-x-save-interval 600)
+  (project-x-local-identifier '("package.json" ".project"))
+  :config
+  (project-x-mode 1)
+  (remove-hook 'project-find-functions 'project-x-try-local)
+  (add-hook 'project-find-functions 'project-x-try-local -1))
+
 ;;;; Built-in Package Config
 
 (use-package isearch
