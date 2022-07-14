@@ -544,7 +544,8 @@
   ("C-c ?" . which-key-show-top-level))
 
 (use-package project
-  :straight nil)
+  :custom
+  (vc-directory-exclusion-list (append vc-directory-exclusion-list '("node_modules" "build"))))
 
 (use-package project-x
   :straight (project-x :type git :host github :repo "karthink/project-x")
