@@ -594,8 +594,6 @@
 (use-package dired
   ;; directory management
   :straight (:type built-in)
-  :preface
-  
   :hook (dired-mode . dired-hide-details-mode)
   :custom
   (dired-dwim-target t)
@@ -853,6 +851,10 @@
   ;; Stuff that doesn't seem to belong anywhere else
   :straight nil
   :preface
+  (defun my/back-to-indentation-or-beginning () (interactive)
+         (if (= (point) (progn (back-to-indentation) (point)))
+             (beginning-of-line)))
+
   (defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
     "Rename buffer visiting FILE to NEWNAME.
   Intended as :after advice for `rename-file'."
@@ -909,7 +911,8 @@ Intended as :after advice for `delete-file'."
    #'completing-read-multiple
    :override #'consult-completing-read-multiple)
   :bind
-  (("C-," . my/comment-or-uncomment-region-or-line)
+  (("C-a" . my/back-to-indentation-or-beginning)
+   ("C-," . my/comment-or-uncomment-region-or-line)
    ("C-c b" . my/switch-to-last-buffer)
    ("C-c C-c" . server-edit)
    ("C-c C-k" . server-edit-abort)
