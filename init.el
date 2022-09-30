@@ -1,6 +1,6 @@
 ;; init --- Initial setup -*- lexical-binding: t -*-
 
-;; Copyright (C) 2011-2021 Nicolas Winslow
+;; Copyright (C) 2011-2022 Nicolas Winslow
 
 ;; Author: Nicolas Winslow
 
@@ -198,7 +198,7 @@
 (use-package consult-dir
   ;; browse recent dirs and bookmarks
   :bind (("C-x C-d" . consult-dir)
-         :map minibuffer-local-completion-map
+         :map vertico-map
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
 
@@ -961,7 +961,8 @@ Intended as :after advice for `delete-file'."
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
   ;;(menu-bar-mode)
   (repeat-mode)
-  (windmove-default-keybindings))
+  (windmove-default-keybindings)
+  (desktop-read "~/.config/emacs/"))
 
 (when (eq system-type 'darwin)
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
