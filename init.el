@@ -23,7 +23,7 @@
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         "https://raw.githubusercontent.com/radian-softwars/straight.el/develop/install.el"
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
@@ -34,7 +34,7 @@
 ;; Bootstrap `use-package'
 (setq-default use-package-verbose nil            ; Don't report loading details
               use-package-enable-imenu-support t ; Let imenu find use-package defs
-              use-package-expand-minimally t) ; minimize expanded code
+              use-package-expand-minimally t)    ; minimize expanded code
 
 (straight-use-package 'use-package)
 (eval-when-compile (require 'use-package))
@@ -286,15 +286,7 @@
 
 (use-package apheleia
   ;; run code formatters, saving point
-  :straight
-  (apheleia :type git
-	          :host github
-	          :repo "raxod502/apheleia")
   :config
-  (setf (alist-get 'prettier apheleia-formatters)
-        '(npx "prettier"
-              "--single-quote" "true"
-              file))
   (apheleia-global-mode +1))
 
 (use-package json-mode) ; major mode for json
@@ -333,6 +325,8 @@
 
 (use-package undo-tree
   ;; make undo a tree rather than line
+  :custom
+  (undo-tree-auto-save-history nil)
   :config (global-undo-tree-mode))
 
 (use-package gruvbox-theme
@@ -549,7 +543,6 @@
   :straight (project-x :type git :host github :repo "karthink/project-x")
   :after project
   :custom
-  (project-x-save-interval 600)
   (project-x-local-identifier '("package.json" ".project"))
   :config
   (project-x-mode 1)
@@ -974,6 +967,7 @@ Intended as :after advice for `delete-file'."
   (setq frame-resize-pixelwise t)
   (setq magit-git-executable "/usr/local/bin/git")
   (set-frame-size (selected-frame) 2542 1412 t)
+  (add-to-list 'default-frame-alist '(undecorated . t))
   (setq ns-use-native-fullscreen nil))
 
 (provide 'init)
