@@ -623,7 +623,7 @@
 
 (eval-after-load  'dired
   '(defun dired-clean-up-after-deletion (fn)
-     "My. Clean up after a deleted file or directory FN.
+     "My clean up after a deleted file or directory FN.
   Remove expanded subdir of deleted dir, if any."
      (save-excursion (and (cdr dired-subdir-alist)
                           (dired-goto-subdir fn)
@@ -833,6 +833,33 @@
   (([f8] . my/eshell-here)
    ([f9] . my/eshell-lint)))
 
+(use-package proced
+  :straight nil
+  :preface
+  (defun proced-status--around (orig-proced &rest args)
+    "Set proced status to fullscreen."
+    (window-configuration-to-register :my/proced-fullscreen)
+    (apply orig-proced args)
+    (delete-other-windows))
+
+  (defun proced-quit--around (orig-proced-quit &rest args)
+    "Restore previous window configuration."
+    (if (equal (symbol-name major-mode) "proced-mode")
+        (progn
+          (apply orig-proced-quit args)
+          (jump-to-register :my/proced-fullscreen))
+      (apply orig-proced-quit args)))
+  :custom (proced-auto-update-flat t)
+  :config
+  (advice-add 'proced :around #'proced-status--around)
+  (advice-add 'quit-window :around #'proced-quit--around))
+
+(use-package proced-narrow
+  :ensure t
+  :after proced
+  :bind (:map proced-mode-map
+              ("/" . proced-narrow)))
+
 (use-package tab-bar
   :straight nil
   :custom
@@ -956,6 +983,9 @@ Intended as :after advice for `delete-file'."
   (repeat-mode)
   (windmove-default-keybindings)
   (desktop-read "~/.config/emacs/"))
+
+(when (eq system-type 'gnu/linux)
+  (require 'vterm))
 
 (when (eq system-type 'darwin)
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
