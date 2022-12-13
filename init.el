@@ -83,13 +83,6 @@
   :after (geiser-guile)
   :if (eq system-type 'gnu/linux))
 
-(use-package flycheck
-  ;; code linter
-  :init (global-flycheck-mode)
-  :custom
-  ;;(flycheck-emacs-lisp-load-path '("~/.config/emacs/straight/repos/use-package"))
-  (flycheck-emacs-lisp-load-path 'inherit))
-
 (use-package doom-modeline
   ;; fancy modeline
   :custom
@@ -177,7 +170,7 @@
    ("C-c i" . consult-imenu)
    ("C-c I" . consult-project-imenu)
    ("C-c z" . consult-flycheck)
-   ("C-c F" . consult-lsp-diagnostics)
+   ;;("C-c F" . consult-lsp-diagnostics)
    ("C-c h" . consult-history)
    ("C-c m" . consult-mode-command)
    ([f2] . consult-ripgrep)
@@ -291,28 +284,23 @@
 
 (use-package json-mode) ; major mode for json
 
-(use-package lsp-mode
-  ;; language server protocol for emacs
-  :commands (lsp)
-  :hook ((typescript-mode
-          json-mode
-          mhtml-mode
-          yaml-mode) . lsp)
+(use-package eglot
+  :preface
+  (defun me/eglot-shutdown-project ()
+    "Kill the LSP server for the current project if it exists."
+    (when-let ((server (eglot-current-server)))
+      (ignore-errors (eglot-shutdown server))))  
+  :hook
+  (typescript-mode . eglot-ensure)
+  :init
+  (put 'eglot-server-programs 'safe-local-variable 'listp)
   :custom
-  (lsp-signature-render-documentation nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-enable-indentation nil)
-  (lsp-signature-render-documentation nil)
-  (lsp-completion-provider :none)
+  (eglot-autoshutdown t)
   :config
-  (setenv "TSSERVER_LOG_FILE" (no-littering-expand-var-file-name "lsp/tsserver.log")))
-
-(use-package lsp-ui) ;; ui fluff for lsp
-
-(use-package consult-lsp
-  ;; provide a consult front end for lsp
-  :after (consult lsp)
-  :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
+  ;; TODO: add this to typescript mode specific hook
+  (eglot--code-action eglot-code-action-organize-imports "source.organizeImports.ts")
+  (advice-add 'eglot--apply-workspace-edit :after #'me/project-save)
+  (advice-add 'project-kill-buffers :before #'me/eglot-shutdown-project))
 
 (use-package puni
   ;; balanced editing mode
@@ -673,6 +661,10 @@
   :straight nil
   :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
 
+(use-package eldoc-box
+  :config
+  (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
+
 (use-package autorevert
   ;; Auto refresh buffers
   :straight nil
@@ -866,6 +858,11 @@
   (tab-bar-mode 1)
   :config
   (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar))
+
+(use-package flymake
+  :straight nil
+  :config
+  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake))
 
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
