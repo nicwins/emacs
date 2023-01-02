@@ -537,6 +537,12 @@
   (remove-hook 'project-find-functions 'project-x-try-local)
   (add-hook 'project-find-functions 'project-x-try-local -1))
 
+(use-package hl-todo
+  ;; Highlight keywords such as TODO, FIXME, NOTE, etc.
+  ;; NOTE: Face values defined in `hl-todo-keyword-faces'.
+  :config
+  (global-hl-todo-mode))
+
 ;;;; Built-in Package Config
 
 (use-package isearch
