@@ -218,6 +218,11 @@
   :hook
   (embark-collect-mode . embark-consult-preview-minor-mode))
 
+(use-package flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+
 (use-package magit
   ;; emacs interface for git
   :preface
@@ -966,6 +971,7 @@ Intended as :after advice for `delete-file'."
   (cursor-in-non-selected-windows nil)  ; Hide cursor in inactive windows
   (warning-suppress-types '((comp)))
   (use-short-answers t)                 ; y on n to confirm
+  (sh-basic-offset 2)                   ; indentation 2 spaces
   :config
   (advice-add 'rename-file :after 'my/visiting-buffer-rename)
   (advice-add 'delete-file :after 'my/visiting-buffer-kill)
@@ -991,6 +997,7 @@ Intended as :after advice for `delete-file'."
   (require 'vterm))
 
 (when (eq system-type 'darwin)
+  (use-package vterm)
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
   (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 200)
