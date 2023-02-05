@@ -164,7 +164,6 @@
    ("M-#" . consult-register-load)
    ;; C-x bindings
    ("C-x b" . consult-buffer)
-   ("C-x C-b" . consult-buffer)
    ("C-x 4 b" . consult-buffer-other-window)
    ;; C-c bindings (user-map)
    ("C-c i" . consult-imenu)
@@ -301,6 +300,7 @@
   (put 'eglot-server-programs 'safe-local-variable 'listp)
   :custom
   (eglot-autoshutdown t)
+  (eglot-events-buffer-size 0)
   :config
   ;; TODO: add this to typescript mode specific hook
   (eglot--code-action eglot-code-action-organize-imports "source.organizeImports.ts")
@@ -552,17 +552,17 @@
 
 (use-package isearch
   :straight (:type built-in)
-  :custom
-  (isearch-allow-scroll t)
-  (lazy-highlight-buffer t)
-  (lazy-highlight-initial-delay 0)
-  :hook
-  (isearch-update-post . my/isearch-aim-beginning)
   :preface
   (defun my/isearch-aim-beginning ()
     "Move cursor back to the beginning of the current match."
     (when (and isearch-forward (number-or-marker-p isearch-other-end))
-      (goto-char isearch-other-end))))
+      (goto-char isearch-other-end)))
+  :hook
+  (isearch-update-post . my/isearch-aim-beginning)
+  :custom
+  (isearch-allow-scroll t)
+  (lazy-highlight-buffer t)
+  (lazy-highlight-initial-delay 0))
 
 (use-package help-mode
   :straight (:type built-in)
@@ -586,14 +586,26 @@
 (use-package dired
   ;; directory management
   :straight (:type built-in)
+  :preface
+  (defun my/dired-quickfind (find-string)
+    "Fuzzy find `find-string' recursively in current dir."
+    (interactive (list (read-string "Search:")))
+    (find-dired
+     (file-name-directory (or buffer-file-name default-directory))
+     (concat "-iname " "*\"" find-string "\"*")))
   :hook (dired-mode . dired-hide-details-mode)
+  :bind
+  (:map dired-mode-map
+        ("f" . my/dired-quickfind)
+        ("C-c C-c" . dired-toggle-read-only))
   :custom
   (dired-dwim-target t)
   ;; Dired listing switches - see man ls
   (dired-listing-switches "-alhF --group-directories-first")
   (dired-hide-details-hide-symlink-targets nil)
   (dired-recursive-copies 'always)
-  (dired-auto-revert-buffer t))
+  (dired-auto-revert-buffer t)
+  (find-name-arg "-iname"))
 
 (use-package dired-x
   ;; extension for dired
@@ -623,7 +635,7 @@
 (eval-after-load  'dired
   '(defun dired-clean-up-after-deletion (fn)
      "My clean up after a deleted file or directory FN.
-  Remove expanded subdir of deleted dir, if any."
+     Remove expanded subdir of deleted dir, if any."
      (save-excursion (and (cdr dired-subdir-alist)
                           (dired-goto-subdir fn)
                           (dired-kill-subdir)))
@@ -645,7 +657,6 @@
   ;; editable dired buffers
   :straight (:type built-in)
   :bind ((:map wdired-mode-map
-               ("<return>" . my/dired-open)
                ("C-x C-s" . wdired-finish-edit))))
 
 (use-package server
@@ -675,6 +686,15 @@
 (use-package eldoc-box
   :config
   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
+
+(use-package expand-region
+  :bind
+  (("M-n" . er/expand-region))
+  :custom
+  (expand-region-contract-fast-key "a")
+  (expand-region-reset-fast-key "q"))
+
+(use-package free-keys)
 
 (use-package autorevert
   ;; Auto refresh buffers
@@ -727,7 +747,7 @@
               :before
               (defun my/re-builder-save-state (&rest _)
                 "Save into `my/re-builder-positions' the point and region
-  positions before calling `re-builder'."
+     positions before calling `re-builder'."
                 (setq my/re-builder-positions
                       (cons (point)
                             (when (region-active-p)
@@ -736,8 +756,8 @@
   
   (defun my/reb-replace-regexp (&optional delimited)
     "Run `query-replace-regexp' with the contents of `re-builder'.
-  With non-nil optional argument DELIMITED, only replace matches
-  surrounded by word boundaries."
+     With non-nil optional argument DELIMITED, only replace matches
+     surrounded by word boundaries."
     (interactive "P")
     (reb-update-regexp)
     (let* ((re (reb-target-binding reb-regexp))
@@ -802,8 +822,8 @@
   :preface
   (defun my/eshell-here ()
     "Opens up a new shell in the directory associated with the
-  current buffer's file. The eshell is renamed to match that
-  directory to make multiple eshell windows easier."
+     current buffer's file. The eshell is renamed to match that
+     directory to make multiple eshell windows easier."
     (interactive)
     (let* ((parent (if (buffer-file-name)
                        (file-name-directory (buffer-file-name))
@@ -885,7 +905,7 @@
 
   (defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
     "Rename buffer visiting FILE to NEWNAME.
-  Intended as :after advice for `rename-file'."
+     Intended as :after advice for `rename-file'."
     (when (called-interactively-p 'any)
       (when-let ((buffer (get-file-buffer file)))
         (with-current-buffer buffer
@@ -898,11 +918,11 @@
                      (newsans (file-name-sans-extension newbase)))
                 (goto-char (point-min))
                 (while (search-forward-regexp (format "^;;; %s" base) nil t)
-                  (replace-match (concat ";;; " newbase)))
-                (goto-char (point-max))
-                (when
-                    (search-backward-regexp (format "^(provide '%s)" sans) nil t)
-                  (replace-match (format "(provide '%s)" newsans))))))))))
+     (replace-match (concat ";;; " newbase)))
+                     (goto-char (point-max))
+                     (when
+                         (search-backward-regexp (format "^(provide '%s)" sans) nil t)
+                       (replace-match (format "(provide '%s)" newsans))))))))))
 
   (defun my/visiting-buffer-kill (file &optional _trash)
     "Kill buffer visiting FILE.
