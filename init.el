@@ -219,8 +219,9 @@
 
 (use-package flymake-shellcheck
   :commands flymake-shellcheck-load
-  :init
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+  :hook
+  ((sh-mode . flymake-shellcheck-load)
+   (sh-mode . flymake-mode)))
 
 (use-package magit
   ;; emacs interface for git
@@ -414,7 +415,7 @@
 
 (use-package pass
   ;; use the unix `pass' store
-  :if (eq system-type 'gnu/linux)
+  ;;:if (eq system-type 'gnu/linux)
   :preface
   (defun pass-status--around (orig-pass &rest args)
     "Set pass status to fullscreen."
@@ -549,7 +550,6 @@
   (global-hl-todo-mode))
 
 ;;;; Built-in Package Config
-
 (use-package isearch
   :straight (:type built-in)
   :preface
@@ -610,19 +610,7 @@
 (use-package dired-x
   ;; extension for dired
   :straight (:type built-in)
-  :preface
-  (defun my/dired-open()
-    (interactive)
-    (cond ;; use dired-find-file if it is a directory
-     ((file-directory-p (dired-get-file-for-visit)) (dired-find-file))
-     ;; If there is no default defined, open in dired
-     ((null (dired-guess-default (cons (dired-get-filename) '()))) (dired-find-file))
-     ;; use xdg-open for everything else
-     ;; start-process quote the arguments so you do not need the sell-quote-argument function
-     (t (start-process "dired-open" nil "xdg-open" (dired-get-file-for-visit)))))
   :hook (dired-mode . dired-omit-mode)
-  :bind (:map dired-mode-map
-              ("<return>" . my/dired-open))
   :custom
   (dired-omit-verbose nil)
   (dired-guess-shell-alist-user

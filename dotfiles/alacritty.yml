@@ -101,3 +101,6 @@ key_bindings:
   - { key: N, mods: Control, action: SpawnNewInstance }
   - { key: W, mods: Alt, action: Copy }
   - { key: Y, mods: Control, action: Paste }
+  - { key: F, mods: Alt, chars: "\x1bf" }
+  - { key: B, mods: Alt, chars: "\x1bb" }
+  - { key: D, mods: Alt, chars: "\x1bd" }
