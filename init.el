@@ -1,6 +1,6 @@
 ;; init --- Initial setup -*- lexical-binding: t -*-
 
-;; Copyright (C) 2011-2022 Nicolas Winslow
+;; Copyright (C) 2011-2023 Nicolas Winslow
 
 ;; Author: Nicolas Winslow
 
@@ -13,9 +13,6 @@
 ;;;; Initialize Package
 
 ;; This is only needed once, near the top of the file
-(defvar straight-fix-flycheck)
-(setq straight-fix-flycheck t)
-
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -333,44 +330,29 @@
   :mode "\\.yml\\'")
 
 (use-package org
-  ;; notes and todos
-  :preface
-  (defun org-capture-inbox ()
-    (interactive)
-    (call-interactively 'org-store-link)
-    (org-capture nil "i"))
-  :bind
-  (("C-c a" . org-agenda)
-   ("C-c q" . org-capture-inbox))
+  ;; notes and todos, executable blocks
   :custom
-  (org-directory "~/notes")
-  (org-default-notes-file "~/notes/inbox.org")
-  (org-agenda-files (list "~/notes/"))
-  (org-capture-templates
-   `(("i" "Inbox" entry  (file "inbox.org")
-      ,(concat "* TODO %?\n"
-               "/Entered on/ %U"))))
+  ;; Edit settings
+  (org-auto-align-tags nil)
+  (org-tags-column 0)
+  (org-catch-invisible-edits 'show-and-error)
+  (org-special-ctrl-a/e t)
+  (org-insert-heading-respect-content t)
+
+  ;; Org styling, hide markup etc.
   (org-hide-emphasis-markers t)
-  (org-hide-leading-stars t)
   (org-pretty-entities t)
-  (org-startup-indented t)
-  (org-startup-with-inline-images t)
-  (org-image-actual-width '(300))
-  (org-agenda-restore-windows-after-quit t)
-  (org-agenda-hide-tags-regexp ".")
-  (org-agenda-prefix-format
-   '((agenda . " %i %-12:c%?-12t% s")
-     (todo   . " ")
-     (tags   . " %i %-12:c")
-     (search . " %i %-12:c")))
-  (org-confirm-babel-evaluate nil) ; disable confirm exec
+  (org-ellipsis "…")
   :config
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right)
-  (add-hook 'org-capture-mode-hook 'delete-other-windows)
-  (add-hook 'org-mode-hook 'visual-line-mode))
+  (add-hook 'org-shiftright-final-hook 'windmove-right))
+
+(use-package org-modern
+  ;; theme/styling for org
+  :config
+  (global-org-modern-mode))
 
 (use-package ob-http
   :config
@@ -391,12 +373,6 @@
     (set-face-attribute 'default nil :family "Hack" :height 150)
     (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
     (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150)))
-
-(use-package org-superstar
-  ;; Nice bullets
-  :hook (org-mode . org-superstar-mode)
-  :config
-  (setq org-superstar-special-todo-items t))
 
 (use-package visual-fill-column
   ;; Line wrap at the fill column, not buffer end
@@ -676,11 +652,69 @@
   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
 
 (use-package expand-region
+  :preface
+  (defun er-custom/prepare-for-more-expansions-internal (repeat-key-str)
+    "CUSTOM Return bindings and a message to inform user about them given REPEAT-KEY-STR."
+    (let ((msg (format "Type %s to expand again" repeat-key-str))
+          (bindings (list (cons repeat-key-str '(er/expand-region 1)))))
+      ;; If contract and expand are on the same binding, ignore contract
+      (unless (string-equal repeat-key-str expand-region-contract-fast-key)
+        (setq msg (concat msg (format ", %s to contract" expand-region-contract-fast-key)))
+        (push (cons expand-region-contract-fast-key '(er/contract-region 1)) bindings))
+      ;; If reset and either expand or contract are on the same binding, ignore reset
+      (unless (or (string-equal repeat-key-str expand-region-reset-fast-key)
+                  (string-equal expand-region-contract-fast-key expand-region-reset-fast-key))
+        (setq msg (concat msg (format ", %s to reset" expand-region-reset-fast-key)))
+        (push (cons expand-region-reset-fast-key '(er/expand-region 0)) bindings))
+      (setq msg (concat msg (format ", . to jump end" expand-region-eor-fast-key)))
+      (push (cons expand-region-eor-fast-key '(move-to-region-end)) bindings)
+      (setq msg (concat msg (format ", , to jump beginning" expand-region-bor-fast-key)))
+      (push (cons expand-region-bor-fast-key '(move-to-region-beginning)) bindings)
+      (cons msg bindings)))
+  (defun er-custom/expand-region (arg)
+    "Increase selected region by semantic units.
+
+    With prefix argument expands the region that many times.
+    If prefix argument is negative calls `er/contract-region'.
+    If prefix argument is 0 it resets point and mark to their state
+    before calling `er/expand-region' for the first time ARG."
+    (interactive "p")
+    (if (< arg 1)
+        (er/contract-region (- arg))
+      (er--prepare-expanding)
+      (while (>= arg 1)
+        (setq arg (- arg 1))
+        (when (eq 'early-exit (er--expand-region-1))
+          (setq arg 0)))
+      (when (and expand-region-fast-keys-enabled
+                 (not (memq last-command '(er/expand-region er/contract-region move-to-region-end move-to-region-beginning))))
+        (er/prepare-for-more-expansions))))
+  (defcustom expand-region-eor-fast-key "."
+    "Key to use after an initial expand/contract to go to end of region."
+    :group 'expand-region
+    :type 'string)
+  (defcustom expand-region-bor-fast-key ","
+    "Key to use after an initial expand/contract to go to end of region."
+    :group 'expand-region
+    :type 'string)
+  (defun move-to-region-beginning ()
+    "Move cursor to end of active region if there is one."
+    (interactive "")
+    (if (use-region-p)
+        (goto-char (region-beginning))))
+  (defun move-to-region-end ()
+    "Move cursor to end of active region if there is one."
+    (interactive "")
+    (if (use-region-p)
+        (goto-char (region-end))))
   :bind
   (("M-n" . er/expand-region))
   :custom
   (expand-region-contract-fast-key "a")
-  (expand-region-reset-fast-key "q"))
+  (expand-region-reset-fast-key "q")
+  :config
+  (advice-add 'er/prepare-for-more-expansions-internal :override #'er-custom/prepare-for-more-expansions-internal)
+  (advice-add 'er/expand-region :override #'er-custom/expand-region))
 
 (use-package free-keys)
 
@@ -906,11 +940,11 @@
                      (newsans (file-name-sans-extension newbase)))
                 (goto-char (point-min))
                 (while (search-forward-regexp (format "^;;; %s" base) nil t)
-     (replace-match (concat ";;; " newbase)))
-                     (goto-char (point-max))
-                     (when
-                         (search-backward-regexp (format "^(provide '%s)" sans) nil t)
-                       (replace-match (format "(provide '%s)" newsans))))))))))
+                  (replace-match (concat ";;; " newbase)))
+                (goto-char (point-max))
+                (when
+                    (search-backward-regexp (format "^(provide '%s)" sans) nil t)
+                  (replace-match (format "(provide '%s)" newsans))))))))))
 
   (defun my/visiting-buffer-kill (file &optional _trash)
     "Kill buffer visiting FILE.
@@ -980,6 +1014,7 @@ Intended as :after advice for `delete-file'."
   (warning-suppress-types '((comp)))
   (use-short-answers t)                 ; y on n to confirm
   (sh-basic-offset 2)                   ; indentation 2 spaces
+  (image-dired-thumb-size 256)          ; dired thumbnail size
   :config
   (advice-add 'rename-file :after 'my/visiting-buffer-rename)
   (advice-add 'delete-file :after 'my/visiting-buffer-kill)
@@ -990,6 +1025,8 @@ Intended as :after advice for `delete-file'."
   (show-paren-mode 1)                   ; Show matching parens
   (set-face-attribute 'default nil :family "Iosevka" :height 160)
   (set-face-attribute 'fixed-pitch nil :family "Iosevka" :height 160)
+  (set-face-attribute 'variable-pitch nil :family "Iosevka Aile" :height 160)
+  (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
