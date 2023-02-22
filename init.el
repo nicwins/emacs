@@ -724,9 +724,15 @@
   :hook (after-init . tabspaces-mode)
   :commands (tabspaces-switch-or-create-workspace
              tabspaces-open-or-create-project-and-workspace)
+  :preface
+  (defun my/switch-to-space-1 ()
+    (interactive)
+    (tabspaces-switch-or-create-workspace "Home"))
+  :bind
+  ("C-M-s-x" . my/switch-to-space-1)
   :custom
   (tabspaces-use-filtered-buffers-as-default t)
-  (tabspaces-default-tab "Home")
+  (tabspaces-default-tab "Default")
   (tabspaces-remove-to-default t)
   (tabspaces-include-buffers '("*scratch*" "*Messages*"))
   :config
