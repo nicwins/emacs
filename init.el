@@ -718,6 +718,37 @@
 
 (use-package free-keys)
 
+(use-package tabspaces
+  ;; buffer isolated workspaces per tab
+  :straight (:type git :host github :repo "mclear-tools/tabspaces")
+  :hook (after-init . tabspaces-mode)
+  :commands (tabspaces-switch-or-create-workspace
+             tabspaces-open-or-create-project-and-workspace)
+  :custom
+  (tabspaces-use-filtered-buffers-as-default t)
+  (tabspaces-default-tab "Home")
+  (tabspaces-remove-to-default t)
+  (tabspaces-include-buffers '("*scratch*" "*Messages*"))
+  :config
+  (with-eval-after-load 'consult
+    ;; hide full buffer list (still available with "b" prefix)
+    (consult-customize consult--source-buffer :hidden t :default nil)
+    ;; set consult-workspace buffer list
+    (defvar consult--source-workspace
+      (list :name     "Workspace Buffers"
+            :narrow   ?w
+            :history  'buffer-name-history
+            :category 'buffer
+            :state    #'consult--buffer-state
+            :default  t
+            :items    (lambda () (consult--buffer-query
+                                  :predicate #'tabspaces--local-buffer-p
+                                  :sort 'visibility
+                                  :as #'buffer-name)))
+
+      "Set workspace buffer list for consult-buffer.")
+    (add-to-list 'consult-buffer-sources 'consult--source-workspace)))
+
 (use-package autorevert
   ;; Auto refresh buffers
   :straight nil
@@ -1035,8 +1066,8 @@ Intended as :after advice for `delete-file'."
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
   ;;(menu-bar-mode)
   (repeat-mode)
-  (windmove-default-keybindings)
-  (desktop-read "~/.config/emacs/"))
+  (desktop-read "~/.config/emacs/")
+  (windmove-default-keybindings))
 
 (when (eq system-type 'gnu/linux)
   (require 'vterm))
