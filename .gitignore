@@ -11,6 +11,7 @@ flycheck_init.el
 TODO.org
 .emacs.desktop*
 project-window-list
+tabsession.el
 
 ############
 ## Windows
