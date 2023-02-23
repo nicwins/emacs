@@ -112,6 +112,32 @@
   ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
+(use-package vertico-multiform
+  ;; alternate display modes for vertico
+  :straight nil
+  :after (vertico)
+  :preface
+  (defun vertico/sort-directories-first (files)
+    ;; Sort directories before files
+    (setq files (vertico-sort-alpha files))
+    (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
+           (seq-remove (lambda (x) (string-suffix-p "/" x)) files)))
+  :init
+  (require 'vertico-buffer nil nil)
+  (require 'vertico-indexed nil nil)
+  (require 'vertico-flat nil nil)
+  (require 'vertico-grid nil nil)
+  :custom
+  (vertico-multiform-commands
+   '((consult-line buffer)
+     (consult-imenu buffer indexed)))
+  (vertico-multiform-categories
+   '((file (vertico-sort-function . vertico/sort-directories-first) grid)
+     (consult-grep buffer)
+     (symbol (vertico-sort-function . vertico-sort-alpha))))
+  :config
+  (vertico-multiform-mode))
+
 (use-package orderless
   ;; narrowing and filtering for selections
   :custom
@@ -169,17 +195,11 @@
    ;;("C-c F" . consult-lsp-diagnostics)
    ("C-c h" . consult-history)
    ("C-c m" . consult-mode-command)
+   ([f1] . consult-find-file)
    ([f2] . consult-ripgrep)
    :map isearch-mode-map
    ("M-e" . consult-isearch)
    ("M-s l" . consult-line))
-  :init
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
-
-  ;; Optionally replace `completing-read-multiple' with an enhanced version.
-  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
   :custom
   (xref-show-xrefs-function #'consult-xref)
   (xref-show-definitions-function #'consult-xref))
@@ -495,7 +515,7 @@
 
 (use-package wgrep
   :custom
-  (wdired-allow-to-change-permissions t))
+  (wgrep-enable-key "\C-c\C-c"))
 
 (use-package which-key
   ;; Display keybindings in popup
@@ -621,7 +641,9 @@
   ;; editable dired buffers
   :straight (:type built-in)
   :bind ((:map wdired-mode-map
-               ("C-x C-s" . wdired-finish-edit))))
+               ("C-x C-s" . wdired-finish-edit)))
+  :custom
+  (wdired-allow-to-change-permissions t))
 
 (use-package server
   ;; The emacs server
@@ -1013,17 +1035,21 @@ Intended as :after advice for `delete-file'."
     (split-window-horizontally)
     (split-window-horizontally)
     (balance-windows))
+  (defun vertico/crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
   :init
-  (advice-add
-   #'completing-read-multiple
-   :override #'consult-completing-read-multiple)
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
   :bind
   (("C-a" . my/back-to-indentation-or-beginning)
    ("C-," . my/comment-or-uncomment-region-or-line)
    ("C-c b" . my/switch-to-last-buffer)
    ("C-c C-c" . server-edit)
    ("C-c C-k" . server-edit-abort)
-   ([f1] . project-find-file)
    ([f3] . start-kbd-macro)
    ([f4] . end-kbd-macro)
    ([f5] . kmacro-call-macro))
