@@ -176,10 +176,33 @@
 
 (use-package consult
   ;; enhanced selection ui
+  :preface
+  (defvar consult--fd-command nil)
+  (defun consult--fd-builder (input)
+    (unless consult--fd-command
+      (setq consult--fd-command
+            (if (eq 0 (call-process-shell-command "fdfind"))
+                "fdfind"
+              "fd")))
+    (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
+                 (`(,re . ,hl) (funcall consult--regexp-compiler
+                                        arg 'extended t)))
+      (when re
+        (cons (append
+               (list consult--fd-command
+                     "--color=never" "--full-path"
+                     (consult--join-regexps re 'extended))
+               opts)
+              hl))))
+
+  (defun consult-fd (&optional dir initial)
+    (interactive "P")
+    (let* ((prompt-dir (consult--directory-prompt "Fd" dir))
+           (default-directory (cdr prompt-dir)))
+      (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
   :bind
   (("M-s" . consult-line)
    ("M-y" . consult-yank-pop)
-   ("<help> a" . consult-apropos)
    ("M-g g" . consult-goto-line)
    ("M-g M-g" . consult-goto-line)
    ("M-g m" . consult-mark)
@@ -195,7 +218,7 @@
    ;;("C-c F" . consult-lsp-diagnostics)
    ("C-c h" . consult-history)
    ("C-c m" . consult-mode-command)
-   ([f1] . consult-find-file)
+   ([f1] . consult-fd)
    ([f2] . consult-ripgrep)
    :map isearch-mode-map
    ("M-e" . consult-isearch)
@@ -526,6 +549,7 @@
   ("C-c ?" . which-key-show-top-level))
 
 (use-package project
+  ;; vc based project
   :custom
   (vc-directory-exclusion-list (append vc-directory-exclusion-list '("node_modules" "build"))))
 
