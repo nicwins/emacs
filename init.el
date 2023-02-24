@@ -1132,7 +1132,7 @@ Intended as :after advice for `delete-file'."
   (use-package vterm)
   (add-to-list 'completion-ignored-extensions ".DS_STORE")
   (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
-  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 200)
+  (set-face-attribute 'variable-pitch nil :family "Iosevka Aile" :height 200)
   (setq visible-bell nil)
   (setq ring-bell-function 'ignore)
   (setq auto-save-default nil)

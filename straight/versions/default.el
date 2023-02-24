@@ -22,6 +22,7 @@
  ("elisp-tree-sitter" . "3cfab8a0e945db9b3df84437f27945746a43cc71")
  ("emacs-async" . "71cc50f27ffc598a89aeaa593488d87818647d02")
  ("emacs-guix" . "cf5b7a402ea503c3dcda85a86b9a6c6dd01896e0")
+ ("emacs-libvterm" . "3e5a9b754b8e61850bb7d1b63b090b9fbf6687f3")
  ("emacs-theme-gruvbox" . "736729265bfe5e247cf1b48bcf996e56516b0d89")
  ("emacs-which-key" . "8093644032854b1cdf3245ce4e3c7b6673f741bf")
  ("emacsmirror-mirror" . "d391b480387d216772e6899cda7e9d7ca110cca4")
