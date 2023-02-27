@@ -176,6 +176,7 @@
 
 (use-package consult
   ;; enhanced selection ui
+  :commands consult--directory-prompt
   :preface
   (defvar consult--fd-command nil)
   (defun consult--fd-builder (input)
@@ -1063,11 +1064,11 @@
                      (newsans (file-name-sans-extension newbase)))
                 (goto-char (point-min))
                 (while (search-forward-regexp (format "^;;; %s" base) nil t)
-       (replace-match (concat ";;; " newbase)))
-      (goto-char (point-max))
-      (when
-          (search-backward-regexp (format "^(provide '%s)" sans) nil t)
-        (replace-match (format "(provide '%s)" newsans))))))))))
+                  (replace-match (concat ";;; " newbase)))
+                (goto-char (point-max))
+                (when
+                    (search-backward-regexp (format "^(provide '%s)" sans) nil t)
+                  (replace-match (format "(provide '%s)" newsans))))))))))
 
   (defun my/visiting-buffer-kill (file &optional _trash)
     "Kill buffer visiting FILE.
