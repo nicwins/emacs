@@ -770,12 +770,6 @@
   :hook (after-init . tabspaces-mode)
   :commands (tabspaces-switch-or-create-workspace
              tabspaces-open-or-create-project-and-workspace)
-  :preface
-  (defun my/switch-to-space-1 ()
-    (interactive)
-    (tabspaces-switch-or-create-workspace "Home"))
-  :bind
-  ("C-M-s-x" . my/switch-to-space-1)
   :custom
   (tabspaces-use-filtered-buffers-as-default t)
   (tabspaces-default-tab "Default")
@@ -990,10 +984,56 @@
 
 (use-package tab-bar
   :straight nil
+  :preface
+  (defvar ct/circle-numbers-alist
+    '((1 . "①")
+      (2 . "②")
+      (3 . "③")
+      (4 . "④")
+      (5 . "⑤")
+      (6 . "⑥")
+      (7 . "⑦")
+      (8 . "⑧")
+      (9 . "⑨"))
+    "Alist of integers to strings of circled unicode numbers.")
+
+  (defun ct/tab-bar-tab-name-format-default (tab i)
+    (let ((current-p (eq (car tab) 'current-tab)))
+      (concat
+       ;; First, add the tab number with a custom face
+       (propertize
+        (when (and tab-bar-tab-hints (< i 10)) (alist-get i ct/circle-numbers-alist)))
+       ;; Add a space (unstyled)
+       " "
+       ;; Add tab name with the face returned by tab-bar-tab-face-function
+       (propertize
+        (concat (alist-get 'name tab)
+	              (or (and tab-bar-close-button-show
+			                   (not (eq tab-bar-close-button-show
+				                          (if current-p 'non-selected 'selected)))
+			                   tab-bar-close-button)
+		                ""))
+        'face (funcall tab-bar-tab-face-function tab)))))
+  :bind
+  ("C-M-s-x" . (lambda () (interactive) (tab-bar-select-tab 1)))
+  ("C-M-s-c" . (lambda () (interactive) (tab-bar-select-tab 2)))
+  ("C-M-s-d" . (lambda () (interactive) (tab-bar-select-tab 3)))
+  ("C-M-s-r" . (lambda () (interactive) (tab-bar-select-tab 4)))
+  ("C-M-s-s" . (lambda () (interactive) (tab-bar-select-tab 5)))
+  ("C-M-s-t" . (lambda () (interactive) (tab-bar-select-tab 6)))
+  ("C-M-s-w" . (lambda () (interactive) (tab-bar-select-tab 7)))
+  ("C-M-s-f" . (lambda () (interactive) (tab-bar-select-tab 8)))
+  ("C-M-s-p" . (lambda () (interactive) (tab-bar-select-tab 9)))
   :custom
   (tab-bar-mode 1)
-  :config
-  (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar))
+  (tab-bar-tab-hints t)
+  (tab-bar-tab-name-format-function #'ct/tab-bar-tab-name-format-default)
+  (tab-bar-close-button nil)
+  (tab-bar-new-tab-choice "*scratch*")
+  (tab-bar-format '(tab-bar-format-menu-bar
+                    tab-bar-format-history
+                    tab-bar-format-tabs
+                    tab-bar-separator)))
 
 (use-package flymake
   :straight nil
@@ -1010,7 +1050,7 @@
 
   (defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
     "Rename buffer visiting FILE to NEWNAME.
-     Intended as :after advice for `rename-file'."
+       Intended as :after advice for `rename-file'."
     (when (called-interactively-p 'any)
       (when-let ((buffer (get-file-buffer file)))
         (with-current-buffer buffer
@@ -1023,11 +1063,11 @@
                      (newsans (file-name-sans-extension newbase)))
                 (goto-char (point-min))
                 (while (search-forward-regexp (format "^;;; %s" base) nil t)
-                  (replace-match (concat ";;; " newbase)))
-                (goto-char (point-max))
-                (when
-                    (search-backward-regexp (format "^(provide '%s)" sans) nil t)
-                  (replace-match (format "(provide '%s)" newsans))))))))))
+       (replace-match (concat ";;; " newbase)))
+      (goto-char (point-max))
+      (when
+          (search-backward-regexp (format "^(provide '%s)" sans) nil t)
+        (replace-match (format "(provide '%s)" newsans))))))))))
 
   (defun my/visiting-buffer-kill (file &optional _trash)
     "Kill buffer visiting FILE.

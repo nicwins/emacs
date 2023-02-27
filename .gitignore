@@ -12,6 +12,7 @@ TODO.org
 .emacs.desktop*
 project-window-list
 tabsession.el
+custom.el
 
 ############
 ## Windows
