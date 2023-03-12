@@ -36,6 +36,27 @@
 (straight-use-package 'use-package)
 (eval-when-compile (require 'use-package))
 
+;;;; OS Defaults
+(when (eq system-type 'gnu/linux)
+  (require 'vterm)
+  (set-face-attribute 'default nil :family "Iosevka" :height 160)
+  (set-face-attribute 'fixed-pitch nil :family "Iosevka" :height 160)
+  (set-face-attribute 'variable-pitch nil :family "Iosevka Aile" :height 160))
+
+(when (eq system-type 'darwin)
+  (use-package vterm)
+  (add-to-list 'completion-ignored-extensions ".DS_STORE")
+  (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
+  (set-face-attribute 'variable-pitch nil :family "Iosevka Aile" :height 200)
+  (setq visible-bell nil)
+  (setq ring-bell-function 'ignore)
+  (setq auto-save-default nil)
+  (setq frame-resize-pixelwise t)
+  (setq magit-git-executable "/usr/local/bin/git")
+  (set-frame-size (selected-frame) 2542 1412 t)
+  (add-to-list 'default-frame-alist '(undecorated . t))
+  (setq ns-use-native-fullscreen nil))
+
 ;;;; Package Configuration
 (use-package exec-path-from-shell
   ;; Load path from user shell
@@ -382,6 +403,7 @@
   (org-catch-invisible-edits 'show-and-error)
   (org-special-ctrl-a/e t)
   (org-insert-heading-respect-content t)
+  (org-startup-indented t)
 
   ;; Org styling, hide markup etc.
   (org-hide-emphasis-markers t)
@@ -395,10 +417,25 @@
 
 (use-package org-modern
   ;; theme/styling for org
+  :hook (org-agenda-finalize . org-modern-agenda)
+  :custom
+  (org-modern-hide-stars nil)		; adds extra indentation
+  (org-modern-table nil)
+  (org-modern-list
+   '(;; (?- . "-")
+     (?* . "•")
+     (?+ . "‣")))
   :config
   (global-org-modern-mode))
 
+(use-package org-modern-indent
+  :straight
+  (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+  :config
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+
 (use-package ob-http
+  ;; curl for org-babel
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -407,16 +444,7 @@
 
 (use-package mixed-pitch
   ;; use both pitch types in one buffer
-  :hook (text-mode . mixed-pitch-mode)
-  :config
-  (when (eq system-type 'darwin)
-    (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
-    (set-face-attribute 'fixed-pitch nil :family "Iosevka" :height 200)
-    (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 200))
-  (when (eq system-type 'gnu/linux)
-    (set-face-attribute 'default nil :family "Hack" :height 150)
-    (set-face-attribute 'fixed-pitch nil :family "Hack" :height 150)
-    (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :height 150)))
+  :hook (text-mode . mixed-pitch-mode))
 
 (use-package visual-fill-column
   ;; Line wrap at the fill column, not buffer end
@@ -454,6 +482,9 @@
   :config
   (advice-add 'pass :around #'pass-status--around)
   (advice-add 'pass-quit :around #'pass-quit--around))
+
+(use-package speedrect
+  :straight (speedrect :type git :host github :repo "jdtsmith/speedrect"))
 
 (use-package diredfl
   ;; dired font-lock
@@ -1107,8 +1138,6 @@ Intended as :after advice for `delete-file'."
                    crm-separator)
                   (car args))
           (cdr args)))
-  :init
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
   :bind
   (("C-a" . my/back-to-indentation-or-beginning)
    ("C-," . my/comment-or-uncomment-region-or-line)
@@ -1151,9 +1180,6 @@ Intended as :after advice for `delete-file'."
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
   (show-paren-mode 1)                   ; Show matching parens
-  (set-face-attribute 'default nil :family "Iosevka" :height 160)
-  (set-face-attribute 'fixed-pitch nil :family "Iosevka" :height 160)
-  (set-face-attribute 'variable-pitch nil :family "Iosevka Aile" :height 160)
   (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
@@ -1161,27 +1187,8 @@ Intended as :after advice for `delete-file'."
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
-  ;;(menu-bar-mode)
-  (repeat-mode)
   (desktop-read "~/.config/emacs/")
   (windmove-default-keybindings))
-
-(when (eq system-type 'gnu/linux)
-  (require 'vterm))
-
-(when (eq system-type 'darwin)
-  (use-package vterm)
-  (add-to-list 'completion-ignored-extensions ".DS_STORE")
-  (set-face-attribute 'default (selected-frame) :family "Iosevka" :height 200)
-  (set-face-attribute 'variable-pitch nil :family "Iosevka Aile" :height 200)
-  (setq visible-bell nil)
-  (setq ring-bell-function 'ignore)
-  (setq auto-save-default nil)
-  (setq frame-resize-pixelwise t)
-  (setq magit-git-executable "/usr/local/bin/git")
-  (set-frame-size (selected-frame) 2542 1412 t)
-  (add-to-list 'default-frame-alist '(undecorated . t))
-  (setq ns-use-native-fullscreen nil))
 
 (provide 'init)
 ;;; init.el ends here
