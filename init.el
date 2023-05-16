@@ -498,7 +498,7 @@
 (use-package dired-narrow
   ;; filter dired buffers
   :ensure t
-  :bind ((:map dired-mode-map
+  :bind ((:map dired-mode-map 
                ("/" . dired-narrow))))
 
 (use-package async
@@ -628,12 +628,6 @@
   :straight (:type built-in)
   :custom
   (xref-search-program 'ripgrep))
-
-(use-package elec-pair
-  ;; automatically match pairs
-  :straight nil
-  :config
-  (electric-pair-mode 1))
 
 (use-package dired
   ;; directory management
@@ -1047,15 +1041,15 @@
 		                ""))
         'face (funcall tab-bar-tab-face-function tab)))))
   :bind
-  ("C-M-s-x" . (lambda () (interactive) (tab-bar-select-tab 1)))
-  ("C-M-s-c" . (lambda () (interactive) (tab-bar-select-tab 2)))
-  ("C-M-s-d" . (lambda () (interactive) (tab-bar-select-tab 3)))
-  ("C-M-s-r" . (lambda () (interactive) (tab-bar-select-tab 4)))
-  ("C-M-s-s" . (lambda () (interactive) (tab-bar-select-tab 5)))
-  ("C-M-s-t" . (lambda () (interactive) (tab-bar-select-tab 6)))
-  ("C-M-s-w" . (lambda () (interactive) (tab-bar-select-tab 7)))
-  ("C-M-s-f" . (lambda () (interactive) (tab-bar-select-tab 8)))
-  ("C-M-s-p" . (lambda () (interactive) (tab-bar-select-tab 9)))
+  ("C-H-M-s-x" . (lambda () (interactive) (tab-bar-select-tab 1)))
+  ("C-H-M-s-c" . (lambda () (interactive) (tab-bar-select-tab 2)))
+  ("C-H-M-s-d" . (lambda () (interactive) (tab-bar-select-tab 3)))
+  ("C-H-M-s-r" . (lambda () (interactive) (tab-bar-select-tab 4)))
+  ("C-H-M-s-s" . (lambda () (interactive) (tab-bar-select-tab 5)))
+  ("C-H-M-s-t" . (lambda () (interactive) (tab-bar-select-tab 6)))
+  ("C-H-M-s-w" . (lambda () (interactive) (tab-bar-select-tab 7)))
+  ("C-H-M-s-f" . (lambda () (interactive) (tab-bar-select-tab 8)))
+  ("C-H-M-s-p" . (lambda () (interactive) (tab-bar-select-tab 9)))
   :custom
   (tab-bar-mode 1)
   (tab-bar-tab-hints t)
@@ -1180,7 +1174,6 @@ Intended as :after advice for `delete-file'."
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
   (show-paren-mode 1)                   ; Show matching parens
-  (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
