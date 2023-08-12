@@ -86,6 +86,8 @@
   (global-aggressive-indent-mode 1)
   (add-to-list 'aggressive-indent-excluded-modes 'typescript-mode))
 
+(use-package go-mode)
+
 (use-package geiser-guile
   ;; major mode for guile with repl
   :if (eq system-type 'gnu/linux)
@@ -627,6 +629,12 @@
   :custom
   (xref-search-program 'ripgrep))
 
+(use-package elec-pair
+  ;; automatically match pairs
+  :straight nil
+  :config
+  (electric-pair-mode 1))
+
 (use-package dired
   ;; directory management
   :straight (:type built-in)
@@ -883,7 +891,7 @@
      surrounded by word boundaries."
     (interactive "P")
     (reb-update-regexp)
-    (let* ((re (reb-target-binding reb-regexp))
+    (let* ((re (reb-target-value 'reb-regexp))
            (replacement (query-replace-read-to
                          re
                          (concat "Query replace"
