@@ -86,8 +86,6 @@
   (global-aggressive-indent-mode 1)
   (add-to-list 'aggressive-indent-excluded-modes 'typescript-mode))
 
-(use-package go-mode)
-
 (use-package geiser-guile
   ;; major mode for guile with repl
   :if (eq system-type 'gnu/linux)
@@ -351,24 +349,22 @@
 
 (use-package json-mode) ; major mode for json
 
+(use-package treesit-auto
+  :after tree-sitter
+  :config
+  (global-treesit-auto-mode))
+
 (use-package eglot
-  :preface
-  (defun me/eglot-shutdown-project ()
-    "Kill the LSP server for the current project if it exists."
-    (when-let ((server (eglot-current-server)))
-      (ignore-errors (eglot-shutdown server))))  
   :hook
-  (typescript-mode . eglot-ensure)
+  ((typescript-ts-mode . eglot-ensure)
+   (go-ts-mode . eglot-ensure))
   :init
   (put 'eglot-server-programs 'safe-local-variable 'listp)
   :custom
   (eglot-autoshutdown t)
-  (eglot-events-buffer-size 0)
   :config
-  ;; TODO: add this to typescript mode specific hook
-  (eglot--code-action eglot-code-action-organize-imports "source.organizeImports.ts")
-  (advice-add 'eglot--apply-workspace-edit :after #'me/project-save)
-  (advice-add 'project-kill-buffers :before #'me/eglot-shutdown-project))
+  (add-to-list 'eglot-server-programs
+               '(go-ts-mode . ("gopls"))))
 
 (use-package puni
   ;; balanced editing mode
@@ -507,46 +503,6 @@
   (autoload 'dired-async-mode "dired-async.el" nil t)
   (dired-async-mode 1))
 
-(use-package tree-sitter
-  ;; fast syntax highlighting
-  :demand
-  :hook
-  (tree-sitter-after-on . tree-sitter-hl-mode)
-  :config
-  (global-tree-sitter-mode))
-
-(use-package tree-sitter-langs
-  ;; helper package for tree-sitter
-  :after tree-sitter)
-
-(use-package typescript-mode
-  ;; major mode for ts/js
-  ;;:mode (rx "." (or "j" "t") "s" (zero-or-one "x"))
-  :demand
-  :after tree-sitter
-  :preface
-  (define-derived-mode typescriptreact-mode typescript-mode
-    "TypeScript TSX")
-  :custom
-  (typescript-indent-level 2)
-  :config
-  ;; by default, typescript-mode is mapped to the treesitter typescript parser
-  ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
-  (add-to-list 'auto-mode-alist '("\\.[jt]sx?\\'" . typescriptreact-mode))
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
-
-(use-package tsi
-  :straight (tsi :type git :host github :repo "orzechowskid/tsi.el")
-  :after tree-sitter
-  ;; define autoload definitions which when actually invoked will cause package to be loaded
-  :commands (tsi-typescript-mode tsi-json-mode tsi-css-mode)
-  :init
-  (add-hook 'typescript-mode-hook (lambda () (tree-sitter-mode 1)))
-  (add-hook 'typescript-mode-hook (lambda () (tsi-typescript-mode 1)))
-  (add-hook 'json-mode-hook (lambda () (tsi-json-mode 1)))
-  (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
-  (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
-
 (use-package highlight-parentheses
   ;; highlight all parens surrounding point
   :hook (prog-mode .  highlight-parentheses-mode))
@@ -666,13 +622,15 @@
   :custom
   (dired-omit-verbose nil)
   (dired-guess-shell-alist-user
-   '(("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\|mov\\)\\(?:\\.part\\)?\\'"
-      "! (mpv ? &>/dev/null &)")))
+   (list
+    (list "\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|ifo\\|m4v\\|wmv\\|webm\\|mov\\)\\(?:\\.part\\)?\\'"
+          "! (mpv ? &>/dev/null &)")
+    (list "\\.pdf$" "zathura")))
   :config
   ;; setting this in custom throws a dired-omit-files is undefined
   (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$")))
 
-(eval-after-load  'dired
+(eval-after-load 'dired
   '(defun dired-clean-up-after-deletion (fn)
      "My clean up after a deleted file or directory FN.
      Remove expanded subdir of deleted dir, if any."
@@ -723,11 +681,13 @@
 (use-package eldoc
   ;; Use Eldoc for elisp
   :straight nil
-  :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
+  :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode)
+  :custom
+  (eldoc-echo-area-use-multiline-p nil))
 
-(use-package eldoc-box
-  :config
-  (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
+;; (use-package eldoc-box
+;;   :config
+;;   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
 
 (use-package expand-region
   :preface
@@ -1047,15 +1007,15 @@
 		                ""))
         'face (funcall tab-bar-tab-face-function tab)))))
   :bind
-  ("C-H-M-s-x" . (lambda () (interactive) (tab-bar-select-tab 1)))
-  ("C-H-M-s-c" . (lambda () (interactive) (tab-bar-select-tab 2)))
-  ("C-H-M-s-d" . (lambda () (interactive) (tab-bar-select-tab 3)))
-  ("C-H-M-s-r" . (lambda () (interactive) (tab-bar-select-tab 4)))
-  ("C-H-M-s-s" . (lambda () (interactive) (tab-bar-select-tab 5)))
-  ("C-H-M-s-t" . (lambda () (interactive) (tab-bar-select-tab 6)))
-  ("C-H-M-s-w" . (lambda () (interactive) (tab-bar-select-tab 7)))
-  ("C-H-M-s-f" . (lambda () (interactive) (tab-bar-select-tab 8)))
-  ("C-H-M-s-p" . (lambda () (interactive) (tab-bar-select-tab 9)))
+  ("C-M-s-x" . (lambda () (interactive) (tab-bar-select-tab 1)))
+  ("C-M-s-c" . (lambda () (interactive) (tab-bar-select-tab 2)))
+  ("C-M-s-d" . (lambda () (interactive) (tab-bar-select-tab 3)))
+  ("C-M-s-r" . (lambda () (interactive) (tab-bar-select-tab 4)))
+  ("C-M-s-s" . (lambda () (interactive) (tab-bar-select-tab 5)))
+  ("C-M-s-t" . (lambda () (interactive) (tab-bar-select-tab 6)))
+  ("C-M-s-w" . (lambda () (interactive) (tab-bar-select-tab 7)))
+  ("C-M-s-f" . (lambda () (interactive) (tab-bar-select-tab 8)))
+  ("C-M-s-p" . (lambda () (interactive) (tab-bar-select-tab 9)))
   :custom
   (tab-bar-mode 1)
   (tab-bar-tab-hints t)
@@ -1172,6 +1132,8 @@ Intended as :after advice for `delete-file'."
   (use-short-answers t)                 ; y on n to confirm
   (sh-basic-offset 2)                   ; indentation 2 spaces
   (image-dired-thumb-size 256)          ; dired thumbnail size
+  (desktop-load-locked-desktop t)
+  (go-ts-mode-indent-offset 2)
   :config
   (advice-add 'rename-file :after 'my/visiting-buffer-rename)
   (advice-add 'delete-file :after 'my/visiting-buffer-kill)
