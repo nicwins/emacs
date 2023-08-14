@@ -277,12 +277,6 @@
   :hook
   (embark-collect-mode . embark-consult-preview-minor-mode))
 
-(use-package flymake-shellcheck
-  :commands flymake-shellcheck-load
-  :hook
-  ((sh-mode . flymake-shellcheck-load)
-   (sh-mode . flymake-mode)))
-
 (use-package magit
   ;; emacs interface for git
   :preface
@@ -366,14 +360,22 @@
   (add-to-list 'eglot-server-programs
                '(go-ts-mode . ("gopls"))))
 
-(use-package puni
-  ;; balanced editing mode
-  :defer t
-  :hook ((prog-mode
-          sgml-mode
-          nxml-mode
-          tex-mode
-          eval-expression-minibuffer-setup) . puni-mode))
+(use-package flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :hook
+  ((sh-mode . flymake-shellcheck-load)
+   (sh-mode . flymake-mode)))
+
+(use-package flymake-golangci
+  :straight (flymake-golangci :type git :host gitlab :repo "shackra/flymake-golangci")
+  :config
+  (add-hook 'go-ts-mode-hook
+            (lambda ()
+              (add-hook
+               'eglot-managed-mode-hook
+               (lambda ()
+                 (flymake-golangci-load)))
+              (eglot-ensure))))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
