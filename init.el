@@ -33,8 +33,8 @@
               use-package-enable-imenu-support t ; Let imenu find use-package defs
               use-package-expand-minimally t)    ; minimize expanded code
 
-(straight-use-package 'use-package)
-(eval-when-compile (require 'use-package))
+;;(straight-use-package 'use-package)
+;;(eval-when-compile (require 'use-package))
 
 ;;;; OS Defaults
 (when (eq system-type 'gnu/linux)
@@ -65,6 +65,13 @@
   :config
   (when (memq window-system '(mac ns x pgtk))
     (exec-path-from-shell-initialize)))
+
+(use-package tex
+  :straight auctex
+  :custom
+  (TeX-parse-self t)
+  (TeX-auto-save t)
+  (TeX-newline-function #'newline-and-indent))
 
 (use-package gcmh
   ;; Minimizes GC interference with user activity.
@@ -339,6 +346,8 @@
 (use-package apheleia
   ;; run code formatters, saving point
   :config
+  (setf (alist-get 'latexindent apheleia-formatters)
+        '("/gnu/store/jp88s51bk25vz217f10xqbasc3jhp50a-texlive-texmf-20230313/share/texmf-dist/scripts/latexindent/latexindent.pl" "--logfile\=/dev/null"))
   (apheleia-global-mode +1))
 
 (use-package json-mode) ; major mode for json
@@ -1136,7 +1145,9 @@ Intended as :after advice for `delete-file'."
   (image-dired-thumb-size 256)          ; dired thumbnail size
   (desktop-load-locked-desktop t)
   (go-ts-mode-indent-offset 2)
+  (compilation-scroll-output 'first-error)
   :config
+  (pixel-scroll-precision-mode)
   (advice-add 'rename-file :after 'my/visiting-buffer-rename)
   (advice-add 'delete-file :after 'my/visiting-buffer-kill)
   (delete-selection-mode)
@@ -1147,6 +1158,7 @@ Intended as :after advice for `delete-file'."
   (global-hl-line-mode 1)
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
+  (set-face-attribute 'italic nil :slant 'italic :underline 'unspecified)
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
