@@ -355,7 +355,8 @@
 (use-package treesit-auto
   :after tree-sitter
   :config
-  (global-treesit-auto-mode))
+  (global-treesit-auto-mode)
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode)))
 
 (use-package eglot
   :hook
@@ -549,8 +550,17 @@
 
 (use-package project
   ;; vc based project
+  :preface
+  (defun project-find-go-module (dir)
+    (when-let ((root (locate-dominating-file dir "go.mod")))
+      (cons 'go-module root)))
+
+  (cl-defmethod project-root ((project (head go-module)))
+    (cdr project))
   :custom
-  (vc-directory-exclusion-list (append vc-directory-exclusion-list '("node_modules" "build"))))
+  (vc-directory-exclusion-list (append vc-directory-exclusion-list '("node_modules" "build")))
+  :config
+  (add-hook 'project-find-functions #'project-find-go-module))
 
 (use-package project-x
   :straight (project-x :type git :host github :repo "karthink/project-x")
@@ -821,6 +831,7 @@
   :straight nil
   :custom
   (backup-by-copying t)
+  (make-backup-files nil)
   (delete-old-versions t)
   (kept-new-versions 6)
   (kept-old-versions 2)
