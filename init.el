@@ -87,6 +87,11 @@
 
 (use-package bug-hunter) ;; Automatically bisects init file
 
+(use-package ws-butler
+  ;; Automatic whitespace trimming
+  :hook
+  (prog-mode . ws-butler-mode))
+
 (use-package aggressive-indent
   ;; Indent as you type
   :config
@@ -359,6 +364,7 @@
   (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode)))
 
 (use-package eglot
+  ;; LSP
   :hook
   ((typescript-ts-mode . eglot-ensure)
    (go-ts-mode . eglot-ensure))
@@ -370,11 +376,9 @@
   (add-to-list 'eglot-server-programs
                '(go-ts-mode . ("gopls"))))
 
-(use-package flymake-shellcheck
-  :commands flymake-shellcheck-load
-  :hook
-  ((sh-mode . flymake-shellcheck-load)
-   (sh-mode . flymake-mode)))
+(use-package sh-script
+  ;; Built-in, enable flymake for shellcheck
+  :hook (sh-mode . flymake-mode))
 
 (use-package flymake-golangci
   :straight (flymake-golangci :type git :host gitlab :repo "shackra/flymake-golangci")
@@ -1051,7 +1055,9 @@
 
 (use-package flymake
   :straight nil
+  :bind (("C-c e" . flymake-show-project-diagnostics))
   :config
+  ;; what is this for? something with eglot
   (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake))
 
 (use-package emacs
@@ -1157,6 +1163,7 @@ Intended as :after advice for `delete-file'."
   (desktop-load-locked-desktop t)
   (go-ts-mode-indent-offset 2)
   (compilation-scroll-output 'first-error)
+  (kill-whole-line t)                   ; if on col 0, kills line instead of emptying it
   :config
   (pixel-scroll-precision-mode)
   (advice-add 'rename-file :after 'my/visiting-buffer-rename)
