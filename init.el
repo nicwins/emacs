@@ -676,6 +676,8 @@
                     (save-excursion (kill-buffer (car buf-list)))
                     (setq buf-list (cdr buf-list)))))))))
 
+(use-package dired-du)
+
 (use-package wdired
   ;; editable dired buffers
   :straight (:type built-in)
