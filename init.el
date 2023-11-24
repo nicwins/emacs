@@ -212,26 +212,26 @@
   :commands consult--directory-prompt
   :preface
   (defun consult--fd-builder (input)
-  (let ((fd-command
-         (if (eq 0 (process-file-shell-command "fdfind"))
-             "fdfind"
-           "fd")))
-    (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
-                 (`(,re . ,hl) (funcall consult--regexp-compiler
-                                        arg 'extended t)))
-      (when re
-        (cons (append
-               (list fd-command
-                     "--color=never" "--full-path"
-                     (consult--join-regexps re 'extended))
-               opts)
-              hl)))))
+    (let ((fd-command
+           (if (eq 0 (process-file-shell-command "fdfind"))
+               "fdfind"
+             "fd")))
+      (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
+                   (`(,re . ,hl) (funcall consult--regexp-compiler
+                                          arg 'extended t)))
+        (when re
+          (cons (append
+                 (list fd-command
+                       "--color=never" "--full-path"
+                       (consult--join-regexps re 'extended))
+                 opts)
+                hl)))))
 
-(defun consult-fd (&optional dir initial)
-  (interactive "P")
-  (pcase-let* ((`(,prompt ,paths ,dir) (consult--directory-prompt "Fd" dir))
-               (default-directory dir))
-    (find-file (consult--find prompt #'consult--fd-builder initial))))
+  (defun consult-fd (&optional dir initial)
+    (interactive "P")
+    (pcase-let* ((`(,prompt ,paths ,dir) (consult--directory-prompt "Fd" dir))
+                 (default-directory dir))
+      (find-file (consult--find prompt #'consult--fd-builder initial))))
   :bind
   (("M-s" . consult-line)
    ("M-y" . consult-yank-pop)
@@ -653,7 +653,7 @@
     (list "\\.pdf$" "zathura")))
   :config
   ;; setting this in custom throws a dired-omit-files is undefined
-  (setq dired-omit-files (concat dired-omit-files "\\|^.DS_STORE$")))
+  (setq dired-omit-extensions (list ".DS_STORE")))
 
 (eval-after-load 'dired
   '(defun dired-clean-up-after-deletion (fn)
@@ -739,10 +739,10 @@
   (defun er-custom/expand-region (arg)
     "Increase selected region by semantic units.
 
-    With prefix argument expands the region that many times.
-    If prefix argument is negative calls `er/contract-region'.
-    If prefix argument is 0 it resets point and mark to their state
-    before calling `er/expand-region' for the first time ARG."
+     With prefix argument expands the region that many times.
+     If prefix argument is negative calls `er/contract-region'.
+     If prefix argument is 0 it resets point and mark to their state
+     before calling `er/expand-region' for the first time ARG."
     (interactive "p")
     (if (< arg 1)
         (er/contract-region (- arg))
@@ -1072,7 +1072,7 @@
 
   (defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
     "Rename buffer visiting FILE to NEWNAME.
-       Intended as :after advice for `rename-file'."
+     Intended as :after advice for `rename-file'."
     (when (called-interactively-p 'any)
       (when-let ((buffer (get-file-buffer file)))
         (with-current-buffer buffer
