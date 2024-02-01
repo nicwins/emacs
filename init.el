@@ -1,6 +1,6 @@
 ;; init --- Initial setup -*- lexical-binding: t -*-
 
-;; Copyright (C) 2011-2023 Nicolas Winslow
+;; Copyright (C) 2011-2024 Nicolas Winslow
 
 ;; Author: Nicolas Winslow
 
@@ -1141,6 +1141,7 @@ Intended as :after advice for `delete-file'."
   ((text-mode . visual-line-mode)
    (minibuffer-setup . cursor-intangible-mode))
   :custom
+  (use-package-compute-statistics t)
   (inhibit-startup-message t)           ; no splash screen
   (visible-bell t)                      ; be quiet
   (indicate-empty-lines t)              ; show lines at the end of buffer
@@ -1166,6 +1167,7 @@ Intended as :after advice for `delete-file'."
   (go-ts-mode-indent-offset 2)
   (compilation-scroll-output 'first-error)
   (kill-whole-line t)                   ; if on col 0, kills line instead of emptying it
+  (tramp-connection-timeout 5)
   :config
   (pixel-scroll-precision-mode)
   (advice-add 'rename-file :after 'my/visiting-buffer-rename)
@@ -1179,6 +1181,7 @@ Intended as :after advice for `delete-file'."
   (set-face-background 'cursor "red")
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (set-face-attribute 'italic nil :slant 'italic :underline 'unspecified)
+  (set-frame-parameter nil 'alpha-background 95)
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
