@@ -20,11 +20,6 @@
 ;; Disable site-wide configs
 (setq site-run-file nil)
 
-;; no menu bars
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-
 (defvar better-gc-cons-threshold 67108864 ; 64mb
   "The default value to use for `gc-cons-threshold'.
 If you experience freezing, decrease this.

@@ -361,35 +361,20 @@
   :after tree-sitter
   :config
   (global-treesit-auto-mode)
-  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode)))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode)))
 
 (use-package eglot
   ;; LSP
   :hook
-  ((typescript-ts-mode . eglot-ensure)
-   (go-ts-mode . eglot-ensure))
+  ((typescript-ts-mode . eglot-ensure))
   :init
   (put 'eglot-server-programs 'safe-local-variable 'listp)
   :custom
-  (eglot-autoshutdown t)
-  :config
-  (add-to-list 'eglot-server-programs
-               '(go-ts-mode . ("gopls"))))
+  (eglot-autoshutdown t))
 
 (use-package sh-script
   ;; Built-in, enable flymake for shellcheck
   :hook (sh-mode . flymake-mode))
-
-(use-package flymake-golangci
-  :straight (flymake-golangci :type git :host gitlab :repo "shackra/flymake-golangci")
-  :config
-  (add-hook 'go-ts-mode-hook
-            (lambda ()
-              (add-hook
-               'eglot-managed-mode-hook
-               (lambda ()
-                 (flymake-golangci-load)))
-              (eglot-ensure))))
 
 (use-package undo-tree
   ;; make undo a tree rather than line
@@ -551,20 +536,6 @@
   (which-key-idle-delay 1)
   :bind
   ("C-c ?" . which-key-show-top-level))
-
-(use-package project
-  ;; vc based project
-  :preface
-  (defun project-find-go-module (dir)
-    (when-let ((root (locate-dominating-file dir "go.mod")))
-      (cons 'go-module root)))
-
-  (cl-defmethod project-root ((project (head go-module)))
-    (cdr project))
-  :custom
-  (vc-directory-exclusion-list (append vc-directory-exclusion-list '("node_modules" "build")))
-  :config
-  (add-hook 'project-find-functions #'project-find-go-module))
 
 (use-package project-x
   :straight (project-x :type git :host github :repo "karthink/project-x")
@@ -1164,11 +1135,11 @@ Intended as :after advice for `delete-file'."
   (sh-basic-offset 2)                   ; indentation 2 spaces
   (image-dired-thumb-size 256)          ; dired thumbnail size
   (desktop-load-locked-desktop t)
-  (go-ts-mode-indent-offset 2)
   (compilation-scroll-output 'first-error)
   (kill-whole-line t)                   ; if on col 0, kills line instead of emptying it
   (tramp-connection-timeout 5)
   :config
+  (tool-bar-mode -1)
   (pixel-scroll-precision-mode)
   (advice-add 'rename-file :after 'my/visiting-buffer-rename)
   (advice-add 'delete-file :after 'my/visiting-buffer-kill)
