@@ -66,16 +66,16 @@
   (when (memq window-system '(mac ns x pgtk))
     (exec-path-from-shell-initialize)))
 
+(use-package gcmh
+  ;; Minimizes GC interference with user activity.
+  :config (gcmh-mode 1))
+
 (use-package tex
   :straight auctex
   :custom
   (TeX-parse-self t)
   (TeX-auto-save t)
   (TeX-newline-function #'newline-and-indent))
-
-(use-package gcmh
-  ;; Minimizes GC interference with user activity.
-  :config (gcmh-mode 1))
 
 (use-package no-littering
   ;; cleanup all the clutter from varios modes
@@ -1138,6 +1138,7 @@ Intended as :after advice for `delete-file'."
   (compilation-scroll-output 'first-error)
   (kill-whole-line t)                   ; if on col 0, kills line instead of emptying it
   (tramp-connection-timeout 5)
+  (proced-filter 'all)
   :config
   (tool-bar-mode -1)
   (pixel-scroll-precision-mode)

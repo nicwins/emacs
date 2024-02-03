@@ -26,10 +26,10 @@ If you experience freezing, decrease this.
 If you experience stuttering, increase this.")
 
 (add-hook 'emacs-startup-hook
-	  (lambda ()
-	    (setq gc-cons-threshold better-gc-cons-threshold)
-	    (setq file-name-handler-alist file-name-handler-alist-original)
-	    (makunbound 'file-name-handler-alist-original)))
+	        (lambda ()
+	          (setq gc-cons-threshold better-gc-cons-threshold)
+	          (setq file-name-handler-alist file-name-handler-alist-original)
+	          (makunbound 'file-name-handler-alist-original)))
 
 (provide 'early-init)
 ;;; early-init.el ends here
