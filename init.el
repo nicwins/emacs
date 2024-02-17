@@ -366,11 +366,20 @@
 (use-package eglot
   ;; LSP
   :hook
-  ((typescript-ts-mode . eglot-ensure))
-  :init
-  (put 'eglot-server-programs 'safe-local-variable 'listp)
+  (((typescript-ts-mode tsx-ts-mode) . eglot-ensure))
   :custom
-  (eglot-autoshutdown t))
+  (eglot-autoshutdown t)
+  (eglot-events-buffer-size 0)
+  (eglot-extend-to-xref nil)
+  (eglot-ignored-server-capabilities
+   '(:hoverProvider
+     :documentHighlightProvider
+     :documentFormattingProvider
+     :documentRangeFormattingProvider
+     :documentOnTypeFormattingProvider
+     :colorProvider
+     :foldingRangeProvider))
+  (eglot-stay-out-of '(yasnippet)))
 
 (use-package sh-script
   ;; Built-in, enable flymake for shellcheck
@@ -1154,11 +1163,11 @@ Intended as :after advice for `delete-file'."
   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
   (set-face-attribute 'italic nil :slant 'italic :underline 'unspecified)
   (set-frame-parameter nil 'alpha-background 95)
+  (windmove-default-keybindings)
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
-  (desktop-read "~/.config/emacs/")
-  (windmove-default-keybindings))
+  (desktop-read "~/.config/emacs/"))
 
 (provide 'init)
 ;;; init.el ends here
