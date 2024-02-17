@@ -1044,6 +1044,20 @@
   ;; what is this for? something with eglot
   (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake))
 
+(use-package flymake-eslint
+  :functions flymake-eslint-enable
+  :preface
+  (defun my/flymake-eslint-enable-maybe ()
+    "Enable `flymake-eslint' based on the project configuration.
+Search for the project ESLint configuration to determine whether the buffer
+should be checked."
+    (interactive)
+    (when-let* ((root (locate-dominating-file (buffer-file-name) "package.json"))
+                (rc (locate-file ".eslintrc" (list root) '(".js" ".json"))))
+      (make-local-variable 'exec-path)
+      (push (file-name-concat root "node_modules" ".bin") exec-path)
+      (flymake-eslint-enable))))
+
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
   :straight nil
