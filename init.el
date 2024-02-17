@@ -33,9 +33,6 @@
               use-package-enable-imenu-support t ; Let imenu find use-package defs
               use-package-expand-minimally t)    ; minimize expanded code
 
-;;(straight-use-package 'use-package)
-;;(eval-when-compile (require 'use-package))
-
 ;;;; OS Defaults
 (when (eq system-type 'gnu/linux)
   (require 'vterm)
@@ -1145,8 +1142,6 @@ Intended as :after advice for `delete-file'."
   (indent-tabs-mode nil)                ; use spaces instead of tabs
   (tab-width 2)
   (cursor-type '(bar . 2))              ; no fat cursor
-  (js-indent-level 2)                   ; js settings needed for rjsx
-  (js-switch-indent-offset 2)           ; more js settings
   (css-indent-offset 2)
   (fill-column 80)                      ; default fill column
   (minibuffer-prompt-properties
@@ -1159,11 +1154,11 @@ Intended as :after advice for `delete-file'."
   (use-short-answers t)                 ; y on n to confirm
   (sh-basic-offset 2)                   ; indentation 2 spaces
   (image-dired-thumb-size 256)          ; dired thumbnail size
-  (desktop-load-locked-desktop t)
+  (desktop-load-locked-desktop t)       ; load desktop even if starting from crash
   (compilation-scroll-output 'first-error)
   (kill-whole-line t)                   ; if on col 0, kills line instead of emptying it
   (tramp-connection-timeout 5)
-  (proced-filter 'all)
+  (proced-filter 'all)                  ; show processes from all users
   :config
   (tool-bar-mode -1)
   (pixel-scroll-precision-mode)
