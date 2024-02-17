@@ -70,6 +70,29 @@
   ;; Minimizes GC interference with user activity.
   :config (gcmh-mode 1))
 
+
+;; needs to be early for straight.el
+(use-package org
+  ;; notes and todos, executable blocks
+  :custom
+  ;; Edit settings
+  (org-auto-align-tags nil)
+  (org-tags-column 0)
+  (org-catch-invisible-edits 'show-and-error)
+  (org-special-ctrl-a/e t)
+  (org-insert-heading-respect-content t)
+  (org-startup-indented t)
+
+  ;; Org styling, hide markup etc.
+  (org-hide-emphasis-markers t)
+  (org-pretty-entities t)
+  (org-ellipsis "…")
+  :config
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right))
+
 (use-package tex
   :straight auctex
   :custom
@@ -399,27 +422,6 @@
 (use-package yaml-mode
   ;; formatting for yml files
   :mode "\\.yml\\'")
-
-(use-package org
-  ;; notes and todos, executable blocks
-  :custom
-  ;; Edit settings
-  (org-auto-align-tags nil)
-  (org-tags-column 0)
-  (org-catch-invisible-edits 'show-and-error)
-  (org-special-ctrl-a/e t)
-  (org-insert-heading-respect-content t)
-  (org-startup-indented t)
-
-  ;; Org styling, hide markup etc.
-  (org-hide-emphasis-markers t)
-  (org-pretty-entities t)
-  (org-ellipsis "…")
-  :config
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right))
 
 (use-package org-modern
   ;; theme/styling for org
