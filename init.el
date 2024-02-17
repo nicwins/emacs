@@ -1036,10 +1036,7 @@
 
 (use-package flymake
   :straight nil
-  :bind (("C-c e" . flymake-show-project-diagnostics))
-  :config
-  ;; what is this for? something with eglot
-  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake))
+  :bind (("C-c e" . flymake-show-project-diagnostics)))
 
 (use-package flymake-eslint
   :functions flymake-eslint-enable
