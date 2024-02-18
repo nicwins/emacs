@@ -378,15 +378,17 @@
 (use-package json-mode) ; major mode for json
 
 (use-package treesit-auto
-  :after tree-sitter
+  :custom
+  (treesit-auto-install 'prompt)
   :config
-  (global-treesit-auto-mode)
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode)))
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (use-package eglot
   ;; LSP
   :hook
-  (((typescript-ts-mode tsx-ts-mode) . eglot-ensure))
+  ((typescript-ts-mode tsx-ts-mode) . eglot-ensure)
+  (eglot-managed-mode . my/flymake-eslint-enable-maybe)
   :custom
   (eglot-autoshutdown t)
   (eglot-events-buffer-size 0)
