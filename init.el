@@ -373,6 +373,8 @@
   :config
   (setf (alist-get 'latexindent apheleia-formatters)
         '("/gnu/store/jp88s51bk25vz217f10xqbasc3jhp50a-texlive-texmf-20230313/share/texmf-dist/scripts/latexindent/latexindent.pl" "--logfile\=/dev/null"))
+  (setf (alist-get 'prettier apheleia-formatters)
+        '(npx "prettier" "--print-width" "80" file))
   (apheleia-global-mode +1))
 
 (use-package json-mode) ; major mode for json
