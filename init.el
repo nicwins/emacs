@@ -55,6 +55,15 @@
   (setq ns-use-native-fullscreen nil))
 
 ;;;; Package Configuration
+;; early to catch litter before it is created
+(use-package no-littering
+  ;; cleanup all the clutter from varios modes
+  ;; places configs in /etc and data in /var
+  :custom
+  (auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  (custom-file (no-littering-expand-etc-file-name "custom.el")))
+
 (use-package exec-path-from-shell
   ;; Load path from user shell
   :custom
@@ -66,7 +75,6 @@
 (use-package gcmh
   ;; Minimizes GC interference with user activity.
   :config (gcmh-mode 1))
-
 
 ;; needs to be early for straight.el
 (use-package org
@@ -96,14 +104,6 @@
   (TeX-parse-self t)
   (TeX-auto-save t)
   (TeX-newline-function #'newline-and-indent))
-
-(use-package no-littering
-  ;; cleanup all the clutter from varios modes
-  ;; places configs in /etc and data in /var
-  :custom
-  (auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-  (custom-file (no-littering-expand-etc-file-name "custom.el")))
 
 (use-package bug-hunter) ;; Automatically bisects init file
 
@@ -151,7 +151,9 @@
   :load-path "~/.config/emacs/straight/repos/vertico/extensions/"
   :bind
   (:map vertico-map
-        ("?" . minibuffer-completion-help)))
+        ("?" . minibuffer-completion-help))
+  :config
+  (savehist-mode 1))
 
 (use-package vertico-directory
   ;; easy bindings for navigating dirs
