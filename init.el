@@ -191,17 +191,6 @@
   :config
   (vertico-multiform-mode))
 
-(use-package orderless
-  ;; narrowing and filtering for selections
-  :custom
-  (completion-styles '(orderless))
-  (completion-category-defaults nil)
-  (orderless-component-separator "*")
-  (completion-category-overrides '((file (styles partial-completion))))
-  :config
-  (add-hook 'minibuffer-setup-hook (lambda () (setq-local orderless-component-separator " ")))
-  (savehist-mode))
-
 (use-package corfu
   ;; autocomplete package
   :init
@@ -211,7 +200,8 @@
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous))
+        ([backtab] . corfu-previous)
+        ("RET" . nil))
   :custom
   (tab-always-indent 'complete)
   (corfu-auto t)
@@ -224,6 +214,32 @@
             (lambda ()
               (setq-local corfu-auto nil)
               (corfu-mode))))
+
+(use-package orderless
+  :after corfu
+  ;; narrowing and filtering for selections
+  :custom
+  ;; from docs on orderless
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion))))
+  ;; TAB-and-Go customizations
+  (corfu-cycle t)           ;; Enable cycling for `corfu-next/previous'
+  (corfu-preselect 'prompt) ;; Always preselect the prompt
+  :config
+  ;; enable sort by recent history
+  (corfu-history-mode 1)
+  (savehist-mode 1)
+  (add-to-list 'savehist-additional-variables 'corfu-history)
+  ;; add a popup with documentation next to suggestions
+  (corfu-popupinfo-mode 1))
+
+(use-package cape
+  ;; add and merge completion at point functions
+  :after corfu
+  :init
+  ;; put dabbrev first in list of completions
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev))
 
 (use-package rg) ; ripgrep for consult
 
