@@ -93,6 +93,10 @@
   (org-pretty-entities t)
   (org-ellipsis "…")
   :config
+  ;; Activate SQL source code blocks
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((sql . t)))
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
@@ -1170,12 +1174,14 @@ Intended as :after advice for `delete-file'."
   (warning-suppress-types '((comp)))
   (use-short-answers t)                 ; y on n to confirm
   (sh-basic-offset 2)                   ; indentation 2 spaces
+  (js-indent-level 2)                   ; indentation 2 spaces in js derived modes
   (image-dired-thumb-size 256)          ; dired thumbnail size
   (desktop-load-locked-desktop t)       ; load desktop even if starting from crash
   (compilation-scroll-output 'first-error)
   (kill-whole-line t)                   ; if on col 0, kills line instead of emptying it
   (tramp-connection-timeout 5)
   (proced-filter 'all)                  ; show processes from all users
+  (backward-delete-char-untabify-method 'all) ; delete whole line when only whitespace
   :config
   (tool-bar-mode -1)
   (pixel-scroll-precision-mode)
