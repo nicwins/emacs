@@ -522,6 +522,14 @@
   :config
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
+(use-package verb
+  :after org
+  :config
+  (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((verb . t))))
+
 (use-package mixed-pitch
   ;; use both pitch types in one buffer
   :hook (text-mode . mixed-pitch-mode))
