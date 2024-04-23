@@ -522,14 +522,6 @@
   :config
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
-(use-package ob-http
-  ;; curl for org-babel
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (http . t))))
-
 (use-package mixed-pitch
   ;; use both pitch types in one buffer
   :hook (text-mode . mixed-pitch-mode))
