@@ -252,6 +252,10 @@
   ;; enhanced selection ui
   :commands consult--directory-prompt
   :preface
+  (defun consult-line-symbol-at-point ()
+    (interactive)
+    (consult-line (thing-at-point 'symbol)))
+
   (defun consult--fd-builder (input)
     (let ((fd-command
            (if (eq 0 (process-file-shell-command "fdfind"))
@@ -274,7 +278,8 @@
                  (default-directory dir))
       (find-file (consult--find prompt #'consult--fd-builder initial))))
   :bind
-  (("M-s" . consult-line)
+  (("M-s" . consult-line-symbol-at-point)
+   ("C-s" . consult-line-symbol-at-point)
    ("M-y" . consult-yank-pop)
    ("M-g g" . consult-goto-line)
    ("M-g M-g" . consult-goto-line)
@@ -295,7 +300,7 @@
    ([f2] . consult-ripgrep)
    :map isearch-mode-map
    ("M-e" . consult-isearch)
-   ("M-s l" . consult-line))
+   ("M-s l" . consult-line-symbol-at-point))
   :custom
   (xref-show-xrefs-function #'consult-xref)
   (xref-show-definitions-function #'consult-xref))
@@ -437,11 +442,29 @@
     :load-path ("~/src/emacs-combobulate/combobulate")))
 
 (use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
   :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
 (use-package eglot
   ;; LSP
+  :preface
+  (defun eglot-rename (newname)
+    "Rename the current symbol to NEWNAME."
+    (interactive
+     (list (read-from-minibuffer
+            (format "Rename `%s' to: " (or (thing-at-point 'symbol t)
+                                           "unknown symbol"))
+            (or (thing-at-point 'symbol t) "") nil nil nil
+            (symbol-name (symbol-at-point)))))
+    (eglot--server-capable-or-lose :renameProvider)
+    (eglot--apply-workspace-edit
+     (jsonrpc-request (eglot--current-server-or-lose)
+                      :textDocument/rename `(,@(eglot--TextDocumentPositionParams)
+                                             :newName ,newname))
+     current-prefix-arg))
   :hook
   ((typescript-ts-mode tsx-ts-mode) . eglot-ensure)
   (eglot-managed-mode . my/flymake-eslint-enable-maybe)
@@ -457,23 +480,7 @@
      :documentOnTypeFormattingProvider
      :colorProvider
      :foldingRangeProvider))
-  (eglot-stay-out-of '(yasnippet))
-  :config
-  ;; inserts the symbol at point when renaming
-  (defun eglot-rename (newname)
-    "Rename the current symbol to NEWNAME."
-    (interactive
-     (list (read-from-minibuffer
-            (format "Rename `%s' to: " (or (thing-at-point 'symbol t)
-                                           "unknown symbol"))
-            (or (thing-at-point 'symbol t) "") nil nil nil
-            (symbol-name (symbol-at-point)))))
-    (eglot--server-capable-or-lose :renameProvider)
-    (eglot--apply-workspace-edit
-     (jsonrpc-request (eglot--current-server-or-lose)
-                      :textDocument/rename `(,@(eglot--TextDocumentPositionParams)
-                                             :newName ,newname))
-     current-prefix-arg)))
+  (eglot-stay-out-of '(yasnippet)))
 
 (use-package sh-script
   ;; Built-in, enable flymake for shellcheck
@@ -805,6 +812,32 @@
 
       "Set workspace buffer list for consult-buffer.")
     (add-to-list 'consult-buffer-sources 'consult--source-workspace)))
+
+(use-package simple
+  :straight nil
+  :preface
+  (defun push-mark-no-activate ()
+    "Pushes `point' to `mark-ring' and does not activate the region
+   Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
+    (interactive)
+    (push-mark (point) t nil)
+    (message "Pushed mark to ring"))
+
+  (defun jump-to-mark ()
+    "Jumps to the local mark, respecting the `mark-ring' order.
+  This is the same as using \\[set-mark-command] with the prefix argument."
+    (interactive)
+    (set-mark-command 1))
+
+  (defun exchange-point-and-mark-no-activate ()
+    "Identical to \\[exchange-point-and-mark] but will not activate the region."
+    (interactive)
+    (exchange-point-and-mark)
+    (deactivate-mark nil))
+  :bind
+  (("C-`" . push-mark-no-activate)
+   ("M-`" . jump-to-mark)
+   ("C-x C-x" . exchange-point-and-mark-no-activate)))
 
 (use-package autorevert
   ;; Auto refresh buffers
@@ -1173,6 +1206,7 @@ Intended as :after advice for `delete-file'."
   (tramp-connection-timeout 5)
   (proced-filter 'all)                  ; show processes from all users
   (backward-delete-char-untabify-method 'all) ; delete whole line when only whitespace
+  (next-line-add-newlines t)            ; add newline on C-n if point is at end of buffer.
   (enable-local-variables :safe)
   :config
   (tool-bar-mode -1)
