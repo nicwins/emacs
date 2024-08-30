@@ -342,28 +342,33 @@
           (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple))
       (apply args)))
 
+  ;; these three functions set magit to fullscreen on a per-tab basis, and restore when exited.
   (defun magit-status--around (orig-magit-status &rest args)
     "Set magit status to fullscreen."
-    (window-configuration-to-register :my/magit-fullscreen)
+    (window-configuration-to-register
+     (or
+      (intern-soft (concat ":my/magit-fullscreen-tab-" (number-to-string (tab-bar--current-tab-index))))
+      (intern (concat ":my/magit-fullscreen-tab-" (number-to-string (tab-bar--current-tab-index))))))
     (apply orig-magit-status args)
     (delete-other-windows))
 
   (defun magit-log-buffer-file--before (orig-fun &rest args)
     "Store the window configuration before logging."
-    (setq my-magit-log-buffer-file-registered t)
-    (window-configuration-to-register :my/magit-fullscreen)
+    (window-configuration-to-register
+     (or
+      (intern-soft (concat ":my/magit-fullscreen-tab-" (number-to-string (tab-bar--current-tab-index))))
+      (intern (concat ":my/magit-fullscreen-tab-" (number-to-string (tab-bar--current-tab-index))))))
     (apply orig-fun args))
 
   (defun magit-mode-bury-buffer--around (orig-magit-mode-bury-buffer &rest args)
     "Restore previous window configuration if we are burying magit-status."
     (if (or
          (equal (symbol-name major-mode) "magit-status-mode")
-         (and my-magit-log-buffer-file-registered
+         (and (intern-soft (concat ":my/magit-fullscreen-tab-" (number-to-string (tab-bar--current-tab-index))))
               (equal (symbol-name major-mode) "magit-log-mode")))
         (progn
-          (setq my-magit-log-buffer-file-registered nil)
           (apply orig-magit-mode-bury-buffer args)
-          (jump-to-register :my/magit-fullscreen))
+          (jump-to-register (intern-soft (concat ":my/magit-fullscreen-tab-" (number-to-string (tab-bar--current-tab-index))))))
       (apply orig-magit-mode-bury-buffer args)
       (delete-other-windows)))
 
@@ -454,6 +459,7 @@
      :foldingRangeProvider))
   (eglot-stay-out-of '(yasnippet))
   :config
+  ;; inserts the symbol at point when renaming
   (defun eglot-rename (newname)
     "Rename the current symbol to NEWNAME."
     (interactive
