@@ -403,45 +403,7 @@
 (use-package treesit
   :straight nil
   :mode (("\\.tsx\\'" . tsx-ts-mode))
-  :preface
-  (defun mp-setup-install-grammars ()
-    "Install Tree-sitter grammars if they are absent."
-    (interactive)
-    (dolist (grammar
-             '((css . ("https://github.com/tree-sitter/tree-sitter-css" "v0.20.0"))
-               (html . ("https://github.com/tree-sitter/tree-sitter-html" "v0.20.1"))
-               (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.20.1" "src"))
-               (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
-               (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.20.4"))
-               (toml "https://github.com/tree-sitter/tree-sitter-toml")
-               (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
-               (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
-               (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "v0.5.0"))))
-      (add-to-list 'treesit-language-source-alist grammar)
-      ;; Only install `grammar' if we don't already have it
-      ;; installed. However, if you want to *update* a grammar then
-      ;; this obviously prevents that from happening.
-      (unless (treesit-language-available-p (car grammar))
-        (treesit-install-language-grammar (car grammar)))))
-
-  ;; Optional, but recommended. Tree-sitter enabled major modes are
-  ;; distinct from their ordinary counterparts.
-  ;;
-  ;; You can remap major modes with `major-mode-remap-alist'. Note
-  ;; that this does *not* extend to hooks! Make sure you migrate them
-  ;; also
-  (dolist (mapping
-           '((python-mode . python-ts-mode)
-             (css-mode . css-ts-mode)
-             (typescript-mode . typescript-ts-mode)
-             (js2-mode . js-ts-mode)
-             (bash-mode . bash-ts-mode)
-             (css-mode . css-ts-mode)
-             (json-mode . json-ts-mode)
-             (js-json-mode . json-ts-mode)))
-    (add-to-list 'major-mode-remap-alist mapping))
   :config
-  (mp-setup-install-grammars)
   ;; Do not forget to customize Combobulate to your liking:
   ;;
   ;;  M-x customize-group RET combobulate RET
@@ -469,6 +431,10 @@
     ;; code.
     :load-path ("~/src/emacs-combobulate/combobulate")))
 
+(use-package treesit-auto
+  :config
+  (global-treesit-auto-mode))
+
 (use-package eglot
   ;; LSP
   :hook
@@ -486,7 +452,22 @@
      :documentOnTypeFormattingProvider
      :colorProvider
      :foldingRangeProvider))
-  (eglot-stay-out-of '(yasnippet)))
+  (eglot-stay-out-of '(yasnippet))
+  :config
+  (defun eglot-rename (newname)
+    "Rename the current symbol to NEWNAME."
+    (interactive
+     (list (read-from-minibuffer
+            (format "Rename `%s' to: " (or (thing-at-point 'symbol t)
+                                           "unknown symbol"))
+            (or (thing-at-point 'symbol t) "") nil nil nil
+            (symbol-name (symbol-at-point)))))
+    (eglot--server-capable-or-lose :renameProvider)
+    (eglot--apply-workspace-edit
+     (jsonrpc-request (eglot--current-server-or-lose)
+                      :textDocument/rename `(,@(eglot--TextDocumentPositionParams)
+                                             :newName ,newname))
+     current-prefix-arg)))
 
 (use-package sh-script
   ;; Built-in, enable flymake for shellcheck
@@ -512,7 +493,6 @@
   :hook (org-agenda-finalize . org-modern-agenda)
   :custom
   (org-modern-hide-stars nil)		; adds extra indentation
-  (org-modern-table nil)
   (org-modern-list
    '(;; (?- . "-")
      (?* . "•")
@@ -548,6 +528,11 @@
   :config
   (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets")
   (yas-reload-all))
+
+(use-package auth-source-pass
+  :straight (:type built-in)
+  :config
+  (auth-source-pass-enable))
 
 (use-package password-store
   ;; front end for `pass'
@@ -1182,6 +1167,7 @@ Intended as :after advice for `delete-file'."
   (tramp-connection-timeout 5)
   (proced-filter 'all)                  ; show processes from all users
   (backward-delete-char-untabify-method 'all) ; delete whole line when only whitespace
+  (enable-local-variables :safe)
   :config
   (tool-bar-mode -1)
   (pixel-scroll-precision-mode)
