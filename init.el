@@ -122,21 +122,6 @@
   (global-aggressive-indent-mode 1)
   (add-to-list 'aggressive-indent-excluded-modes 'typescript-mode))
 
-(use-package geiser-guile
-  ;; major mode for guile with repl
-  :if (eq system-type 'gnu/linux)
-  :hook (scheme-mode . guix-devel-mode)
-  :custom
-  (geiser-mode-start-repl-p t)
-  :config
-  (add-to-list 'geiser-guile-load-path "~/src/guix"))
-
-(use-package guix
-  ;; front end for guix commands
-  ;; requires guix install guix!
-  :after (geiser-guile)
-  :if (eq system-type 'gnu/linux))
-
 (use-package doom-modeline
   ;; fancy modeline
   :custom
