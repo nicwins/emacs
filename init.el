@@ -159,6 +159,19 @@
   :config
   (savehist-mode 1))
 
+(use-package calc
+  :defer t)
+
+(use-package casual-calc
+  :straight (casual-calc :type git :flavor melpa :host github :repo "kickingvegas/casual-calc")
+  :bind (:map
+         calc-mode-map
+         ("C-o" . casual-calc-tmenu)
+         :map
+         calc-alg-map
+         ("C-o" . casual-calc-tmenu))
+  :after (calc))
+
 (use-package vertico-directory
   ;; easy bindings for navigating dirs
   :straight nil
