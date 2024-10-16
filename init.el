@@ -250,10 +250,6 @@
   ;; enhanced selection ui
   :commands consult--directory-prompt
   :preface
-  (defun consult-line-symbol-at-point ()
-    (interactive)
-    (consult-line (thing-at-point 'symbol)))
-
   (defun consult--fd-builder (input)
     (let ((fd-command
            (if (eq 0 (process-file-shell-command "fdfind"))
@@ -276,8 +272,8 @@
                  (default-directory dir))
       (find-file (consult--find prompt #'consult--fd-builder initial))))
   :bind
-  (("M-s" . consult-line-symbol-at-point)
-   ("C-s" . consult-line-symbol-at-point)
+  (("M-s" . consult-line)
+   ("C-s" . consult-line)
    ("M-y" . consult-yank-pop)
    ("M-g g" . consult-goto-line)
    ("M-g M-g" . consult-goto-line)
