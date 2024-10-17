@@ -13,6 +13,7 @@ TODO.org
 project-window-list
 tabsession.el
 *.dylib
+.lsp-session
 
 ############
 ## Windows

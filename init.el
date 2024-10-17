@@ -69,6 +69,7 @@
   :custom
   (exec-path-from-shell-arguments nil)
   :config
+  (add-to-list 'exec-path-from-shell-variables "LSP_USE_PLISTS")
   (when (memq window-system '(mac ns x pgtk))
     (exec-path-from-shell-initialize)))
 
@@ -442,44 +443,6 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
-(use-package eglot
-  ;; LSP
-  :preface
-  (defun eglot-rename (newname)
-    "Rename the current symbol to NEWNAME."
-    (interactive
-     (list (read-from-minibuffer
-            (format "Rename `%s' to: " (or (thing-at-point 'symbol t)
-                                           "unknown symbol"))
-            (or (thing-at-point 'symbol t) "") nil nil nil
-            (symbol-name (symbol-at-point)))))
-    (eglot--server-capable-or-lose :renameProvider)
-    (eglot--apply-workspace-edit
-     (jsonrpc-request (eglot--current-server-or-lose)
-                      :textDocument/rename `(,@(eglot--TextDocumentPositionParams)
-                                             :newName ,newname))
-     current-prefix-arg))
-  :hook
-  ((typescript-ts-mode tsx-ts-mode) . eglot-ensure)
-  (eglot-managed-mode . my/flymake-eslint-enable-maybe)
-  :custom
-  (eglot-autoshutdown t)
-  (eglot-events-buffer-size 0)
-  (eglot-extend-to-xref nil)
-  (eglot-ignored-server-capabilities
-   '(:hoverProvider
-     :documentHighlightProvider
-     :documentFormattingProvider
-     :documentRangeFormattingProvider
-     :documentOnTypeFormattingProvider
-     :colorProvider
-     :foldingRangeProvider))
-  (eglot-stay-out-of '(yasnippet)))
-
-(use-package sh-script
-  ;; Built-in, enable flymake for shellcheck
-  :hook (sh-mode . flymake-mode))
-
 (use-package undo-tree
   ;; make undo a tree rather than line
   :custom
@@ -528,13 +491,6 @@
 (use-package visual-fill-column
   ;; Line wrap at the fill column, not buffer end
   :hook (visual-line-mode . visual-fill-column-mode))
-
-(use-package yasnippet
-  ;; template system for emacs
-  :hook (prog-mode . yas-minor-mode)
-  :config
-  (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets")
-  (yas-reload-all))
 
 (use-package auth-source-pass
   :straight (:type built-in)
@@ -1074,25 +1030,106 @@
                     tab-bar-format-tabs
                     tab-bar-separator)))
 
-(use-package flymake
-  :straight nil
-  :bind (:map flymake-mode-map
-              ("M-n" . flymake-goto-next-error)
-              ("M-p" . flymake-goto-prev-error)))
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode)
+  :bind (:map flycheck-mode-map
+              ("M-n" . flycheck-next-error) ; optional but recommended error navigation
+              ("M-p" . flycheck-previous-error)))
 
-(use-package flymake-eslint
-  :functions flymake-eslint-enable
-  :preface
-  (defun my/flymake-eslint-enable-maybe ()
-    "Enable `flymake-eslint' based on the project configuration.
-Search for the project ESLint configuration to determine whether the buffer
-should be checked."
-    (interactive)
-    (when-let* ((root (locate-dominating-file (buffer-file-name) "package.json"))
-                (rc (locate-file ".eslintrc" (list root) '(".js" ".json"))))
-      (make-local-variable 'exec-path)
-      (push (file-name-concat root "node_modules" ".bin") exec-path)
-      (flymake-eslint-enable))))
+(use-package lsp-mode
+  :diminish "LSP"
+  :ensure t
+  :hook ((lsp-mode . lsp-diagnostics-mode)
+         (lsp-mode . lsp-enable-which-key-integration)
+         ((tsx-ts-mode
+           typescript-ts-mode
+           js-ts-mode) . lsp-deferred))
+  :custom
+  (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
+  (lsp-completion-provider :none)       ; Using Corfu as the provider
+  (lsp-diagnostics-provider :flycheck)
+  (lsp-session-file (locate-user-emacs-file ".lsp-session"))
+  (lsp-log-io nil)                      ; IMPORTANT! Use only for debugging! Drastically affects performance
+  (lsp-keep-workspace-alive nil)        ; Close LSP server if all project buffers are closed
+  (lsp-idle-delay 0.5)                  ; Debounce timer for `after-change-function'
+  ;; core
+  (lsp-enable-xref t)                   ; Use xref to find references
+  (lsp-auto-configure t)                ; Used to decide between current active servers
+  (lsp-eldoc-enable-hover t)            ; Display signature information in the echo area
+  (lsp-enable-dap-auto-configure t)     ; Debug support
+  (lsp-enable-file-watchers nil)
+  (lsp-enable-folding nil)              ; I disable folding since I use origami
+  (lsp-enable-imenu t)
+  (lsp-enable-indentation nil)          ; I use prettier
+  (lsp-enable-links nil)                ; No need since we have `browse-url'
+  (lsp-enable-on-type-formatting nil)   ; Prettier handles this
+  (lsp-enable-suggest-server-download t) ; Useful prompt to download LSP providers
+  (lsp-enable-symbol-highlighting t)     ; Shows usages of symbol at point in the current buffer
+  (lsp-enable-text-document-color nil)   ; This is Treesitter's job
+
+  (lsp-ui-sideline-show-hover nil)      ; Sideline used only for diagnostics
+  (lsp-ui-sideline-diagnostic-max-lines 20) ; 20 lines since typescript errors can be quite big
+  ;; completion
+  (lsp-completion-enable t)
+  (lsp-completion-enable-additional-text-edit t) ; Ex: auto-insert an import for a completion candidate
+  (lsp-enable-snippet t)                         ; Important to provide full JSX completion
+  (lsp-completion-show-kind t)                   ; Optional
+  ;; headerline
+  (lsp-headerline-breadcrumb-enable t)  ; Optional, I like the breadcrumbs
+  (lsp-headerline-breadcrumb-enable-diagnostics nil) ; Don't make them red, too noisy
+  (lsp-headerline-breadcrumb-enable-symbol-numbers nil)
+  (lsp-headerline-breadcrumb-icons-enable nil)
+  ;; modeline
+  (lsp-modeline-code-actions-enable nil) ; Modeline should be relatively clean
+  (lsp-modeline-diagnostics-enable nil)  ; Already supported through `flycheck'
+  (lsp-modeline-workspace-status-enable nil) ; Modeline displays "LSP" when lsp-mode is enabled
+  (lsp-signature-doc-lines 1)                ; Don't raise the echo area. It's distracting
+  (lsp-ui-doc-use-childframe t)              ; Show docs for symbol at point
+  (lsp-eldoc-render-all nil)            ; This would be very useful if it would respect `lsp-signature-doc-lines', currently it's distracting
+  ;; lens
+  (lsp-lens-enable nil)                 ; Optional, I don't need it
+  ;; semantic
+  (lsp-semantic-tokens-enable nil)      ; Related to highlighting, and we defer to treesitter
+
+  :init
+  (setq lsp-use-plists t))
+
+(use-package lsp-completion
+  :straight nil
+  :hook ((lsp-mode . lsp-completion-mode)))
+
+(use-package lsp-ui
+  :ensure t
+  :commands
+  (lsp-ui-doc-show
+   lsp-ui-doc-glance)
+  :bind (:map lsp-mode-map
+              ("C-c C-d" . 'lsp-ui-doc-glance))
+  :config (setq lsp-ui-doc-enable t
+                lsp-ui-doc-show-with-cursor nil      ; Don't show doc when cursor is over symbol - too distracting
+                lsp-ui-doc-include-signature t       ; Show signature
+                lsp-ui-doc-position 'at-point))
+
+(use-package lsp-eslint
+  :straight nil
+  :demand t
+  :after lsp-mode)
+
+(use-package lsp-tailwindcss
+  :straight '(lsp-tailwindcss :type git :host github :repo "merrickluo/lsp-tailwindcss")
+  :init (setq lsp-tailwindcss-add-on-mode t)
+  :config
+  (dolist (tw-major-mode
+           '(css-mode
+             css-ts-mode
+             typescript-mode
+             typescript-ts-mode
+             tsx-ts-mode
+             js2-mode
+             js-ts-mode
+             clojure-mode))
+    (add-to-list 'lsp-tailwindcss-major-modes tw-major-mode)))
 
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else

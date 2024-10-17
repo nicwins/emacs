@@ -31,5 +31,7 @@ If you experience stuttering, increase this.")
 	          (setq file-name-handler-alist file-name-handler-alist-original)
 	          (makunbound 'file-name-handler-alist-original)))
 
+(setenv "LSP_USE_PLISTS" "true")
+
 (provide 'early-init)
 ;;; early-init.el ends here
