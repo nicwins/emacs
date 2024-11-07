@@ -148,15 +148,19 @@
 (use-package calc
   :defer t)
 
-(use-package casual-calc
-  :straight (casual-calc :type git :flavor melpa :host github :repo "kickingvegas/casual-calc")
-  :bind (:map
-         calc-mode-map
-         ("C-o" . casual-calc-tmenu)
-         :map
-         calc-alg-map
-         ("C-o" . casual-calc-tmenu))
-  :after (calc))
+;; base mode for scheme
+(use-package geiser-mit
+  :config
+  (setf geiser-active-implementations '(guile)))
+
+;; guile scheme addition
+(use-package geiser-guile
+  :config
+  (add-to-list 'geiser-guile-load-path "~/src/guix"))
+
+(use-package paredit
+  :hook
+  ((scheme-mode emacs-lisp-mode) . paredit-mode))
 
 (use-package vertico-directory
   ;; easy bindings for navigating dirs
