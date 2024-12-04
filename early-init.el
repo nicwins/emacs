@@ -33,5 +33,9 @@ If you experience stuttering, increase this.")
 
 (setenv "LSP_USE_PLISTS" "true")
 
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+
 (provide 'early-init)
 ;;; early-init.el ends here

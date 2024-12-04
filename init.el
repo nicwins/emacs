@@ -93,6 +93,9 @@
   (org-hide-emphasis-markers t)
   (org-pretty-entities t)
   (org-ellipsis "…")
+
+  ;; files
+  (org-agenda-files '("~/notes/todo.org"))
   :config
   ;; Activate SQL source code blocks
   (org-babel-do-load-languages
@@ -145,8 +148,7 @@
   :config
   (savehist-mode 1))
 
-(use-package calc
-  :defer t)
+(use-package casual)
 
 ;; base mode for scheme
 (use-package geiser-mit
@@ -201,35 +203,21 @@
   (vertico-multiform-mode))
 
 (use-package corfu
-  ;; autocomplete package
-  :init
-  (global-corfu-mode)
-  :bind
-  (:map corfu-map
-        ("TAB" . corfu-next)
-        ([tab] . corfu-next)
-        ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous))
+  :hook (after-init . global-corfu-mode)
+  :bind (:map corfu-map ("<tab>" . corfu-complete))
   :custom
-  (corfu-cycle t)
-  (corfu-auto t)
-  (corfu-auto-prefix 2)
-  (corfu-auto-delay 0)
-  ;;(corfu-quit-no-match t)
-  ;;(corfu-quit-at-boundary t)
-  ;;(tab-always-indent 'complete)
-  ;;(corfu-preselect-first nil)
-  (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
-  (corfu-preview-current 'insert) ; insert previewed candidate
-  (corfu-preselect 'prompt)
+  (tab-always-indent 'complete)
+  (corfu-preview-current nil)
+  (corfu-min-width 20)
+
+  (corfu-popupinfo-delay '(1.25 . 0.5))
   :config
-  (add-hook 'eshell-mode-hook
-            (lambda () (setq-local corfu-quit-at-boundary t
-                                   corfu-quit-no-match t
-                                   corfu-auto nil)
-              (corfu-mode))
-            nil
-            t))
+  (corfu-popupinfo-mode 1)   ; shows documentation after `corfu-popupinfo-delay'
+
+  ;; Sort by input history (no need to modify `corfu-sort-function').
+  (with-eval-after-load 'savehist
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
 
 (use-package orderless
   :after corfu
@@ -538,6 +526,13 @@
 (use-package speedrect
   :straight (speedrect :type git :host github :repo "jdtsmith/speedrect"))
 
+(use-package buffer-move
+  :bind
+  (("<M-left>" . buf-move-left)
+   ("<M-right>" . buf-move-right)
+   ("<M-up>" . buf-move-up)
+   ("<M-down>" . buf-move-down)))
+
 (use-package diredfl
   ;; dired font-lock
   :custom (diredfl-global-mode t))
@@ -550,8 +545,13 @@
 (use-package dired-narrow
   ;; filter dired buffers
   :ensure t
-  :bind ((:map dired-mode-map 
-               ("/" . dired-narrow))))
+  :bind ((:map dired-mode-map
+               ("/" . dired-narrow))))/
+
+(use-package dired-filter
+  :ensure t
+  :custom
+  (dired-filter-prefix "f"))
 
 (use-package async
   ;; use dired functions async
@@ -642,6 +642,13 @@
   :config
   (electric-pair-mode 1))
 
+(use-package calc
+  ;; calculator
+  :straight (:type built-in)
+  :bind
+  (:map calc-mode-map
+        ("?" . casual-calc-tmenu)))
+
 (use-package dired
   ;; directory management
   :straight (:type built-in)
@@ -655,16 +662,33 @@
   :hook (dired-mode . dired-hide-details-mode)
   :bind
   (:map dired-mode-map
-        ("f" . my/dired-quickfind)
-        ("C-c C-c" . dired-toggle-read-only))
+        ;;("f" . my/dired-quickfind)
+        ("C-c C-c" . dired-toggle-read-only)
+        ("?" . casual-dired-tmenu))
   :custom
   (dired-dwim-target t)
   ;; Dired listing switches - see man ls
   (dired-listing-switches "-alhF --group-directories-first")
   (dired-hide-details-hide-symlink-targets nil)
   (dired-recursive-copies 'always)
+  (dired-recursive-deletes 'always)
   (dired-auto-revert-buffer t)
   (find-name-arg "-iname"))
+
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :bind
+  ( :map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("TAB" . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("S-TAB" . dired-subtree-remove))
+  :custom
+  (dired-subtree-use-backgrounds nil)
+  :config
+  (add-hook 'dired-subtree-after-insert-hook #'dired-omit-mode)
+  (add-hook 'dired-subtree-before-insert-hook #'dired-omit-mode))
 
 (use-package dired-x
   ;; extension for dired
@@ -818,6 +842,10 @@
   :straight nil
   :config
   (save-place-mode 1))
+
+(use-package savehist
+  :straight nil ; it is built-in
+  :hook (after-init . savehist-mode))
 
 (use-package files
   ;; General file handling
@@ -1179,6 +1207,27 @@
              clojure-mode))
     (add-to-list 'lsp-tailwindcss-major-modes tw-major-mode)))
 
+(use-package delsel
+  :straight nil ; no need to install it as it is built-in
+  :hook (after-init . delete-selection-mode))
+
+(use-package nerd-icons)
+
+(use-package nerd-icons-completion
+  :after marginalia
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+(use-package nerd-icons-corfu
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
+
 (use-package emacs
   ;; Stuff that doesn't seem to belong anywhere else
   :straight nil
@@ -1186,6 +1235,30 @@
   (defun my/back-to-indentation-or-beginning () (interactive)
          (if (= (point) (progn (back-to-indentation) (point)))
              (beginning-of-line)))
+
+  (defun prot/keyboard-quit-dwim ()
+    "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focusing it.
+
+The DWIM behaviour of this command is as follows:
+
+- When the region is active, disable it.
+- When a minibuffer is open, but not focused, close the minibuffer.
+- When the Completions buffer is selected, close it.
+- In every other case use the regular `keyboard-quit'."
+    (interactive)
+    (cond
+     ((region-active-p)
+      (keyboard-quit))
+     ((derived-mode-p 'completion-list-mode)
+      (delete-completion-window))
+     ((> (minibuffer-depth) 0)
+      (abort-recursive-edit))
+     (t
+      (keyboard-quit))))
 
   (defun my/visiting-buffer-rename (file newname &optional _ok-if-already-exists)
     "Rename buffer visiting FILE to NEWNAME.
@@ -1253,7 +1326,9 @@ Intended as :after advice for `delete-file'."
    ("C-c C-k" . server-edit-abort)
    ([f3] . start-kbd-macro)
    ([f4] . end-kbd-macro)
-   ([f5] . kmacro-call-macro))
+   ([f5] . kmacro-call-macro)
+   (:map global-map
+         ("C-g" . prot/keyboard-quit-dwim)))
   :hook
   ((text-mode . visual-line-mode)
    (minibuffer-setup . cursor-intangible-mode))
@@ -1275,20 +1350,19 @@ Intended as :after advice for `delete-file'."
   (ad-redefinition-action 'accept)      ; silence warnings for redefinition
   (cursor-in-non-selected-windows nil)  ; Hide cursor in inactive windows
   (warning-suppress-types '((comp)))
-  (use-short-answers t)                 ; y on n to confirm
-  (sh-basic-offset 2)                   ; indentation 2 spaces
-  (js-indent-level 2)                   ; indentation 2 spaces in js derived modes
-  (image-dired-thumb-size 256)          ; dired thumbnail size
-  (desktop-load-locked-desktop t)       ; load desktop even if starting from crash
+  (use-short-answers t)               ; y on n to confirm
+  (sh-basic-offset 2)                 ; indentation 2 spaces
+  (js-indent-level 2)                 ; indentation 2 spaces in js derived modes
+  (image-dired-thumb-size 256)        ; dired thumbnail size
+  (desktop-load-locked-desktop t)     ; load desktop even if starting from crash
   (compilation-scroll-output 'first-error)
-  (kill-whole-line t)                   ; if on col 0, kills line instead of emptying it
+  (kill-whole-line t)           ; if on col 0, kills line instead of emptying it
   (tramp-connection-timeout 5)
-  (proced-filter 'all)                  ; show processes from all users
+  (proced-filter 'all)                        ; show processes from all users
   (backward-delete-char-untabify-method 'all) ; delete whole line when only whitespace
-  (next-line-add-newlines t)            ; add newline on C-n if point is at end of buffer.
+  (next-line-add-newlines t)  ; add newline on C-n if point is at end of buffer.
   (enable-local-variables :safe)
   :config
-  (tool-bar-mode -1)
   (pixel-scroll-precision-mode)
   (advice-add 'rename-file :after 'my/visiting-buffer-rename)
   (advice-add 'delete-file :after 'my/visiting-buffer-kill)
@@ -1303,6 +1377,10 @@ Intended as :after advice for `delete-file'."
   (set-face-attribute 'italic nil :slant 'italic :underline 'unspecified)
   (set-frame-parameter nil 'alpha-background 95)
   (windmove-default-keybindings)
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+                 (display-buffer-no-window)
+                 (allow-no-window . t)))
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local outline-regexp (rx ";;;" (* not-newline)))))
